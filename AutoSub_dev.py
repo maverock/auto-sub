@@ -223,9 +223,9 @@ def ProcessFileName(file):
 
 	
 def getShowid(showName):
-	if namemapping[showName]:
-		return namemapping[showName]
-	
+	if showName in namemapping.keys():
+		return namemapping['showid']
+
 	getShowIdUrl = "%sGetShowByName/%s" %(api, urllib.quote(showName))
 	
 	req = urllib2.urlopen(getShowIdUrl)
