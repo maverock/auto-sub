@@ -23,7 +23,8 @@ rootpath = "/mnt/nas1/content/TV"
 fallbackToEng = True
 # API key
 apikey = "AFC34E2C2FE8B9F7"
-
+# This dictionary maps local series names to BierDopje ID's
+namemapping = {}
 #/Settings -----------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -222,6 +223,9 @@ def ProcessFileName(file):
 
 	
 def getShowid(showName):
+	if namemapping[showName]:
+		return namemapping[showName]
+	
 	getShowIdUrl = "%sGetShowByName/%s" %(api, urllib.quote(showName))
 	
 	req = urllib2.urlopen(getShowIdUrl)
