@@ -1,0 +1,7 @@
+v0.2 changes:
++ Improved filename processing
++ Improved bierdopje matching against downloaded content
++ Added a logfile
+
+v0.1 changes:
++ Initiation version
