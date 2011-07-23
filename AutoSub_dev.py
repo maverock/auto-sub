@@ -24,7 +24,11 @@ fallbackToEng = True
 # API key
 apikey = "AFC34E2C2FE8B9F7"
 # This dictionary maps local series names to BierDopje ID's
+# Example: namemapping = {"Castle":"12708"}
 namemapping = {}
+# This dictionary can be use to skip shows or seasons from being downloaded. The seasons should be defined as lists
+# Example: skipshow = {'Dexter': ['0'],'White Collar' : ['1','3']}
+skipshow = {}
 #/Settings -----------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -58,6 +62,18 @@ formatter = logging.Formatter('%(asctime)s %(levelname)s  %(message)s')
 console.setFormatter(formatter)
 log.addHandler(console)
 
+
+def SkipShow(showName,season,episode): 
+	if showName in skipshow.keys():
+		log.debug("SkipShow: Found %s in skipshow dictonary" %showName)
+		for seasontmp in skipshow[showName]:
+			if seasontmp == '0':
+				log.debug("SkipShow: variable of %s is set to 0, skipping the complete Serie" %showName)
+				return True
+			elif seasontmp == season:
+				log.debug("SkipShow: Season matches variable of %s, skipping season" %showName)
+				return True											
+		
 def ProcessFileName(file):
 	processedFilenameResults = {}
 	title = None
@@ -143,7 +159,6 @@ def ProcessFileName(file):
 		quality = '1080'
 	else:
 		log.debug("ProcessFileName: Could not determine quality, making a best effort on the extension")
-		tempSplitname = file.split(".")
 		ext = splitname[len(splitname)-1]
 		
 		if ext in ('avi', 'ts', 'wmv'): 
@@ -223,9 +238,6 @@ def ProcessFileName(file):
 
 	
 def getShowid(showName):
-	if showName in namemapping.keys():
-		return namemapping['showid']
-
 	getShowIdUrl = "%sGetShowByName/%s" %(api, urllib.quote(showName))
 	
 	req = urllib2.urlopen(getShowIdUrl)
@@ -237,6 +249,11 @@ def getShowid(showName):
 	
 	showid = dom.getElementsByTagName('showid')[0].firstChild.data
 	return showid
+
+def nameMapping(showName):
+	if showName in namemapping.keys():
+		log.debug("nameMapping: found match for %s" %showName)
+		return namemapping[showName]
 
 def matchQuality(quality, item):
 	if quality == "SD":
@@ -347,17 +364,26 @@ while True:
 					
 					if not title in showid_cache.keys():
 						showid = getShowid(title)
-						log.debug("Got the following showid from bierdopje.com: %s" %showid)
 						if not showid: 
-							log.error("Could not be found on bierdopje.com, skipping %s" %title)
-							continue
-							
+							log.debug("Could not be found on bierdopje.com for %s, trying the namemapping" %title)
+							showid = nameMapping(title)
+							if not showid:
+								log.error("Could not find a show ID for %s" %title)
+								continue
+						log.debug("Got the following showid: %s" %showid)
 						showid_cache[title] = showid
+					if SkipShow(title, season, episode)==True:
+						log.debug("SkipShow returned True")
+						downloadLink = ""
+						skipdownload = True
+					else:
+						downloadLink = getSubLink(showid, "nl", filenameResults)
+						destsrt = os.path.join(dirname,srtfile)
+						skipdownload = False
 					
-					downloadLink = getSubLink(showid, "nl", filenameResults)
-					destsrt = os.path.join(dirname,srtfile)
-					
-					if not downloadLink:
+					if skipdownload:
+						log.info("Skipping download for %s" %filename)
+					elif not downloadLink:
 						if fallbackToEng == False:
 							log.debug("No subtitles found on bierdopje.com for %s" %filename)
 							continue
