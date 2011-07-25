@@ -11,6 +11,8 @@ import urllib2
 import os
 import time
 import re
+import sys
+import getopt
 from xml.dom import minidom
 
 
@@ -35,6 +37,7 @@ skipshow = {}
 # !!!! DO NOT MODIFY BEYOND THIS LINE !!!! ---------------------------------------------------------------------------------------------------------
 
 api = "http://api.bierdopje.com/%s/" %apikey
+rssUrl = "http://www.bierdopje.com/rss/subs/nl"
 showid_cache = {}
 
 # The following 3 lines convert the skipshow to uppercase. 
@@ -60,12 +63,21 @@ log.addHandler(log_script)
 
 #CONSOLE log handler
 console = logging.StreamHandler()
-console.setLevel(logging.INFO)
+console.setLevel(logging.DEBUG)
 # set a format which is simpler for console use
 formatter = logging.Formatter('%(asctime)s %(levelname)s  %(message)s')
 console.setFormatter(formatter)
 log.addHandler(console)
 
+
+help_message = '''
+Usage:
+	-h (--help)	Prints this message
+	
+
+Example:
+	python AutoSub.py
+'''
 
 def SkipShow(showName,season,episode):
 	if showName.upper() in skipshowupper.keys():
@@ -151,42 +163,43 @@ def ProcessFileName(file):
 		if not episodeid[2] == "0":
 			episode = episodeid[2] + episodeid[2]
 	
-	log.debug("ProcessFileName: Resolved %s to the following episodeid %s" %(file, episodeid))
-	log.debug("ProcessFileName: Resolved season %s and episode %s" %(season, episode))
+	#log.debug("ProcessFileName: Resolved %s to the following episodeid %s" %(file, episodeid))
+	#log.debug("ProcessFileName: Resolved season %s and episode %s" %(season, episode))
 	
 	#Determine Quality
 	if re.search('720', file):
-		log.debug("ProcessFileName: Quality is 720")
+		#log.debug("ProcessFileName: Quality is 720")
 		quality = '720'
 	elif re.search('1080', file):
-		log.debug("ProcessFileName: Quality is 1080")
+		#log.debug("ProcessFileName: Quality is 1080")
 		quality = '1080'
 	else:
-		log.debug("ProcessFileName: Could not determine quality, making a best effort on the extension")
-		ext = splitname[len(splitname)-1]
+		#log.debug("ProcessFileName: Could not determine quality, making a best effort on the extension")
+		tempSplitname = file.split(".")
+		ext = tempSplitname[len(tempSplitname)-1]
 		
 		if ext in ('avi', 'ts', 'wmv'): 
-			log.debug("ProcessFileName: Setted the quality to HDTV based on %s" %ext)
+			#log.debug("ProcessFileName: Setted the quality to HDTV based on %s" %ext)
 			quality = 'SD'
 		if ext in ('mkv'): 
-			log.debug("ProcessFileName: Setted the quality to 720 based on %s" %ext)
+			#log.debug("ProcessFileName: Setted the quality to 720 based on %s" %ext)
 			quality = '720'
 	
 	# Determine source
 	if re.search('hdtv', file): 
-		log.debug("ProcessFileName: Source is HDTV")
+		#log.debug("ProcessFileName: Source is HDTV")
 		source = 'hdtv'
 	if re.search('dvdrip', file): 
-		log.debug("ProcessFileName: Source is DVDrip")
+		#log.debug("ProcessFileName: Source is DVDrip")
 		source = 'dvdrip'
 	if re.search('bdrip', file): 
-		log.debug("ProcessFileName: Source is BDrip")
+		#log.debug("ProcessFileName: Source is BDrip")
 		source = 'bdrip'
 	if re.search('blueray', file): 
-		log.debug("ProcessFileName: Source is BluRay")
+		#log.debug("ProcessFileName: Source is BluRay")
 		source = 'bluray'
 	if re.search('web-dl', file): 
-		log.debug("ProcessFileName: Source is WEB-DL")
+		#log.debug("ProcessFileName: Source is WEB-DL")
 		source = 'web-dl'
 	
 	#Determine release group
@@ -210,13 +223,13 @@ def ProcessFileName(file):
 		# test if this is a release group:
 		if toTestString[:5] == "x264-":	
 			releasegrp = toTestString.split("-")[1]
-			log.debug("ProcessFileName: Resolved the following release group: %s" %releasegrp)
+			#log.debug("ProcessFileName: Resolved the following release group: %s" %releasegrp)
 		if toTestString[:4] == "264-":	
 			releasegrp = toTestString.split("-")[1]
-			log.debug("ProcessFileName: Resolved the following release group: %s" %releasegrp)
+			#log.debug("ProcessFileName: Resolved the following release group: %s" %releasegrp)
 		if toTestString[:5] == "xvid-": 
 			releasegrp = toTestString.split("-")[1]
-			log.debug("ProcessFileName: Resolved the following release group: %s" %releasegrp)
+			#log.debug("ProcessFileName: Resolved the following release group: %s" %releasegrp)
 		
 	if episodeidstart:
 		title = file[:episodeidstart]
@@ -227,7 +240,7 @@ def ProcessFileName(file):
 		title = title.rstrip()
 		title = title.lstrip()
 		title = str.title(title)
-		log.debug("ProcessFileName: Resolved the following title: %s" %title)
+		#log.debug("ProcessFileName: Resolved the following title: %s" %title)
 	
 	if title: processedFilenameResults['title'] = title
 	if season: processedFilenameResults['season'] = season
@@ -333,9 +346,28 @@ def getSubLink(showid, lang, releaseDetails):
 		elif not quality and not source and not releasegrp:
 			log.debug("getSubLink: Making a blind match because ProcessFileName could not determine anything")
 			return sub.getElementsByTagName('downloadlink')[0].firstChild.data
-		
-while True:
-	log.debug("Starting round of local disk checking")
+
+def checkRSS(shows, rssUrl):
+	log.debug("checkRSS: Starting round of RSS checking")
+	log.debug("checkRSS: Checking against the following shows: %s" %shows)
+	req = urllib2.urlopen(rssUrl)
+	dom = minidom.parse(req)
+	
+	rssList = dom.getElementsByTagName('showname')
+
+	#check versus show list
+	for j in range(len(shows)):
+		for k in range(len(rssList)):
+			log.debug("checkRSS: Checking: %s against %s" %(shows[j],rssList[k].firstChild.data))
+			if shows[j] in rssList[k].firstChild.data:
+				log.debug("checkRSS: Matched the following entry: %s to %s", shows[j], rssList[k].firstChild.data)
+				return True
+	
+	log.debug("checkRSS: Finished round of RSS checking")
+	return False
+	
+def scanDir(rootpath):
+	log.debug("scanDir: Starting round of local disk checking")
 	
 	for dirname, dirnames, filenames in os.walk(os.path.join(rootpath)):
 		for filename in filenames:			
@@ -349,7 +381,7 @@ while True:
 				engsrtfile = os.path.join(filename[:-4] + ".eng.srt") 
 				
 				if not os.path.exists(os.path.join(dirname,srtfile)):
-					log.debug("Filename %s does not yet have a srt file" %filename)
+					log.debug("scanDir: Filename %s does not yet have a srt file" %filename)
 					filenameResults = ProcessFileName(filename)
 					
 					if 'title' in filenameResults.keys():
@@ -359,25 +391,25 @@ while True:
 								season = filenameResults['season']
 								episode = filenameResults['episode']
 							else:
-								log.error("Could not process the filename properly filename: %s" %filename)
+								log.error("scanDir: Could not process the filename properly filename: %s" %filename)
 								continue
 					if SkipShow(title, season, episode)==True:
-						log.debug("SkipShow returned True")
-						log.info("Skipping download for %s" %filename)
+						log.debug("scanDir: SkipShow returned True")
+						log.info("scanDir: Skipping download for %s" %filename)
 						continue
 					if title in showid_cache.keys():
 						showid = showid_cache[title]
-						log.debug("Got the following showid from cache: %s" %showid)
+						log.debug("scanDir: Got the following showid from cache: %s" %showid)
 					
 					if not title in showid_cache.keys():
 						showid = getShowid(title)
 						if not showid: 
-							log.debug("Could not be found on bierdopje.com for %s, trying the namemapping" %title)
+							log.debug("scanDir: Could not be found on bierdopje.com for %s, trying the namemapping" %title)
 							showid = nameMapping(title)
 							if not showid:
-								log.error("Could not find a show ID for %s" %title)
+								log.error("scanDir: Could not find a show ID for %s" %title)
 								continue
-						log.debug("Got the following showid: %s" %showid)
+						log.debug("scanDir: Got the following showid: %s" %showid)
 						showid_cache[title] = showid
 					
 					downloadLink = getSubLink(showid, "nl", filenameResults)
@@ -385,30 +417,73 @@ while True:
 				
 					if not downloadLink:
 						if fallbackToEng == False:
-							log.debug("No subtitles found on bierdopje.com for %s" %filename)
+							log.debug("scanDir: No subtitles found on bierdopje.com for %s" %filename)
 							continue
 						if os.path.exists(os.path.join(dirname,engsrtfile)) and fallbackToEng == True:
-							log.debug("The ENG subtitle is found, will try again later for the dutch version %s" %filename)
+							log.debug("scanDir: The ENG subtitle is found, will try again later for the dutch version %s" %filename)
 							continue
 						if not os.path.exists(os.path.join(dirname,engsrtfile)) and fallbackToEng == True:
-							log.debug("Dutch subtitle could not be found on bierdopje.com, attempting to download the english version for %s" %filename)
+							log.debug("scanDir: Dutch subtitle could not be found on bierdopje.com, attempting to download the english version for %s" %filename)
 							downloadLink = getSubLink(showid, "en", filenameResults)
 							destsrt = os.path.join(dirname,engsrtfile)
 							if not downloadLink:
-								log.info("No subtitles found on bierdopje.com for %s" %filename)
+								log.info("scanDir: No subtitles found on bierdopje.com for %s" %filename)
 								continue
 							
 					if downloadLink:
 						response = urllib2.urlopen(downloadLink)
-						log.info("DOWNLOADING the following link: %s" %downloadLink)
+						log.info("scanDir: DOWNLOADING the following link: %s" %downloadLink)
 											
 						try:
 							open(destsrt,'w').write(response.read())
 						except:
-							log.error("Error while writing subtitle file. Destination: %s" %destsrt)
+							log.error("scanDir: Error while writing subtitle file. Destination: %s" %destsrt)
 							exit()
 						
-						log.info("DOWNLOADED: %s" %destsrt)
+						log.info("scanDir: DOWNLOADED: %s" %destsrt)
 
-	log.debug("Finished round of local disk checking")
-	time.sleep(3600)
+	log.debug("scanDir: Finished round of local disk checking")
+	return True
+	
+class Usage(Exception):
+	def __init__(self, msg):
+		self.msg = msg
+	
+def main(argv=None):
+	if argv is None:
+		argv = sys.argv
+	try:
+		try:
+			opts, args = getopt.getopt(argv[1:], "h", ["help"])
+		except getopt.error, msg:
+			raise Usage(msg)
+	
+		# option processing
+		for option, value in opts:
+			if option in ("-h", "--help"):
+				raise Usage(help_message)
+	
+	except Usage, err:
+		print >> sys.stderr, sys.argv[0].split("/")[-1] + ": " + str(err.msg)
+		print >> sys.stderr, "\t for help use --help"
+		return 2
+	
+	
+	#initial scan
+	scanDir(rootpath)
+	
+	while True:
+		shows = showid_cache.keys()
+		
+		if not len(shows) == 0:
+			while True:
+				if checkRSS(shows, rssUrl):
+					break
+				else: 
+					time.sleep(120)
+					
+		scanDir(rootpath)
+		time.sleep(3600)
+
+if __name__ == "__main__":
+	sys.exit(main())
