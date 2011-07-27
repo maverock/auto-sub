@@ -13,6 +13,7 @@ import time
 import re
 import sys
 import getopt
+import time
 from xml.dom import minidom
 
 
@@ -163,46 +164,32 @@ def ProcessFileName(file):
 		if not episodeid[2] == "0":
 			episode = episodeid[2] + episodeid[2]
 	
-	#log.debug("ProcessFileName: Resolved %s to the following episodeid %s" %(file, episodeid))
-	#log.debug("ProcessFileName: Resolved season %s and episode %s" %(season, episode))
 	
 	#Determine Quality
 	if re.search('720', file):
-		#log.debug("ProcessFileName: Quality is 720")
 		quality = '720'
 	elif re.search('1080', file):
-		#log.debug("ProcessFileName: Quality is 1080")
 		quality = '1080'
 	else:
-		#log.debug("ProcessFileName: Could not determine quality, making a best effort on the extension")
 		tempSplitname = file.split(".")
 		ext = tempSplitname[len(tempSplitname)-1]
 		
-		if ext in ('avi', 'ts', 'wmv'): 
-			#log.debug("ProcessFileName: Setted the quality to HDTV based on %s" %ext)
-			quality = 'SD'
-		if ext in ('mkv'): 
-			#log.debug("ProcessFileName: Setted the quality to 720 based on %s" %ext)
+		if ext  == 'mkv': 
 			quality = '720'
+		else:
+			quality = 'SD'
 	
 	# Determine source
 	if re.search('hdtv', file): 
-		#log.debug("ProcessFileName: Source is HDTV")
 		source = 'hdtv'
 	if re.search('dvdrip', file): 
-		#log.debug("ProcessFileName: Source is DVDrip")
 		source = 'dvdrip'
 	if re.search('bdrip', file): 
-		#log.debug("ProcessFileName: Source is BDrip")
 		source = 'bdrip'
 	if re.search('blueray', file): 
-		#log.debug("ProcessFileName: Source is BluRay")
 		source = 'bluray'
 	if re.search('web-dl', file): 
-		#log.debug("ProcessFileName: Source is WEB-DL")
 		source = 'web-dl'
-	
-	#Determine release group
 	
 	# Convential naming:
 	# True.Blood.S02E06.REPACK.720p.BluRay.X264-REWARD
@@ -215,21 +202,21 @@ def ProcessFileName(file):
 	tempString = str.replace(tempString,"proper.","")
 	splittedTempString = tempString.split(".")
 	
+	if splittedTempString[len(splittedTempString)-1] in ('srt','mkv','avi','mpg','ts'):
+		splittedTempString.pop(len(splittedTempString)-1)
+	
 	if len(splittedTempString) > 2:
 		# it appears to have atleast 1 more . in it aside from the extension
-		# grab the last bit before the file extension
-		toTestString = splittedTempString[len(splittedTempString)-2]
+		# grab the last bit
+		toTestString = splittedTempString[len(splittedTempString)-1]
 		
 		# test if this is a release group:
 		if toTestString[:5] == "x264-":	
 			releasegrp = toTestString.split("-")[1]
-			#log.debug("ProcessFileName: Resolved the following release group: %s" %releasegrp)
 		if toTestString[:4] == "264-":	
 			releasegrp = toTestString.split("-")[1]
-			#log.debug("ProcessFileName: Resolved the following release group: %s" %releasegrp)
 		if toTestString[:5] == "xvid-": 
 			releasegrp = toTestString.split("-")[1]
-			#log.debug("ProcessFileName: Resolved the following release group: %s" %releasegrp)
 		
 	if episodeidstart:
 		title = file[:episodeidstart]
@@ -240,7 +227,6 @@ def ProcessFileName(file):
 		title = title.rstrip()
 		title = title.lstrip()
 		title = str.title(title)
-		#log.debug("ProcessFileName: Resolved the following title: %s" %title)
 	
 	if title: processedFilenameResults['title'] = title
 	if season: processedFilenameResults['season'] = season
@@ -347,26 +333,133 @@ def getSubLink(showid, lang, releaseDetails):
 			log.debug("getSubLink: Making a blind match because ProcessFileName could not determine anything")
 			return sub.getElementsByTagName('downloadlink')[0].firstChild.data
 
-def checkRSS(shows, rssUrl):
+def checkRSS(wantedQueue, toDownloadQueue):	
 	log.debug("checkRSS: Starting round of RSS checking")
-	log.debug("checkRSS: Checking against the following shows: %s" %shows)
 	req = urllib2.urlopen(rssUrl)
 	dom = minidom.parse(req)
 	
-	rssList = dom.getElementsByTagName('showname')
+	rssTitleList = dom.getElementsByTagName('title')
+	normalizedRssTitleList = []
+	
+	for rssTitle in rssTitleList:
+		log.debug("Normalizing the following entry in the RSS results: %s" %rssTitle.firstChild.data)
+		normalizedRssTitle = ProcessFileName(str(rssTitle.firstChild.data))
+		if 'title' in normalizedRssTitle.keys():
+			if 'season' in normalizedRssTitle.keys():
+				if 'episode' in normalizedRssTitle.keys():		
+					normalizedRssTitleList.append(normalizedRssTitle)
 
-	#check versus show list
-	for j in range(len(shows)):
-		for k in range(len(rssList)):
-			log.debug("checkRSS: Checking: %s against %s" %(shows[j],rssList[k].firstChild.data))
-			if shows[j] in rssList[k].firstChild.data:
-				log.debug("checkRSS: Matched the following entry: %s to %s", shows[j], rssList[k].firstChild.data)
-				return True
+	#check versus wantedItem list
+	for index, wantedItem in enumerate(wantedQueue):
+		wantedItemquality = None
+		wantedItemreleasegrp = None
+		wantedItemsource = None
+		wantedItemtitle = wantedItem['title']
+		wantedItemseason = wantedItem['season']
+		wantedItemepisode = wantedItem['episode']
+				
+		if 'quality' in wantedItem.keys(): wantedItemquality = wantedItem['quality']
+		if 'releasegrp' in wantedItem.keys(): wantedItemreleasegrp = wantedItem['releasegrp']
+		if 'source' in wantedItem.keys(): wantedItemsource = wantedItem['source']
+		
+		if wantedItemtitle in showid_cache.keys():
+			showid = showid_cache[wantedItemtitle]
+		
+		if not wantedItemtitle in showid_cache.keys():
+			showid = getShowid(wantedItemtitle)
+			if not showid: 
+				log.debug("checkRSS: Could not be found on bierdopje.com for %s, trying the namemapping" %title)
+				showid = nameMapping(wantedItemtitle)
+				if not showid:
+					log.error("checkRSS: Could not find a show ID for %s" %title)
+					continue
+			showid_cache[wantedItemtitle] = showid
+		
+		for normalizedRssTitle in normalizedRssTitleList:
+			toDownloadItem = None
+			downloadLink = None
+			normalizedRssTitlequality = None
+			normalizedRssTitlereleasegrp = None
+			normalizedRssTitlesource = None
+			normalizedRssTitletitle = normalizedRssTitle['title']
+			normalizedRssTitleseason = normalizedRssTitle['season']
+			normalizedRssTitleepisode = normalizedRssTitle['episode']
+					
+			if 'quality' in normalizedRssTitle.keys(): normalizedRssTitlequality = normalizedRssTitle['quality']
+			if 'releasegrp' in normalizedRssTitle.keys(): normalizedRssTitlereleasegrp = normalizedRssTitle['releasegrp']
+			if 'source' in normalizedRssTitle.keys(): normalizedRssTitlesource = normalizedRssTitle['source']
+			
+			if wantedItemtitle == normalizedRssTitletitle and wantedItemseason == normalizedRssTitleseason and wantedItemepisode == normalizedRssTitleepisode:
+				log.debug("The episode %s - Season %s Episode %s was found in the RSS list, attempting to match a proper match" %(wantedItemtitle, wantedItemseason,wantedItemepisode))
+				
+				if wantedItemquality and wantedItemreleasegrp and wantedItemsource:
+					log.debug("checkRSS: Trying to match against Quality & Releasegrp & Source") 
+					if wantedItemquality == normalizedRssTitlequality and wantedItemreleasegrp == normalizedRssTitlereleasegrp and wantedItemsource == normalizedRssTitlesource:
+						log.debug("Found a match for %s - Season %s Episode %s, getting downloadLink" %(wantedItemtitle, wantedItemseason,wantedItemepisode))
+						downloadLink = getSubLink(showid, "nl", wantedItem)
+					
+				elif wantedItemquality and wantedItemreleasegrp and not wantedItemsource:
+					log.debug("checkRSS: Trying to match against Quality & Releasegrp")
+					if wantedItemquality == normalizedRssTitlequality and wantedItemreleasegrp == normalizedRssTitlereleasegrp:
+						log.debug("Found a match for %s - Season %s Episode %s, getting downloadLink" %(wantedItemtitle, wantedItemseason,wantedItemepisode))
+						downloadLink = getSubLink(showid, "nl", wantedItem)
+						
+				elif wantedItemquality and wantedItemsource and not wantedItemreleasegrp:
+					log.debug("checkRSS: Trying to match against Quality & Source")
+					if wantedItemquality == normalizedRssTitlequality and wantedItemsource == normalizedRssTitlesource:
+						log.debug("Found a match for %s - Season %s Episode %s, getting downloadLink" %(wantedItemtitle, wantedItemseason,wantedItemepisode))
+						downloadLink = getSubLink(showid, "nl", wantedItem)
+						
+				elif wantedItemquality and not wantedItemsource and not wantedItemreleasegrp:
+					log.debug("checkRSS: Trying to match against Quality")
+					
+					if wantedItemquality == normalizedRssTitlequality:
+						log.debug("Found a match for %s - Season %s Episode %s, getting downloadLink" %(wantedItemtitle, wantedItemseason,wantedItemepisode))
+						downloadLink = getSubLink(showid, "nl", wantedItem)				
+
+				if downloadLink: 
+					originalfile = wantedItem['originalFileLocationOnDisk']
+					srtfile = os.path.join(originalfile[:-4] + ".srt")
+					
+					wantedItem['downloadLink'] = downloadLink
+					wantedItem['destinationFileLocationOnDisk'] = srtfile
+					toDownloadQueue.append(wantedItem)
+					log.info("checkRSS: The episode %s - Season %s Episode %s has a matching subtitle on bierdopje, adding to toDownloadQueue" %(wantedItemtitle, wantedItemseason,wantedItemepisode))
+					wantedQueue.pop(index)
+					log.debug("checkRSS: Removed item: %s from the wantedQueue at index %s" %(wantedItem, index))
 	
 	log.debug("checkRSS: Finished round of RSS checking")
-	return False
+	return wantedQueue, toDownloadQueue
+
+def downloadSubs(toDownloadQueue):
+	for index, downloadItem in enumerate(toDownloadQueue):
+		if 'destinationFileLocationOnDisk' in downloadItem.keys() and 'downloadLink' in downloadItem.keys():
+			destsrt = downloadItem['destinationFileLocationOnDisk']
+			downloadLink = downloadItem['downloadLink']
+	
+			try:
+				response = urllib2.urlopen(downloadLink)
+			except:
+				log.error("downloadSubs: Error while opening the downloadLink: %s" %downloadLink)
+				continue				
+			
+			try:
+				open(destsrt,'w').write(response.read())
+			except:
+				log.error("downloadSubs: Error while writing subtitle file. Destination: %s" %destsrt)
+				continue
+			
+			log.info("downloadSubs: DOWNLOADED: %s" %destsrt)
+			toDownloadQueue.pop(index)
+			log.debug("downloadSubs: Removed item: %s from the toDownloadQueue at index %s" %(downloadItem, index))
+		else:
+			log.error("downloadSub: No downloadLink or locationOnDisk found at downloadItem, skipping")
+			continue
+	
+	return toDownloadQueue
 	
 def scanDir(rootpath):
+	wantedQueue = []
 	log.debug("scanDir: Starting round of local disk checking")
 	
 	for dirname, dirnames, filenames in os.walk(os.path.join(rootpath)):
@@ -378,72 +471,89 @@ def scanDir(rootpath):
 				if re.search('sample', filename): continue
 				
 				srtfile = os.path.join(filename[:-4] + ".srt")
-				engsrtfile = os.path.join(filename[:-4] + ".eng.srt") 
 				
 				if not os.path.exists(os.path.join(dirname,srtfile)):
-					log.debug("scanDir: Filename %s does not yet have a srt file" %filename)
+					log.debug("scanDir: File %s does not yet have a srt file" %filename)				
 					filenameResults = ProcessFileName(filename)
 					
 					if 'title' in filenameResults.keys():
+						
 						if 'season' in filenameResults.keys():
 							if 'episode' in filenameResults.keys():
 								title = filenameResults['title']
 								season = filenameResults['season']
 								episode = filenameResults['episode']
+								
+								if SkipShow(title, season, episode)==True:
+									log.debug("scanDir: SkipShow returned True")
+									log.info("scanDir: Skipping %s - Season %s Episode %s" %(title, season,episode))
+									continue
+								
+								filenameResults['originalFileLocationOnDisk'] = os.path.join(dirname,filename)
+								wantedQueue.append(filenameResults)
+								log.info("scanDir: File %s added to wantedQueue" %filename)								
 							else:
 								log.error("scanDir: Could not process the filename properly filename: %s" %filename)
 								continue
-					if SkipShow(title, season, episode)==True:
-						log.debug("scanDir: SkipShow returned True")
-						log.info("scanDir: Skipping download for %s" %filename)
-						continue
-					if title in showid_cache.keys():
-						showid = showid_cache[title]
-						log.debug("scanDir: Got the following showid from cache: %s" %showid)
-					
-					if not title in showid_cache.keys():
-						showid = getShowid(title)
-						if not showid: 
-							log.debug("scanDir: Could not be found on bierdopje.com for %s, trying the namemapping" %title)
-							showid = nameMapping(title)
-							if not showid:
-								log.error("scanDir: Could not find a show ID for %s" %title)
-								continue
-						log.debug("scanDir: Got the following showid: %s" %showid)
-						showid_cache[title] = showid
-					
-					downloadLink = getSubLink(showid, "nl", filenameResults)
-					destsrt = os.path.join(dirname,srtfile)
-				
-					if not downloadLink:
-						if fallbackToEng == False:
-							log.debug("scanDir: No subtitles found on bierdopje.com for %s" %filename)
-							continue
-						if os.path.exists(os.path.join(dirname,engsrtfile)) and fallbackToEng == True:
-							log.debug("scanDir: The ENG subtitle is found, will try again later for the dutch version %s" %filename)
-							continue
-						if not os.path.exists(os.path.join(dirname,engsrtfile)) and fallbackToEng == True:
-							log.debug("scanDir: Dutch subtitle could not be found on bierdopje.com, attempting to download the english version for %s" %filename)
-							downloadLink = getSubLink(showid, "en", filenameResults)
-							destsrt = os.path.join(dirname,engsrtfile)
-							if not downloadLink:
-								log.info("scanDir: No subtitles found on bierdopje.com for %s" %filename)
-								continue
-							
-					if downloadLink:
-						response = urllib2.urlopen(downloadLink)
-						log.info("scanDir: DOWNLOADING the following link: %s" %downloadLink)
-											
-						try:
-							open(destsrt,'w').write(response.read())
-						except:
-							log.error("scanDir: Error while writing subtitle file. Destination: %s" %destsrt)
-							exit()
-						
-						log.info("scanDir: DOWNLOADED: %s" %destsrt)
+
 
 	log.debug("scanDir: Finished round of local disk checking")
-	return True
+	return wantedQueue
+
+def checkSub(wantedQueue, toDownloadQueue):
+	for index, wantedItem in enumerate(wantedQueue):
+		title = wantedItem['title']
+		season = wantedItem['season']
+		episode = wantedItem['episode']
+		originalfile = wantedItem['originalFileLocationOnDisk']
+		
+		srtfile = os.path.join(originalfile[:-4] + ".srt")
+		engsrtfile = os.path.join(originalfile[:-4] + ".eng.srt") 
+		
+		if title in showid_cache.keys():
+			showid = showid_cache[title]
+			log.debug("checkSub: Got the following showid from cache: %s" %showid)
+		
+		if not title in showid_cache.keys():
+			showid = getShowid(title)
+			if not showid: 
+				log.debug("checkSub: Could not be found on bierdopje.com for %s, trying the namemapping" %title)
+				showid = nameMapping(title)
+				if not showid:
+					log.error("checkSub: Could not find a show ID for %s" %title)
+					continue
+			log.debug("checkSub: Got the following showid: %s" %showid)
+			showid_cache[title] = showid
+		
+		downloadLink = getSubLink(showid, "nl", wantedItem)
+
+		if not downloadLink:
+			if fallbackToEng == False:
+				log.debug("checkSub: No subtitles found on bierdopje.com for %s - Season %s - Episode %s" %(title, season,episode))
+				continue
+			if os.path.exists(engsrtfile) and fallbackToEng == True:
+				log.debug("checkSub: The ENG subtitle is found, will try again later for the dutch version %s - Season %s - Episode %s" %(title, season,episode))
+				continue
+			if not os.path.exists(engsrtfile) and fallbackToEng == True:
+				log.debug("checkSub: Dutch subtitle could not be found on bierdopje.com, checking for the english version for %s - Season %s - Episode %s" %(title, season,episode))
+				downloadLink = getSubLink(showid, "en", wantedItem)
+				if not downloadLink:
+					log.info("checkSub: No subtitles found on bierdopje.com for %s - Season %s - Episode %s" %(title, season,episode))
+					continue
+				elif downloadLink:
+					wantedItem['downloadLink'] = downloadLink
+					wantedItem['destinationFileLocationOnDisk'] = engsrtfile
+					toDownloadQueue.append(wantedItem)
+					continue
+		elif downloadLink:
+			wantedItem['downloadLink'] = downloadLink
+			wantedItem['destinationFileLocationOnDisk'] = srtfile
+			toDownloadQueue.append(wantedItem)
+			log.info("checkSub: The episode %s - Season %s Episode %s has a matching subtitle on bierdopje, adding to toDownloadQueue" %(title,season,episode))
+			wantedQueue.pop(index)
+			log.debug("checkSub: Removed item: %s from the wantedQueue at index %s" %(wantedItem, index))
+		
+	return wantedQueue, toDownloadQueue
 	
 class Usage(Exception):
 	def __init__(self, msg):
@@ -468,22 +578,52 @@ def main(argv=None):
 		print >> sys.stderr, "\t for help use --help"
 		return 2
 	
+	# wantedQueue carries a list of Episodes which do not have a SRT yet and need to be checked
+	# data: title, season, episode, quality, source*, releaseGrp*, originalFileLocationOnDisk (items with * are optional)
+	wantedQueue = []
+	# toDownloadQueue carries a list of Episodes which are confirmed on the Source and need to be downloaded
+	# data: title, season, episode, quality, source*, releaseGrp*, downloadLink, originalFileLocationOnDisk, destinationFileLocationOnDisk (items with * are optional)
+	toDownloadQueue = []
 	
 	#initial scan
-	scanDir(rootpath)
+	log.debug("MAIN: Starting starting scanDir")
+	wantedQueue = scanDir(rootpath)
+	log.debug("MAIN: Wanted queue is: %s" %wantedQueue)
+	log.debug("MAIN: toDownloadQueue is: %s" %toDownloadQueue)
 	
-	while True:
-		shows = showid_cache.keys()
+	#check subs on bierdopje
+	#log.debug("MAIN: Starting checkSub")
+	#wantedQueue, toDownloadQueue = checkSub(wantedQueue, toDownloadQueue)
+	
+	#log.debug("MAIN: wantedQueue is: %s" %wantedQueue)
+	#log.debug("MAIN: toDownloadQueue is: %s" %toDownloadQueue)
+	
+	#download subs from bierdopje
+	#log.debug("MAIN: Starting downloadsubs")
+	#toDownloadQueue = downloadSubs(toDownloadQueue)
+
+	log.debug("MAIN: wantedQueue is: %s" %wantedQueue)
+	#log.debug("MAIN: toDownloadQueue is: %s" %toDownloadQueue)
+
+	#check rss for subs from bierdopje
+	log.debug("MAIN: Starting checkRSS")
+	wantedQueue, toDownloadQueue = checkRSS(wantedQueue, toDownloadQueue)
+	log.debug("MAIN: toDownloadQueue is: %s" %toDownloadQueue)
+	toDownloadQueue = downloadSubs(toDownloadQueue)
+	
+	#while True:
+	#	shows = showid_cache.keys()
 		
-		if not len(shows) == 0:
-			while True:
-				if checkRSS(shows, rssUrl):
-					break
-				else: 
-					time.sleep(120)
+	#	if not len(shows) == 0:
+	#		while True:
+				
+	#			if checkRSS(shows, rssUrl):
+	#				break
+	#			else: 
+	#				time.sleep(120)
 					
-		scanDir(rootpath)
-		time.sleep(3600)
+	#	scanDir(rootpath)
+	#	time.sleep(3600)
 
 if __name__ == "__main__":
 	sys.exit(main())
