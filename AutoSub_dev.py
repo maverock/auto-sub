@@ -31,7 +31,7 @@ apikey = "AFC34E2C2FE8B9F7"
 namemapping = {}
 # This dictionary can be use to skip shows or seasons from being downloaded. The seasons should be defined as lists
 # Example: skipshow = {'Dexter': ['0'],'White Collar' : ['1','3']}
-skipshow = {}
+skipshow = {} 
 #/Settings -----------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -599,7 +599,7 @@ def main(argv=None):
 	while True:
 		#every tick check for length if not 0: do Download
 		if len(toDownloadQueue) > 0:
-			log.info("main: Found %s items in toDownloadQueue, running downloadSubs")
+			log.info("main: Found %s items in toDownloadQueue, running downloadSubs" %(len(toDownloadQueue)))
 			toDownloadQueue = downloadSubs(toDownloadQueue)
 		
 		#once every hour
