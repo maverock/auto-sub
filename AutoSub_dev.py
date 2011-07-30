@@ -530,16 +530,16 @@ def checkSub(wantedQueue, toDownloadQueue):
 
 		if not downloadLink:
 			if fallbackToEng == False:
-				log.debug("checkSub: No subtitles found on bierdopje.com for %s - Season %s - Episode %s" %(title, season,episode))
+				log.debug("checkSub: No dutch subtitles found on bierdopje.com for %s - Season %s - Episode %s" %(title, season,episode))
 				continue
 			if os.path.exists(engsrtfile) and fallbackToEng == True:
-				log.debug("checkSub: The ENG subtitle is found, will try again later for the dutch version %s - Season %s - Episode %s" %(title, season,episode))
+				log.info("checkSub: The english subtitle is found, will try again later for the dutch version %s - Season %s - Episode %s" %(title, season,episode))
 				continue
 			if not os.path.exists(engsrtfile) and fallbackToEng == True:
 				log.debug("checkSub: Dutch subtitle could not be found on bierdopje.com, checking for the english version for %s - Season %s - Episode %s" %(title, season,episode))
 				downloadLink = getSubLink(showid, "en", wantedItem)
 				if not downloadLink:
-					log.info("checkSub: No subtitles found on bierdopje.com for %s - Season %s - Episode %s" %(title, season,episode))
+					log.info("checkSub: No english subtitles found on bierdopje.com for %s - Season %s - Episode %s" %(title, season,episode))
 					continue
 				elif downloadLink:
 					wantedItem['downloadLink'] = downloadLink
@@ -602,8 +602,8 @@ def main(argv=None):
 			log.info("main: Found %s items in toDownloadQueue, running downloadSubs")
 			toDownloadQueue = downloadSubs(toDownloadQueue)
 		
-		#once every day
-		if time.time() - ts_scanDir > 86400:
+		#once every hour
+		if time.time() - ts_scanDir > 3600:
 			log.info("main: Haven't run scanDir for %s minutes, running scanDir" %(round((time.time() - ts_scanDir)/60)))
 			wantedQueue = scanDir(rootpath)
 			ts_scanDir = time.time()
