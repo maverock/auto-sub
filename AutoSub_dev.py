@@ -13,7 +13,6 @@ import time
 import re
 import sys
 import getopt
-import time
 from xml.dom import minidom
 
 
@@ -369,10 +368,10 @@ def checkRSS(wantedQueue, toDownloadQueue):
 			if not wantedItemtitle in showid_cache.keys():
 				showid = getShowid(wantedItemtitle)
 				if not showid: 
-					log.debug("checkRSS: Could not be found on bierdopje.com for %s, trying the namemapping" %title)
+					log.debug("checkRSS: Could not be found on bierdopje.com for %s, trying the namemapping" %wantedItemtitle)
 					showid = nameMapping(wantedItemtitle)
 					if not showid:
-						log.error("checkRSS: Could not find a show ID for %s" %title)
+						log.error("checkRSS: Could not find a show ID for %s" %wantedItemtitle)
 						continue
 				showid_cache[wantedItemtitle] = showid
 			
@@ -463,7 +462,7 @@ def scanDir(rootpath):
 	wantedQueue = []
 	log.debug("scanDir: Starting round of local disk checking")
 	
-	for dirname, dirnames, filenames in os.walk(os.path.join(rootpath)):
+	for dirname, filenames in os.walk(os.path.join(rootpath)):
 		for filename in filenames:			
 			splitname = filename.split(".")
 			ext = splitname[len(splitname)-1]
@@ -566,12 +565,12 @@ def main(argv=None):
 		argv = sys.argv
 	try:
 		try:
-			opts, args = getopt.getopt(argv[1:], "h", ["help"])
+			opts = getopt.getopt(argv[1:], "h", ["help"])
 		except getopt.error, msg:
 			raise Usage(msg)
 	
 		# option processing
-		for option, value in opts:
+		for option in opts:
 			if option in ("-h", "--help"):
 				raise Usage(help_message)
 	
