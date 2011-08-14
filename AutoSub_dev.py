@@ -462,7 +462,7 @@ def scanDir(rootpath):
 	wantedQueue = []
 	log.debug("scanDir: Starting round of local disk checking")
 	
-	for dirname, filenames in os.walk(os.path.join(rootpath)):
+	for dirname, dirnames, filenames in os.walk(os.path.join(rootpath)):
 		for filename in filenames:			
 			splitname = filename.split(".")
 			ext = splitname[len(splitname)-1]
