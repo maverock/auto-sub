@@ -242,10 +242,17 @@ def ProcessFileName(file):
 def getShowid(showName):
 	getShowIdUrl = "%sGetShowByName/%s" %(api, urllib.quote(showName))
 	
-	req = urllib2.urlopen(getShowIdUrl)
-	dom = minidom.parse(req)
-	req.close()
-		
+	try:  
+		req = urllib2.urlopen(getShowIdUrl)
+		dom = minidom.parse(req)
+		req.close()
+	except HTTPError, e:  
+		log.error("getShowid: The server returned an error for request %s - error: %s" %(getShowIdUrl,e.reason))
+		return None
+	except URLError, e:  
+		log.error("getShowid: The URL was invalid for request %s - error: %s" %(getShowIdUrl,e.reason))
+		return None
+	
 	if not dom or len(dom.getElementsByTagName('showid')) == 0 :
 		return None
 	
@@ -283,9 +290,17 @@ def getSubLink(showid, lang, releaseDetails):
 	episode = releaseDetails['episode']
 	
 	getSubLinkUrl = "%sGetAllSubsFor/%s/%s/%s/%s" %(api, showid, season, episode, lang)
-	req = urllib2.urlopen(getSubLinkUrl)
-	dom = minidom.parse(req)
-	req.close()
+	
+	try:  
+		req = urllib2.urlopen(getSubLinkUrl)
+		dom = minidom.parse(req)
+		req.close()
+	except HTTPError, e:  
+		log.error("getSubLink: The server returned an error for request %s - error: %s" %(getSubLinkUrl,e.reason))
+		return None
+	except URLError, e:  
+		log.error("getSubLink: The URL was invalid for request %s - error: %s" %(getSubLinkUrl,e.reason))
+		return None
 	
 	if 'quality' in releaseDetails.keys(): quality = releaseDetails['quality']
 	if 'releasegrp' in releaseDetails.keys(): releasegrp = releaseDetails['releasegrp']
@@ -334,8 +349,17 @@ def getSubLink(showid, lang, releaseDetails):
 
 def checkRSS(wantedQueue, toDownloadQueue):	
 	log.debug("checkRSS: Starting round of RSS checking")
-	req = urllib2.urlopen(rssUrl)
-	dom = minidom.parse(req)
+	
+	try:  
+		req = urllib2.urlopen(rssUrl)
+		dom = minidom.parse(req)
+		req.close()
+	except HTTPError, e:  
+		log.error("getSubLink: The server returned an error for request %s - error: %s" %(rssUrl,e.reason))
+		return None
+	except URLError, e:  
+		log.error("getSubLink: The URL was invalid for request %s - error: %s" %(rssUrl,e.reason))
+		return None
 	
 	if not dom or len(dom.getElementsByTagName('result')) == 0:
 		rssTitleList = dom.getElementsByTagName('title')
@@ -432,16 +456,21 @@ def checkRSS(wantedQueue, toDownloadQueue):
 	return wantedQueue, toDownloadQueue
 
 def downloadSubs(toDownloadQueue):
-	for index, downloadItem in enumerate(toDownloadQueue):
+	index = 0
+	while index < len(toDownloadQueue):
+		downloadItem = toDownloadQueue[index]
 		if 'destinationFileLocationOnDisk' in downloadItem.keys() and 'downloadLink' in downloadItem.keys():
 			destsrt = downloadItem['destinationFileLocationOnDisk']
 			downloadLink = downloadItem['downloadLink']
 	
 			try:
-				response = urllib2.urlopen(downloadLink)
-			except:
-				log.error("downloadSubs: Error while opening the downloadLink: %s" %downloadLink)
-				continue				
+				response = urllib2.urlopen(downloadLink)				
+			except HTTPError, e:  
+				log.error("downloadSubs: The server returned an error for request %s - error: %s" %(downloadLink,e.reason))
+				continue
+			except URLError, e:  
+				log.error("downloadSubs: The URL was invalid for request %s - error: %s" %(downloadLink,e.reason))
+				continue
 			
 			try:
 				open(destsrt,'w').write(response.read())
@@ -565,12 +594,12 @@ def main(argv=None):
 		argv = sys.argv
 	try:
 		try:
-			opts = getopt.getopt(argv[1:], "h", ["help"])
+			opts, args= getopt.getopt(argv[1:], "h", ["help"])
 		except getopt.error, msg:
 			raise Usage(msg)
 	
 		# option processing
-		for option in opts:
+		for option, value in opts:
 			if option in ("-h", "--help"):
 				raise Usage(help_message)
 	
