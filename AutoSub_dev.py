@@ -14,12 +14,13 @@ import re
 import sys
 import getopt
 from xml.dom import minidom
+from string import capwords
 
 
 # Settings -----------------------------------------------------------------------------------------------------------------------------------------
 
 # location of your TV Episodes
-rootpath = "/mnt/nas1/content/TV"
+rootpath = "/mnt/nas1/content/TV/"
 # Set this to True if you also want the script to download the ENG version of the NLD is not available
 # the english version will be named filename.eng.srt
 fallbackToEng = True
@@ -27,7 +28,11 @@ fallbackToEng = True
 apikey = "AFC34E2C2FE8B9F7"
 # This dictionary maps local series names to BierDopje ID's
 # Example: namemapping = {"Castle":"12708"}
-namemapping = {}
+namemapping = {
+    "Greys Anatomy" : "3733",
+	"Grey's Anatomy" : "3733",
+    "Csi Miami" : "2187",
+}
 # This dictionary can be use to skip shows or seasons from being downloaded. The seasons should be defined as lists
 # Example: skipshow = {'Dexter': ['0'],'White Collar' : ['1','3']}
 skipshow = {} 
@@ -173,7 +178,7 @@ def ProcessFileName(file):
 		tempSplitname = file.split(".")
 		ext = tempSplitname[len(tempSplitname)-1]
 		
-		if ext  == 'mkv': 
+		if ext  == 'mkv' or ext == 'mp4': 
 			quality = '720'
 		else:
 			quality = 'SD'
@@ -225,7 +230,7 @@ def ProcessFileName(file):
 		title = str.replace(title,"- ","")
 		title = title.rstrip()
 		title = title.lstrip()
-		title = str.title(title)
+		title = capwords(title)
 	
 	if title: processedFilenameResults['title'] = title
 	if season: processedFilenameResults['season'] = season
@@ -323,22 +328,22 @@ def getSubLink(showid, lang, releaseDetails):
 		# 4 Blind match
 		
 		if quality and releasegrp and source:
-			log.debug("getSubLink: Trying to match against Quality & Releasegrp & Source") 
+			log.debug("getSubLink: Trying to match against Quality & Releasegrp & Source for %s" %release) 
 			if matchQuality(quality, release) and re.search(releasegrp, release) and re.search(source, release):
 				return sub.getElementsByTagName('downloadlink')[0].firstChild.data
 			
 		elif quality and releasegrp and not source:
-			log.debug("getSubLink: Trying to match against Quality & Releasegrp")
+			log.debug("getSubLink: Trying to match against Quality & Releasegrp for %s" %release)
 			if matchQuality(quality, release) and re.search(releasegrp, release):
 				return sub.getElementsByTagName('downloadlink')[0].firstChild.data
 				
 		elif quality and source and not releasegrp:
-			log.debug("getSubLink: Trying to match against Quality & Source")
+			log.debug("getSubLink: Trying to match against Quality & Source for %s" %release) 
 			if matchQuality(quality, release) and re.search(source, release):
 				return sub.getElementsByTagName('downloadlink')[0].firstChild.data
 				
 		elif quality and not source and not releasegrp:
-			log.debug("getSubLink: Trying to match against Quality")
+			log.debug("getSubLink: Trying to match against Quality for %s" %release) 
 			
 			if matchQuality(quality, release):
 				return sub.getElementsByTagName('downloadlink')[0].firstChild.data				
@@ -349,6 +354,7 @@ def getSubLink(showid, lang, releaseDetails):
 
 def checkRSS(wantedQueue, toDownloadQueue):	
 	log.debug("checkRSS: Starting round of RSS checking")
+	toDelete_wantedQueue = []
 	
 	try:  
 		req = urllib2.urlopen(rssUrl)
@@ -417,13 +423,13 @@ def checkRSS(wantedQueue, toDownloadQueue):
 					log.debug("checkRSS:  The episode %s - Season %s Episode %s was found in the RSS list, attempting to match a proper match" %(wantedItemtitle, wantedItemseason,wantedItemepisode))
 					
 					if wantedItemquality and wantedItemreleasegrp and wantedItemsource:
-						log.debug("checkRSS: Trying to match against Quality & Releasegrp & Source") 
+						log.debug("checkRSS: Trying to match against Quality & Releasegrp & Sourcefor %s - Season %s Episode %s"%(wantedItemtitle, wantedItemseason,wantedItemepisode))
 						if wantedItemquality == normalizedRssTitlequality and wantedItemreleasegrp == normalizedRssTitlereleasegrp and wantedItemsource == normalizedRssTitlesource:
 							log.debug("Found a match for %s - Season %s Episode %s, getting downloadLink" %(wantedItemtitle, wantedItemseason,wantedItemepisode))
 							downloadLink = getSubLink(showid, "nl", wantedItem)
 						
 					elif wantedItemquality and wantedItemreleasegrp and not wantedItemsource:
-						log.debug("checkRSS: Trying to match against Quality & Releasegrp")
+						log.debug("checkRSS: Trying to match against Quality & Releasegrpfor %s - Season %s Episode %s"%(wantedItemtitle, wantedItemseason,wantedItemepisode))
 						if wantedItemquality == normalizedRssTitlequality and wantedItemreleasegrp == normalizedRssTitlereleasegrp:
 							log.debug("Found a match for %s - Season %s Episode %s, getting downloadLink" %(wantedItemtitle, wantedItemseason,wantedItemepisode))
 							downloadLink = getSubLink(showid, "nl", wantedItem)
@@ -435,7 +441,7 @@ def checkRSS(wantedQueue, toDownloadQueue):
 							downloadLink = getSubLink(showid, "nl", wantedItem)
 							
 					elif wantedItemquality and not wantedItemsource and not wantedItemreleasegrp:
-						log.debug("checkRSS: Trying to match against Quality")
+						log.debug("checkRSS: Trying to match against Quality for %s - Season %s Episode %s"%(wantedItemtitle, wantedItemseason,wantedItemepisode))
 						
 						if wantedItemquality == normalizedRssTitlequality:
 							log.debug("Found a match for %s - Season %s Episode %s, getting downloadLink" %(wantedItemtitle, wantedItemseason,wantedItemepisode))
@@ -449,16 +455,21 @@ def checkRSS(wantedQueue, toDownloadQueue):
 						wantedItem['destinationFileLocationOnDisk'] = srtfile
 						toDownloadQueue.append(wantedItem)
 						log.info("checkRSS: The episode %s - Season %s Episode %s has a matching subtitle on bierdopje, adding to toDownloadQueue" %(wantedItemtitle, wantedItemseason,wantedItemepisode))
-						wantedQueue.pop(index)
-						log.debug("checkRSS: Removed item: %s from the wantedQueue at index %s" %(wantedItem, index))
-		
+						toDelete_wantedQueue.append(index)
+	
+	i=len(toDelete_wantedQueue)-1
+	while i >= 0: 
+		log.debug("checkRSS: Removed item from the wantedQueue at index %s" %toDelete_wantedQueue[i])
+		wantedQueue.pop(toDelete_wantedQueue[i])
+		i=i-1
+	
 	log.debug("checkRSS: Finished round of RSS checking")
 	return wantedQueue, toDownloadQueue
 
 def downloadSubs(toDownloadQueue):
-	index = 0
-	while index < len(toDownloadQueue):
-		downloadItem = toDownloadQueue[index]
+	toDelete_toDownloadQueue = []
+	
+	for index, downloadItem in enumerate(toDownloadQueue):
 		if 'destinationFileLocationOnDisk' in downloadItem.keys() and 'downloadLink' in downloadItem.keys():
 			destsrt = downloadItem['destinationFileLocationOnDisk']
 			downloadLink = downloadItem['downloadLink']
@@ -479,24 +490,34 @@ def downloadSubs(toDownloadQueue):
 				continue
 			
 			log.info("downloadSubs: DOWNLOADED: %s" %destsrt)
-			toDownloadQueue.pop(index)
-			log.debug("downloadSubs: Removed item: %s from the toDownloadQueue at index %s" %(downloadItem, index))
+			toDelete_toDownloadQueue.append(index)
+			#toDownloadQueue.remove(downloadItem)
 		else:
 			log.error("downloadSub: No downloadLink or locationOnDisk found at downloadItem, skipping")
 			continue
 	
+	i=len(toDelete_toDownloadQueue)-1
+	while i >= 0: 
+		log.debug("downloadSubs: Removed item from the toDownloadQueue at index %s" %toDelete_toDownloadQueue[i])
+		toDownloadQueue.pop(toDelete_toDownloadQueue[i])
+		i=i-1
+
 	return toDownloadQueue
 	
 def scanDir(rootpath):
 	wantedQueue = []
 	log.debug("scanDir: Starting round of local disk checking")
 	
+	if not os.path.exists(rootpath):
+		log.error("Root path does %s not exists, aborting..." %rootpath)
+		exit()
+	
 	for dirname, dirnames, filenames in os.walk(os.path.join(rootpath)):
 		for filename in filenames:			
 			splitname = filename.split(".")
 			ext = splitname[len(splitname)-1]
 			
-			if ext in ('avi','mkv','wmv','ts'):
+			if ext in ('avi','mkv','wmv','ts','mp4'):
 				if re.search('sample', filename): continue
 				
 				srtfile = os.path.join(filename[:-4] + ".srt")
@@ -531,6 +552,8 @@ def scanDir(rootpath):
 
 def checkSub(wantedQueue, toDownloadQueue):
 	log.debug("checkSub: Starting round of checkSub")
+	toDelete_wantedQueue = []
+	
 	for index, wantedItem in enumerate(wantedQueue):
 		title = wantedItem['title']
 		season = wantedItem['season']
@@ -546,7 +569,7 @@ def checkSub(wantedQueue, toDownloadQueue):
 		if not title in showid_cache.keys():
 			showid = getShowid(title)
 			if not showid: 
-				log.debug("checkSub: Could not be found on bierdopje.com for %s, trying the namemapping" %title)
+				log.debug("checkSub: The showid not be found on bierdopje.com for %s, trying the namemapping" %title)
 				showid = nameMapping(title)
 				if not showid:
 					log.error("checkSub: Could not find a show ID for %s" %title)
@@ -579,8 +602,15 @@ def checkSub(wantedQueue, toDownloadQueue):
 			wantedItem['destinationFileLocationOnDisk'] = srtfile
 			toDownloadQueue.append(wantedItem)
 			log.info("checkSub: The episode %s - Season %s Episode %s has a matching subtitle on bierdopje, adding to toDownloadQueue" %(title,season,episode))
-			wantedQueue.pop(index)
+			toDelete_wantedQueue.append(index)
 			log.debug("checkSub: Removed item: %s from the wantedQueue at index %s" %(wantedItem, index))
+	
+	
+	i=len(toDelete_wantedQueue)-1
+	while i >= 0: 
+		log.debug("checkSub: Removed item from the wantedQueue at index %s" %toDelete_wantedQueue[i])
+		wantedQueue.pop(toDelete_wantedQueue[i])
+		i=i-1
 	
 	log.debug("checkSub: Finished round of checkSub")	
 	return wantedQueue, toDownloadQueue
@@ -635,21 +665,18 @@ def main(argv=None):
 			log.info("main: Haven't run scanDir for %s minutes, running scanDir" %(round((time.time() - ts_scanDir)/60)))
 			wantedQueue = scanDir(rootpath)
 			ts_scanDir = time.time()
-			continue
 		
 		#once every 8 hours
 		if time.time() - ts_checkSub > 28800:
 			log.info("main: Haven't run checkSub for %s minutes, running checkSub" %(round((time.time() - ts_checkSub)/60)))
 			wantedQueue, toDownloadQueue = checkSub(wantedQueue, toDownloadQueue)
 			ts_checkSub = time.time()
-			continue
 		
 		#once every 5 minutes
 		if time.time() - ts_checkRSS > 300: 
 			log.info("main: Haven't run checkRSS for %s minutes, running checkRSS" %(round((time.time() - ts_checkRSS)/60)))
 			wantedQueue, toDownloadQueue = checkRSS(wantedQueue, toDownloadQueue)
 			ts_checkRSS = time.time()
-			continue
 	
 		log.info("main: wantedQueue #: %s - toDownloadQueue #: %s" %(len(wantedQueue),len(toDownloadQueue)))
 		#tick = set smallest timediff required
