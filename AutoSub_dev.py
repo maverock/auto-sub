@@ -16,7 +16,7 @@ import getopt
 from xml.dom import minidom
 from string import capwords
 
-from ConfigParser import ConfigParser
+from ConfigParser import SafeConfigParser
 
 # Settings -----------------------------------------------------------------------------------------------------------------------------------------
 # Location of the configuration file:
@@ -34,9 +34,7 @@ namemapping = {
 	"Spartacus Blood And Sand":"13942",
 	"Hawaii Five 0":"14211"
 }
-# This dictionary can be use to skip shows or seasons from being downloaded. The seasons should be defined as lists
-# Example: skipshow = {'Dexter': ['0'],'White Collar' : ['1','3']}
-skipshow = {} 
+
 #/Settings -----------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -46,9 +44,16 @@ api = "http://api.bierdopje.com/%s/" %apikey
 rssUrl = "http://www.bierdopje.com/rss/subs/nl"
 showid_cache = {}
 
+# This dictionary can be use to skip shows or seasons from being downloaded. The seasons should be defined as lists
+# Should be added in the property file as:
+# [skipshow]
+# Dexter=0
+# White Collar=1,3
+skipshow = {} 
+
 # Read config file
 try:
-	cfg = ConfigParser()
+	cfg = SafeConfigParser()
 	cfg.read(configfile)
 
 	rootpath=cfg.get("config", "ROOTPATH")
@@ -60,8 +65,22 @@ except:
 	fallbackToEng = True
 	subeng="en"
 	logfile="AutoSubService.log"
-
 	
+	cfg.add_section('config')
+	cfg.set("config","ROOTPATH",rootpath)
+	cfg.set("config","FALLBACKTOENG",str(fallbackToEng))
+	cfg.set("config","SUBENG",subeng)
+	cfg.set("config","LOGFILE",logfile)
+	
+	with open(configfile, 'wb') as file:
+		cfg.write(file)
+
+# Try to read skipshow section in the config
+try:
+	skipshow = dict(cfg.items('skipshow'))
+except:
+	pass
+
 # The following 3 lines convert the skipshow to uppercase. 
 skipshowupper = {}
 for x in skipshow: 
