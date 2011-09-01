@@ -16,22 +16,23 @@ import getopt
 from xml.dom import minidom
 from string import capwords
 
+from ConfigParser import ConfigParser
 
 # Settings -----------------------------------------------------------------------------------------------------------------------------------------
-
-# location of your TV Episodes
-rootpath = "/mnt/nas1/content/TV/"
-# Set this to True if you also want the script to download the ENG version of the NLD is not available
-# the english version will be named filename.eng.srt
-fallbackToEng = True
+# Location of the configuration file:
+configfile = "config.properties"
 # API key
 apikey = "AFC34E2C2FE8B9F7"
 # This dictionary maps local series names to BierDopje ID's
 # Example: namemapping = {"Castle":"12708"}
 namemapping = {
-    "Greys Anatomy" : "3733",
+	"Greys Anatomy" : "3733",
 	"Grey's Anatomy" : "3733",
-    "Csi Miami" : "2187",
+	"Csi Miami" : "2187",
+	"Mr Sunshine":"14224",
+	"Spartacus Gods Of The Arena":"14848",
+	"Spartacus Blood And Sand":"13942",
+	"Hawaii Five 0":"14211"
 }
 # This dictionary can be use to skip shows or seasons from being downloaded. The seasons should be defined as lists
 # Example: skipshow = {'Dexter': ['0'],'White Collar' : ['1','3']}
@@ -45,6 +46,22 @@ api = "http://api.bierdopje.com/%s/" %apikey
 rssUrl = "http://www.bierdopje.com/rss/subs/nl"
 showid_cache = {}
 
+# Read config file
+try:
+	cfg = ConfigParser()
+	cfg.read(configfile)
+
+	rootpath=cfg.get("config", "ROOTPATH")
+	fallbackToEng=cfg.getboolean("config", "FALLBACKTOENG")
+	subeng=cfg.get("config", "SUBENG")
+	logfile= cfg.get("config", "LOGFILE")
+except:
+	rootpath = os.getcwd()
+	fallbackToEng = True
+	subeng="en"
+	logfile="AutoSubService.log"
+
+	
 # The following 3 lines convert the skipshow to uppercase. 
 skipshowupper = {}
 for x in skipshow: 
@@ -53,7 +70,6 @@ for x in skipshow:
 LOGLEVEL=logging.DEBUG
 LOGSIZE= 100000000
 LOGNUM = 10
-logfile= "AutoSubService.log"
 
 # initialize logging
 # A log directory has to be created below the start directory
@@ -251,11 +267,8 @@ def getShowid(showName):
 		req = urllib2.urlopen(getShowIdUrl)
 		dom = minidom.parse(req)
 		req.close()
-	except HTTPError, e:  
-		log.error("getShowid: The server returned an error for request %s - error: %s" %(getShowIdUrl,e.reason))
-		return None
-	except URLError, e:  
-		log.error("getShowid: The URL was invalid for request %s - error: %s" %(getShowIdUrl,e.reason))
+	except:  
+		log.error("getShowid: The server returned an error for request %s" %getShowIdUrl)
 		return None
 	
 	if not dom or len(dom.getElementsByTagName('showid')) == 0 :
@@ -300,11 +313,8 @@ def getSubLink(showid, lang, releaseDetails):
 		req = urllib2.urlopen(getSubLinkUrl)
 		dom = minidom.parse(req)
 		req.close()
-	except HTTPError, e:  
-		log.error("getSubLink: The server returned an error for request %s - error: %s" %(getSubLinkUrl,e.reason))
-		return None
-	except URLError, e:  
-		log.error("getSubLink: The URL was invalid for request %s - error: %s" %(getSubLinkUrl,e.reason))
+	except:  
+		log.error("getSubLink: The server returned an error for request %s" %getSubLinkUrl)
 		return None
 	
 	if 'quality' in releaseDetails.keys(): quality = releaseDetails['quality']
@@ -360,11 +370,8 @@ def checkRSS(wantedQueue, toDownloadQueue):
 		req = urllib2.urlopen(rssUrl)
 		dom = minidom.parse(req)
 		req.close()
-	except HTTPError, e:  
-		log.error("getSubLink: The server returned an error for request %s - error: %s" %(rssUrl,e.reason))
-		return None
-	except URLError, e:  
-		log.error("getSubLink: The URL was invalid for request %s - error: %s" %(rssUrl,e.reason))
+	except:  
+		log.error("getSubLink: The server returned an error for request %s" %rssUrl)
 		return None
 	
 	if not dom or len(dom.getElementsByTagName('result')) == 0:
@@ -476,11 +483,8 @@ def downloadSubs(toDownloadQueue):
 	
 			try:
 				response = urllib2.urlopen(downloadLink)				
-			except HTTPError, e:  
-				log.error("downloadSubs: The server returned an error for request %s - error: %s" %(downloadLink,e.reason))
-				continue
-			except URLError, e:  
-				log.error("downloadSubs: The URL was invalid for request %s - error: %s" %(downloadLink,e.reason))
+			except:  
+				log.error("downloadSubs: The server returned an error for request %s" %downloadLink)
 				continue
 			
 			try:
@@ -506,7 +510,7 @@ def downloadSubs(toDownloadQueue):
 	
 def scanDir(rootpath):
 	wantedQueue = []
-	log.debug("scanDir: Starting round of local disk checking")
+	log.debug("scanDir: Starting round of local disk checking at %s" %rootpath)
 	
 	if not os.path.exists(rootpath):
 		log.error("Root path does %s not exists, aborting..." %rootpath)
@@ -561,7 +565,7 @@ def checkSub(wantedQueue, toDownloadQueue):
 		originalfile = wantedItem['originalFileLocationOnDisk']
 		
 		srtfile = os.path.join(originalfile[:-4] + ".srt")
-		engsrtfile = os.path.join(originalfile[:-4] + ".eng.srt") 
+		engsrtfile = os.path.join(originalfile[:-4] + "."+subeng +".srt")
 		
 		if title in showid_cache.keys():
 			showid = showid_cache[title]
