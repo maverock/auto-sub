@@ -185,8 +185,11 @@ def ProcessFileName(file):
 		releasegrp = matchdic["releasegrp"]
 	except:
 		pass
-	if 'web' in source:
-		source = 'web-dl'
+	try:
+		if 'web' in source:
+			source = 'web-dl'
+	except:
+		pass
 
 	# Fallback for the quality. mkv files and mp4 are most likely HD quality
 	# Other files are more likely sd quality
