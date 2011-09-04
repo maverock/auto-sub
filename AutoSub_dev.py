@@ -26,15 +26,14 @@ apikey = "AFC34E2C2FE8B9F7"
 # This dictionary maps local series names to BierDopje ID's
 # Example: namemapping = {"Castle":"12708"}
 namemapping = {
-	"Greys Anatomy" : "3733",
-	"Grey's Anatomy" : "3733",
-	"Csi Miami" : "2187",
-	"Mr Sunshine":"14224",
-	"Spartacus Gods Of The Arena":"14848",
-	"Spartacus Blood And Sand":"13942",
-	"Hawaii Five 0":"14211"
+        "Greys Anatomy" : "3733",
+        "Grey's Anatomy" : "3733",
+        "Csi Miami" : "2187",
+        "Mr Sunshine":"14224",
+        "Spartacus Gods Of The Arena":"14848",
+        "Spartacus Blood And Sand":"13942",
+        "Hawaii Five 0":"14211"
 }
-
 #/Settings -----------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -118,6 +117,33 @@ Usage:
 Example:
 	python AutoSub.py
 '''
+REGEXES = [
+		re.compile("^((?P<title>.+?)[. _-]+)?s(?P<season>\d+)[x. _-]*e(?P<episode>\d+)(([. _-]*e|-)(?P<extra_ep_num>(?!(1080|720)[pi])\d+))*[. _-]*((?P<quality>(1080|720))*[. _-]*(?P<source>(hdtv|dvdrip|bdrip|blueray|web-dl))*[. _]*(?P<extra_info>.+?)((?<![. _-])-(?P<releasegrp>[^-]+))?)?$",re.IGNORECASE),
+		re.compile("^((?P<title>.+?)[\[. _-]+)?(?P<season>\d+)x(?P<episode>\d+)(([. _-]*x|-)(?P<extra_ep_num>(?!(1080|720)[pi])\d+))*[. _-]*((?P<quality>(1080|720))*[. _-]*(?P<source>(hdtv|dvdrip|bdrip|blueray|web-dl))*[. _]*(?P<extra_info>.+?)((?<![. _-])-(?P<releasegrp>[^-]+))?)?$",re.IGNORECASE),
+		re.compile("^(?P<title>.+?)[. _-]+(?P<season>\d{1,2})(?P<episode>\d{2})([. _-]*(?P<quality>(1080|720))*[. _-]*(?P<source>(hdtv|dvdrip|bdrip|blueray|web-dl))*[. _]*(?P<extra_info>.+?)((?<![. _-])-(?P<releasegrp>[^-]+))?)?$",re.IGNORECASE)
+		]
+def CleanSerieName(series_name):
+	"""Cleans up series name by removing any . and _
+    characters, along with any trailing hyphens.
+
+    Is basically equivalent to replacing all _ and . with a
+    space, but handles decimal numbers in string, for example:
+
+    >>> cleanRegexedSeriesName("an.example.1.0.test")
+    'an example 1.0 test'
+    >>> cleanRegexedSeriesName("an_example_1.0_test")
+    'an example 1.0 test'
+    
+    Stolen from dbr's tvnamer
+    """
+
+	series_name = re.sub("(\D)\.(?!\s)(\D)", "\\1 \\2", series_name)
+	series_name = re.sub("(\d)\.(\d{4})", "\\1 \\2", series_name) # if it ends in a year then don't keep the dot
+	series_name = re.sub("(\D)\.(?!\s)", "\\1 ", series_name)
+	series_name = re.sub("\.(?!\s)(\D)", " \\1", series_name)
+	series_name = series_name.replace("_", " ")
+	series_name = re.sub("-$", "", series_name)
+	return capwords(series_name.strip())
 
 def SkipShow(showName,season,episode):
 	if showName.upper() in skipshowupper.keys():
@@ -132,140 +158,45 @@ def SkipShow(showName,season,episode):
 		
 def ProcessFileName(file):
 	processedFilenameResults = {}
-	title = None
-	season = None 
-	episode = None 
-	episodeid = None 
-	quality = None 
-	releasegrp = None 
-	source = None 
-	episodeidstart = None
+	title = None			#The Show Name
+	season = None 			#Season number
+	episode = None 			#Episode number
+	quality = None 			#quality, can either be 1080, 720 or SD
+	releasegrp = None 		#The Release group
+	source = None 			#The source, can either be hdtv, dvdrip, bdrip, blueray or web-dl
 
 	file = file.lower()
-	
+	filesplit = os.path.splitext(file)[0] #remove the file extension
 	# Try to determine the TV Episode information
-	if re.search('[sS][0-9][0-9][eE][0-9][0-9]', file): 
-		#s01e05
-		result = re.search('[sS][0-9][0-9][eE][0-9][0-9]', file)
-		episodeid = str(result.group(0))
-		
-		#episodeidstart = result.start(0) - 1
-		episodeidstart = result.start(0)
-		int(episodeidstart)
-		
-		season = episodeid[2]
-		if episodeid[4] == "0":
-			episode = episodeid[5]
-		if not episodeid[4] == "0":
-			episode = episodeid[4] + episodeid[5]
-		
-	elif re.search('[0-9][0-9][0-9]', file):
-		#105
-		result = re.search('[0-9][0-9][0-9]', file)
-		episodeid = str(result.group(0))
-	
-		#episodeidstart = result.start(0) - 1
-		episodeidstart = result.start(0)
-		int(episodeidstart)
-		
-		season = episodeid[0]
-		if episodeid[1] == "0":
-			episode = episodeid[2]
-		if not episodeid[1] == "0":
-			episode = episodeid[1] + episodeid[2]
-			
-	elif re.search('[sS][0-9][0-9][xX][eE][0-9][0-9]', file):
-		result = re.search('[sS][0-9][0-9][xX][eE][0-9][0-9]', file)
-
-		#S00xE00
-		episodeid = str(result.group(0))
-		
-		episodeidstart = result.start(0) - 1
-		int(episodeidstart)
-	
-		season = episodeid[2]
-		if episodeid[4] == "0":
-			episode = episodeid[5]
-		if not episodeid[4] == "0":
-			episode = episodeid[4] + episodeid[5]
-				
-	elif re.search('[0-9][xX][0-9][0-9]', file):
-		#1x05
-		result = re.search('[0-9][xX][0-9][0-9]', file)
-		episodeid = str(result.group(0))
-		
-		episodeidstart = result.start(0) - 1
-		int(episodeidstart)
-	
-		season = episodeid[0]
-		if episodeid[2] == "0":
-			episode = episodeid[3]
-		if not episodeid[2] == "0":
-			episode = episodeid[2] + episodeid[2]
-	
-	
-	#Determine Quality
-	if re.search('720', file):
-		quality = '720'
-	elif re.search('1080', file):
-		quality = '1080'
-	else:
-		tempSplitname = file.split(".")
-		ext = tempSplitname[len(tempSplitname)-1]
-		
-		if ext  == 'mkv' or ext == 'mp4': 
-			quality = '720'
+	for regexes in REGEXES: #Lets try all the regexpresions in REGEXES
+		matches = regexes.search(filesplit)
+		try:
+			matchdic = matches.groupdict()
+			break #If we got a match, lets break
+		except AttributeError:
+			continue
+	#Trying to set all the main attributes					
+	try:
+		title = CleanSerieName(matchdic["title"])
+		season = matchdic["season"]
+		episode = matchdic["episode"]
+		source =  matchdic["source"] 
+		releasegrp = matchdic["releasegrp"]
+	except:
+		pass
+	# Fallback for the quality. mkv files and mp4 are most likely HD quality
+	# Other files are more likely sd quality
+	try:
+		if matchdic["quality"] == None:
+			filesplit2 = os.path.splitext(file)[1]
+			if filesplit2 == ".mkv" or filesplit2 == ".mp4":
+				quality = '720'
+			else:
+				quality = 'SD'
 		else:
-			quality = 'SD'
-	
-	# Determine source
-	if re.search('hdtv', file): 
-		source = 'hdtv'
-	if re.search('dvdrip', file): 
-		source = 'dvdrip'
-	if re.search('bdrip', file): 
-		source = 'bdrip'
-	if re.search('blueray', file): 
-		source = 'bluray'
-	if re.search('web-dl', file): 
-		source = 'web-dl'
-	
-	# Convential naming:
-	# True.Blood.S02E06.REPACK.720p.BluRay.X264-REWARD
-	# The.Big.Bang.Theory.S04E23.HDTV.XviD-FQM.ext
-	# The.Big.Bang.Theory.S04E22.REPACK.720p.HDTV.x264-CTU.ext
-	# The.Big.Bang.Theory.S04E24.WEB-DL.720p.DD5.1.H.ext
-	# Non convential naming:
-	# TV Episode - S01E01.ext
-	tempString = str.replace(file,"repack.","")
-	tempString = str.replace(tempString,"proper.","")
-	splittedTempString = tempString.split(".")
-	
-	if splittedTempString[len(splittedTempString)-1] in ('srt','mkv','avi','mpg','ts'):
-		splittedTempString.pop(len(splittedTempString)-1)
-	
-	if len(splittedTempString) > 2:
-		# it appears to have atleast 1 more . in it aside from the extension
-		# grab the last bit
-		toTestString = splittedTempString[len(splittedTempString)-1]
-		
-		# test if this is a release group:
-		if toTestString[:5] == "x264-":	
-			releasegrp = toTestString.split("-")[1]
-		if toTestString[:4] == "264-":	
-			releasegrp = toTestString.split("-")[1]
-		if toTestString[:5] == "xvid-": 
-			releasegrp = toTestString.split("-")[1]
-		
-	if episodeidstart:
-		title = file[:episodeidstart]
-		title = str.replace(title,"."," ")
-		title = str.replace(title,"-"," ")
-		title = str.replace(title," -","")
-		title = str.replace(title,"- ","")
-		title = title.rstrip()
-		title = title.lstrip()
-		title = capwords(title)
+			quality = matchdic["quality"]
+	except:
+		pass
 	
 	if title: processedFilenameResults['title'] = title
 	if season: processedFilenameResults['season'] = season
@@ -278,7 +209,6 @@ def ProcessFileName(file):
 	
 	return processedFilenameResults
 
-	
 def getShowid(showName):
 	getShowIdUrl = "%sGetShowByName/%s" %(api, urllib.quote(showName))
 	
@@ -568,7 +498,12 @@ def scanDir(rootpath):
 							else:
 								log.error("scanDir: Could not process the filename properly filename: %s" %filename)
 								continue
-
+						else:
+							log.error("scanDir: Could not process the filename properly filename: %s" %filename)
+							continue
+					else:
+						log.error("scanDir: Could not process the filename properly filename: %s" %filename)
+						continue
 
 	log.debug("scanDir: Finished round of local disk checking")
 	return wantedQueue
