@@ -118,8 +118,8 @@ Example:
 	python AutoSub.py
 '''
 REGEXES = [
-		re.compile("^((?P<title>.+?)[. _-]+)?s(?P<season>\d+)[x. _-]*e(?P<episode>\d+)(([. _-]*e|-)(?P<extra_ep_num>(?!(1080|720)[pi])\d+))*[. _-]*((?P<quality>(1080|720))*[. _-]*(?P<source>(hdtv|dvdrip|bdrip|blueray|web-dl))*[. _]*(?P<extra_info>.+?)((?<![. _-])-(?P<releasegrp>[^-]+))?)?$",re.IGNORECASE),
-		re.compile("^((?P<title>.+?)[\[. _-]+)?(?P<season>\d+)x(?P<episode>\d+)(([. _-]*x|-)(?P<extra_ep_num>(?!(1080|720)[pi])\d+))*[. _-]*((?P<quality>(1080|720))*[. _-]*(?P<source>(hdtv|dvdrip|bdrip|blueray|web-dl))*[. _]*(?P<extra_info>.+?)((?<![. _-])-(?P<releasegrp>[^-]+))?)?$",re.IGNORECASE),
+		re.compile("^((?P<title>.+?)[. _-]+)?s(?P<season>\d+)[x. _-]*e(?P<episode>\d+)(([. _-]*e|-)(?P<extra_ep_num>(?!(1080|720)[pi])\d+))*[. _-]*((?P<quality>(1080|720))*[pi]*[. _-]*(?P<source>(hdtv|dvdrip|bdrip|blueray|web[. _-]*dl))*[. _]*(?P<extra_info>.+?)((?<![. _-])-(?P<releasegrp>[^-]+))?)?$",re.IGNORECASE),
+		re.compile("^((?P<title>.+?)[\[. _-]+)?(?P<season>\d+)x(?P<episode>\d+)(([. _-]*x|-)(?P<extra_ep_num>(?!(1080|720)[pi])\d+))*[. _-]*((?P<quality>(1080|720))*[. _-]*(?P<source>(hdtv|dvdrip|bdrip|blueray|web[. _-]*dl))*[. _]*(?P<extra_info>.+?)((?<![. _-])-(?P<releasegrp>[^-]+))?)?$",re.IGNORECASE),
 		re.compile("^(?P<title>.+?)[. _-]+(?P<season>\d{1,2})(?P<episode>\d{2})([. _-]*(?P<quality>(1080|720))*[. _-]*(?P<source>(hdtv|dvdrip|bdrip|blueray|web-dl))*[. _]*(?P<extra_info>.+?)((?<![. _-])-(?P<releasegrp>[^-]+))?)?$",re.IGNORECASE)
 		]
 def CleanSerieName(series_name):
@@ -155,7 +155,7 @@ def SkipShow(showName,season,episode):
 			elif seasontmp == season:
 				log.debug("SkipShow: Season matches variable of %s, skipping season" %showName)
 				return True											
-		
+	
 def ProcessFileName(file):
 	processedFilenameResults = {}
 	title = None			#The Show Name
@@ -175,7 +175,8 @@ def ProcessFileName(file):
 			break #If we got a match, lets break
 		except AttributeError:
 			continue
-	#Trying to set all the main attributes					
+	#Trying to set all the main attributes
+					
 	try:
 		title = CleanSerieName(matchdic["title"])
 		season = matchdic["season"]
@@ -184,6 +185,9 @@ def ProcessFileName(file):
 		releasegrp = matchdic["releasegrp"]
 	except:
 		pass
+	if 'web' in source:
+		source = 'web-dl'
+
 	# Fallback for the quality. mkv files and mp4 are most likely HD quality
 	# Other files are more likely sd quality
 	try:
@@ -197,14 +201,14 @@ def ProcessFileName(file):
 			quality = matchdic["quality"]
 	except:
 		pass
-	
+
+
 	if title: processedFilenameResults['title'] = title
 	if season: processedFilenameResults['season'] = season
 	if episode: processedFilenameResults['episode'] = episode
 	if quality: processedFilenameResults['quality'] = quality
 	if source: processedFilenameResults['source'] = source
 	if releasegrp: processedFilenameResults['releasegrp'] = releasegrp
-	
 	log.debug("ProcessFileName: Returning %s" %processedFilenameResults)
 	
 	return processedFilenameResults
