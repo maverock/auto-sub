@@ -75,15 +75,12 @@ except:
 		cfg.write(file)
 
 # Try to read skipshow section in the config
-try:
-	skipshow = dict(cfg.items('skipshow'))
-except:
-	pass
+skipshow = dict(cfg.items('skipshow'))
 
-# The following 3 lines convert the skipshow to uppercase. 
+# The following 4 lines convert the skipshow to uppercase. And also convert the variables to a list 
 skipshowupper = {}
-for x in skipshow: 
-	skipshowupper[x.upper()] = skipshow[x]
+for x in skipshow:
+	skipshowupper[x.upper()] = skipshow[x].split(',')
 
 LOGLEVEL=logging.DEBUG
 LOGSIZE= 100000000
@@ -153,7 +150,7 @@ def SkipShow(showName,season,episode):
 			if seasontmp == '0':
 				log.debug("SkipShow: variable of %s is set to 0, skipping the complete Serie" %showName)
 				return True
-			elif seasontmp == season:
+			elif int(seasontmp) == int(season):
 				log.debug("SkipShow: Season matches variable of %s, skipping season" %showName)
 				return True											
 	
