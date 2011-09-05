@@ -119,9 +119,10 @@ Example:
 '''
 REGEXES = [
 		re.compile("^((?P<title>.+?)[. _-]+)?s(?P<season>\d+)[x. _-]*e(?P<episode>\d+)(([. _-]*e|-)(?P<extra_ep_num>(?!(1080|720)[pi])\d+))*[. _-]*((?P<quality>(1080|720))*[pi]*[. _-]*(?P<source>(hdtv|dvdrip|bdrip|blueray|web[. _-]*dl))*[. _]*(?P<extra_info>.+?)((?<![. _-])-(?P<releasegrp>[^-]+))?)?$",re.IGNORECASE),
-		re.compile("^((?P<title>.+?)[\[. _-]+)?(?P<season>\d+)x(?P<episode>\d+)(([. _-]*x|-)(?P<extra_ep_num>(?!(1080|720)[pi])\d+))*[. _-]*((?P<quality>(1080|720))*[. _-]*(?P<source>(hdtv|dvdrip|bdrip|blueray|web[. _-]*dl))*[. _]*(?P<extra_info>.+?)((?<![. _-])-(?P<releasegrp>[^-]+))?)?$",re.IGNORECASE),
-		re.compile("^(?P<title>.+?)[. _-]+(?P<season>\d{1,2})(?P<episode>\d{2})([. _-]*(?P<quality>(1080|720))*[. _-]*(?P<source>(hdtv|dvdrip|bdrip|blueray|web-dl))*[. _]*(?P<extra_info>.+?)((?<![. _-])-(?P<releasegrp>[^-]+))?)?$",re.IGNORECASE)
+		re.compile("^((?P<title>.+?)[\[. _-]+)?(?P<season>\d+)x(?P<episode>\d+)(([. _-]*x|-)(?P<extra_ep_num>(?!(1080|720)[pi])\d+))*[. _-]*((?P<quality>(1080|720))*[pi]*[. _-]*(?P<source>(hdtv|dvdrip|bdrip|blueray|web[. _-]*dl))*[. _]*(?P<extra_info>.+?)((?<![. _-])-(?P<releasegrp>[^-]+))?)?$",re.IGNORECASE),
+		re.compile("^(?P<title>.+?)[. _-]+(?P<season>\d{1,2})(?P<episode>\d{2})([. _-]*(?P<quality>(1080|720))*[pi]*[. _-]*(?P<source>(hdtv|dvdrip|bdrip|blueray|web[. _-]*dl))*[. _]*(?P<extra_info>.+?)((?<![. _-])-(?P<releasegrp>[^-]+))?)?$",re.IGNORECASE)
 		]
+QUALITY_PARSER = re.compile("(hdtv|dvdrip|bdrip|blueray|web[. _-]*dl)",re.IGNORECASE)
 def CleanSerieName(series_name):
 	"""Cleans up series name by removing any . and _
     characters, along with any trailing hyphens.
@@ -172,6 +173,7 @@ def ProcessFileName(file):
 		matches = regexes.search(filesplit)
 		try:
 			matchdic = matches.groupdict()
+			log.debug("ProcessFileName: Hit with a regex, dumping it for debug purpose: " + str(matchdic))
 			break #If we got a match, lets break
 		except AttributeError:
 			continue
@@ -181,30 +183,33 @@ def ProcessFileName(file):
 		title = CleanSerieName(matchdic["title"])
 		season = matchdic["season"]
 		episode = matchdic["episode"]
-		source =  matchdic["source"] 
+		source =  matchdic["source"]
+		source = re.sub("[. _-]", "-", source)  
 		releasegrp = matchdic["releasegrp"]
-	except:
-		pass
-	try:
-		if 'web' in source:
-			source = 'web-dl'
+		quality = matchdic["quality"]
 	except:
 		pass
 
-	# Fallback for the quality. mkv files and mp4 are most likely HD quality
+	# Fallback for the quality and source mkv files and mp4 are most likely HD quality
 	# Other files are more likely sd quality
-	try:
-		if matchdic["quality"] == None:
-			filesplit2 = os.path.splitext(file)[1]
-			if filesplit2 == ".mkv" or filesplit2 == ".mp4":
-				quality = '720'
-			else:
-				quality = 'SD'
-		else:
-			quality = matchdic["quality"]
-	except:
-		pass
+	# Will search the file for a couple of possible sources, also parse out dots and dashes and replace with a dash
+	if source == None:
+		results = re.search(QUALITY_PARSER,filesplit)
+		try:
+			source = results.group(0)
+			source = re.sub("[. _-]", "-", source) 
+			log.debug("ProcessFileName: Fallback hit for source, source is %s" % source)
+		except:
+			pass
 
+	if quality == None:
+		filesplit2 = os.path.splitext(file)[1]
+		if filesplit2 == ".mkv" or filesplit2 == ".mp4":
+			quality = '720'
+			log.debug("ProcessFileName: Fallback, file seems to be mkv or mp4 so best guess for quality would be 720")
+		else:
+			quality = 'SD'
+			log.debug("ProcessFileName: Fallback, can't determine the quality so guess SD")
 
 	if title: processedFilenameResults['title'] = title
 	if season: processedFilenameResults['season'] = season
