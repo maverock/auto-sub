@@ -115,11 +115,11 @@ Example:
 	python AutoSub.py
 '''
 REGEXES = [
-		re.compile("^((?P<title>.+?)[. _-]+)?s(?P<season>\d+)[x. _-]*e(?P<episode>\d+)(([. _-]*e|-)(?P<extra_ep_num>(?!(1080|720)[pi])\d+))*[. _-]*((?P<quality>(1080|720))*[pi]*[. _-]*(?P<source>(hdtv|dvdrip|bdrip|blueray|web[. _-]*dl))*[. _]*(?P<extra_info>.+?)((?<![. _-])-(?P<releasegrp>[^-]+))?)?$",re.IGNORECASE),
-		re.compile("^((?P<title>.+?)[\[. _-]+)?(?P<season>\d+)x(?P<episode>\d+)(([. _-]*x|-)(?P<extra_ep_num>(?!(1080|720)[pi])\d+))*[. _-]*((?P<quality>(1080|720))*[pi]*[. _-]*(?P<source>(hdtv|dvdrip|bdrip|blueray|web[. _-]*dl))*[. _]*(?P<extra_info>.+?)((?<![. _-])-(?P<releasegrp>[^-]+))?)?$",re.IGNORECASE),
-		re.compile("^(?P<title>.+?)[. _-]+(?P<season>\d{1,2})(?P<episode>\d{2})([. _-]*(?P<quality>(1080|720))*[pi]*[. _-]*(?P<source>(hdtv|dvdrip|bdrip|blueray|web[. _-]*dl))*[. _]*(?P<extra_info>.+?)((?<![. _-])-(?P<releasegrp>[^-]+))?)?$",re.IGNORECASE)
+		re.compile("^((?P<title>.+?)[. _-]+)?s(?P<season>\d+)[x. _-]*e(?P<episode>\d+)(([. _-]*e|-)(?P<extra_ep_num>(?!(1080|720)[pi])\d+))*[. _-]*((?P<quality>(1080|720))*[pi]*[. _-]*(?P<source>(hdtv|dvdrip|bdrip|blu[e]*ray|web[. _-]*dl))*[. _]*(?P<extra_info>.+?)((?<![. _-])-(?P<releasegrp>[^-]+))?)?$",re.IGNORECASE),
+		re.compile("^((?P<title>.+?)[\[. _-]+)?(?P<season>\d+)x(?P<episode>\d+)(([. _-]*x|-)(?P<extra_ep_num>(?!(1080|720)[pi])\d+))*[. _-]*((?P<quality>(1080|720))*[pi]*[. _-]*(?P<source>(hdtv|dvdrip|bdrip|blu[e]*ray|web[. _-]*dl))*[. _]*(?P<extra_info>.+?)((?<![. _-])-(?P<releasegrp>[^-]+))?)?$",re.IGNORECASE),
+		re.compile("^(?P<title>.+?)[. _-]+(?P<season>\d{1,2})(?P<episode>\d{2})([. _-]*(?P<quality>(1080|720))*[pi]*[. _-]*(?P<source>(hdtv|dvdrip|bdrip|blu[e]*ray|web[. _-]*dl))*[. _]*(?P<extra_info>.+?)((?<![. _-])-(?P<releasegrp>[^-]+))?)?$",re.IGNORECASE)
 		]
-QUALITY_PARSER = re.compile("(hdtv|dvdrip|bdrip|blueray|web[. _-]*dl)",re.IGNORECASE)
+QUALITY_PARSER = re.compile("(hdtv|dvdrip|bdrip|blu[e]*ray|web[. _-]*dl)",re.IGNORECASE)
 def CleanSerieName(series_name):
 	"""Cleans up series name by removing any . and _
     characters, along with any trailing hyphens.
@@ -174,18 +174,18 @@ def ProcessFileName(file):
 			break #If we got a match, lets break
 		except AttributeError:
 			continue
-	#Trying to set all the main attributes
-					
+	#Trying to set all the main attributes			
 	try:
 		title = CleanSerieName(matchdic["title"])
 		season = matchdic["season"]
 		episode = matchdic["episode"]
 		source =  matchdic["source"]
-		source = re.sub("[. _-]", "-", source)  
+		if source != None:
+			source = re.sub("[. _-]", "-", source)  
 		releasegrp = matchdic["releasegrp"]
 		quality = matchdic["quality"]
-	except:
-		pass
+	except KeyError:
+		log.error("ProcessFileName: can't get variables from dictionary!")
 
 	# Fallback for the quality and source mkv files and mp4 are most likely HD quality
 	# Other files are more likely sd quality
