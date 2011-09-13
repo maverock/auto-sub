@@ -205,7 +205,7 @@ def ProcessFileName(file):
 		quality = matchdic["quality"]
 	except KeyError:
 		log.error("ProcessFileName: can't get variables from dictionary!")
-  except :
+	except :
     log.error("ProcessFileName: can't get variables from dictionary!")
 
 	# Fallback for the quality and source mkv files and mp4 are most likely HD quality
