@@ -51,31 +51,50 @@ showid_cache = {}
 skipshow = {} 
 
 # Read config file
+rootpath = os.getcwd()
+fallbackToEng = True
+subeng="en"
+logfile="AutoSubService.log"
+edited=False
+    
+cfg = SafeConfigParser()
+cfg.read(configfile)
+
 try:
-	cfg = SafeConfigParser()
-	cfg.read(configfile)
-
-	rootpath=cfg.get("config", "ROOTPATH")
-	fallbackToEng=cfg.getboolean("config", "FALLBACKTOENG")
-	subeng=cfg.get("config", "SUBENG")
-	logfile= cfg.get("config", "LOGFILE")
+    dict(cfg.items('config'))
 except:
-	rootpath = os.getcwd()
-	fallbackToEng = True
-	subeng="en"
-	logfile="AutoSubService.log"
-	
-	cfg.add_section('config')
-	cfg.set("config","ROOTPATH",rootpath)
-	cfg.set("config","FALLBACKTOENG",str(fallbackToEng))
-	cfg.set("config","SUBENG",subeng)
-	cfg.set("config","LOGFILE",logfile)
-	
-	with open(configfile, 'wb') as file:
-		cfg.write(file)
-
+    cfg.add_section('config')
+    edited=True
+try:    
+    rootpath=cfg.get("config", "ROOTPATH")
+except:
+    cfg.set("config","ROOTPATH",rootpath)
+    edited=True
+try:
+    fallbackToEng=cfg.getboolean("config", "FALLBACKTOENG")
+except:
+    cfg.set("config","FALLBACKTOENG",str(fallbackToEng))
+    edited=True
+try:    
+    subeng=cfg.get("config", "SUBENG")
+except:
+    cfg.set("config","SUBENG",subeng)
+    edited=True
+try:
+    logfile= cfg.get("config", "LOGFILE")
+except:
+    cfg.set("config","LOGFILE",logfile) 
+    edited=True
+    
+try:
 # Try to read skipshow section in the config
-skipshow = dict(cfg.items('skipshow'))
+    skipshow = dict(cfg.items('skipshow'))
+except:
+    cfg.add_section('skipshow')
+    edited=True  
+if edited:
+    with open(configfile, 'wb') as file:
+        cfg.write(file)
 
 # The following 4 lines convert the skipshow to uppercase. And also convert the variables to a list 
 skipshowupper = {}
@@ -186,6 +205,8 @@ def ProcessFileName(file):
 		quality = matchdic["quality"]
 	except KeyError:
 		log.error("ProcessFileName: can't get variables from dictionary!")
+  except :
+    log.error("ProcessFileName: can't get variables from dictionary!")
 
 	# Fallback for the quality and source mkv files and mp4 are most likely HD quality
 	# Other files are more likely sd quality
