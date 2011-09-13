@@ -206,7 +206,7 @@ def ProcessFileName(file):
 	except KeyError:
 		log.error("ProcessFileName: can't get variables from dictionary!")
 	except :
-    log.error("ProcessFileName: can't get variables from dictionary!")
+		log.error("ProcessFileName: can't get variables from dictionary!")
 
 	# Fallback for the quality and source mkv files and mp4 are most likely HD quality
 	# Other files are more likely sd quality
