@@ -71,7 +71,8 @@ def ProcessFileName(file):
 	if 'episode' in matchdic.keys(): episode = matchdic["episode"]
 	if 'source' in matchdic.keys(): 
 		source =  matchdic["source"]
-		source = re.sub("[. _-]", "-", source)  
+		if source != None:
+			source = re.sub("[. _-]", "-", source)  
 	if 'releasegrp' in matchdic.keys(): releasegrp = matchdic["releasegrp"]
 	if 'quality' in matchdic.keys(): quality = matchdic["quality"]
 
