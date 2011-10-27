@@ -14,11 +14,11 @@ from string import capwords
 log = logging.getLogger('thelogger')
 
 REGEXES = [
-		re.compile("^((?P<title>.+?)[. _-]+)?s(?P<season>\d+)[x. _-]*e(?P<episode>\d+)(([. _-]*e|-)(?P<extra_ep_num>(?!(1080|720)[pi])\d+))*[. _-]*((?P<quality>(1080|720))*[pi]*[. _-]*(?P<source>(hdtv|dvdrip|bdrip|blu[e]*ray|web[. _-]*dl))*[. _]*(?P<extra_info>.+?)((?<![. _-])-(?P<releasegrp>[^-]+))?)?$",re.IGNORECASE),
-		re.compile("^((?P<title>.+?)[\[. _-]+)?(?P<season>\d+)x(?P<episode>\d+)(([. _-]*x|-)(?P<extra_ep_num>(?!(1080|720)[pi])\d+))*[. _-]*((?P<quality>(1080|720))*[pi]*[. _-]*(?P<source>(hdtv|dvdrip|bdrip|blu[e]*ray|web[. _-]*dl))*[. _]*(?P<extra_info>.+?)((?<![. _-])-(?P<releasegrp>[^-]+))?)?$",re.IGNORECASE),
-		re.compile("^(?P<title>.+?)[. _-]+(?P<season>\d{1,2})(?P<episode>\d{2})([. _-]*(?P<quality>(1080|720))*[pi]*[. _-]*(?P<source>(hdtv|dvdrip|bdrip|blu[e]*ray|web[. _-]*dl))*[. _]*(?P<extra_info>.+?)((?<![. _-])-(?P<releasegrp>[^-]+))?)?$",re.IGNORECASE)
+		re.compile("^((?P<title>.+?)[. _-]+)?s(?P<season>\d+)[x. _-]*e(?P<episode>\d+)(([. _-]*e|-)(?P<extra_ep_num>(?!(1080|720)[pi])\d+))*[. _-]*((?P<quality>(1080|720|SD))*[pi]*[. _-]*(?P<source>(hdtv|dvdrip|bdrip|blu[e]*ray|web[. _-]*dl))*[. _]*(?P<extra_info>.+?)((?<![. _-])-(?P<releasegrp>[^-]+))?)?$",re.IGNORECASE),
+		re.compile("^((?P<title>.+?)[\[. _-]+)?(?P<season>\d+)x(?P<episode>\d+)(([. _-]*x|-)(?P<extra_ep_num>(?!(1080|720)[pi])\d+))*[. _-]*((?P<quality>(1080|720|SD))*[pi]*[. _-]*(?P<source>(hdtv|dvdrip|bdrip|blu[e]*ray|web[. _-]*dl))*[. _]*(?P<extra_info>.+?)((?<![. _-])-(?P<releasegrp>[^-]+))?)?$",re.IGNORECASE),
+		re.compile("^(?P<title>.+?)[. _-]+(?P<season>\d{1,2})(?P<episode>\d{2})([. _-]*(?P<quality>(1080|720|SD))*[pi]*[. _-]*(?P<source>(hdtv|dvdrip|bdrip|blu[e]*ray|web[. _-]*dl))*[. _]*(?P<extra_info>.+?)((?<![. _-])-(?P<releasegrp>[^-]+))?)?$",re.IGNORECASE)
 		]
-QUALITY_PARSER = re.compile("(hdtv|dvdrip|bdrip|blu[e]*ray|web[. _-]*dl)",re.IGNORECASE)
+QUALITY_PARSER = re.compile("(hdtv|tv|dvdrip|dvd|bdrip|blu[e]*ray|web[. _-]*dl)",re.IGNORECASE)
 
 def CleanSerieName(series_name):
 	"""Cleans up series name by removing any . and _
@@ -42,8 +42,15 @@ def CleanSerieName(series_name):
 	series_name = series_name.replace("_", " ")
 	series_name = re.sub("-$", "", series_name)
 	return capwords(series_name.strip())
-										
-	
+
+def ReturnUpper(text):
+	#This is a simple function which just tries to convert text to upper case when not possible it does nothing
+	try:
+		text = text.upper()
+		return text
+	except:
+		pass
+
 def ProcessFileName(file):
 	processedFilenameResults = {}
 	title = None			#The Show Name
@@ -70,11 +77,11 @@ def ProcessFileName(file):
 	if 'season' in matchdic.keys(): season = matchdic["season"]
 	if 'episode' in matchdic.keys(): episode = matchdic["episode"]
 	if 'source' in matchdic.keys(): 
-		source =  matchdic["source"]
+		source =  ReturnUpper(matchdic["source"])
 		if source != None:
 			source = re.sub("[. _-]", "-", source)  
 	if 'releasegrp' in matchdic.keys(): releasegrp = matchdic["releasegrp"]
-	if 'quality' in matchdic.keys(): quality = matchdic["quality"]
+	if 'quality' in matchdic.keys(): quality = ReturnUpper(matchdic["quality"])
 
 	# Fallback for the quality and source mkv files and mp4 are most likely HD quality
 	# Other files are more likely sd quality
@@ -84,6 +91,11 @@ def ProcessFileName(file):
 		try:
 			source = results.group(0)
 			source = re.sub("[. _-]", "-", source) 
+			#The following four rules are there to support the file naming SickBeard used (like: Serie.Name.S01E02.SD.TV.avi
+			if source == 'tv':
+				source = 'hdtv'
+			if source == 'dvd':
+				source = 'dvdrip'
 			log.debug("ProcessFileName: Fallback hit for source, source is %s" % source)
 		except:
 			pass

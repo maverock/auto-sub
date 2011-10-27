@@ -91,7 +91,10 @@ class Properties():
 			"Mr Sunshine":"14224",
 			"Spartacus Gods Of The Arena":"14848",
 			"Spartacus Blood And Sand":"13942",
-			"Hawaii Five 0":"14211"
+			"Hawaii Five 0":"14211",
+			"Hawaii Five-0":"14211",
+			"Castle (2009)":"12708"
+
 	}
 	
 def nameMapping(showName):
