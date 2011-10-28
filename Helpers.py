@@ -34,14 +34,16 @@ def CleanSerieName(series_name):
     
     Stolen from dbr's tvnamer
     """
-
-	series_name = re.sub("(\D)\.(?!\s)(\D)", "\\1 \\2", series_name)
-	series_name = re.sub("(\d)\.(\d{4})", "\\1 \\2", series_name) # if it ends in a year then don't keep the dot
-	series_name = re.sub("(\D)\.(?!\s)", "\\1 ", series_name)
-	series_name = re.sub("\.(?!\s)(\D)", " \\1", series_name)
-	series_name = series_name.replace("_", " ")
-	series_name = re.sub("-$", "", series_name)
-	return capwords(series_name.strip())
+	try:
+		series_name = re.sub("(\D)\.(?!\s)(\D)", "\\1 \\2", series_name)
+		series_name = re.sub("(\d)\.(\d{4})", "\\1 \\2", series_name) # if it ends in a year then don't keep the dot
+		series_name = re.sub("(\D)\.(?!\s)", "\\1 ", series_name)
+		series_name = re.sub("\.(?!\s)(\D)", " \\1", series_name)
+		series_name = series_name.replace("_", " ")
+		series_name = re.sub("-$", "", series_name)
+		return capwords(series_name.strip())
+	except TypeError:
+		log.debug("CleanSerieName: There is no SerieName to clean")
 
 def ReturnUpper(text):
 	#This is a simple function which just tries to convert text to upper case when not possible it does nothing
