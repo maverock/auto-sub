@@ -1,0 +1,20 @@
+v0.3 changes:
++ Added support for RSS feed
++ Added support for Config file / Property file
++ Support for "schedule" based checking of Bierdopje:
+	++ local disk is scanned every hour
+	++ bierdopje is scanned every 8 hours
+	++ RSS is checked every 5 minutes
+	++ Once subtitle is found, download will be started
++ Improved filename processing
++ Added mp4 support
++ Refactored core to have seperate modules
++ Various bugfixes (issue 1 to 15)
+
+v0.2 changes:
++ Improved filename processing
++ Improved bierdopje matching against downloaded content
++ Added a logfile
+
+v0.1 changes:
++ Initiation version
