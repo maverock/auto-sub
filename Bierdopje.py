@@ -231,7 +231,7 @@ def checkSub(wantedQueue, toDownloadQueue):
 		
 		if title in Config.Properties.showid_cache.keys():
 			showid = Config.Properties.showid_cache[title]
-		if showid==-1
+		if showid==-1:
 		    continue
 		if not title in Config.Properties.showid_cache.keys():
 			showid = getShowid(title)
