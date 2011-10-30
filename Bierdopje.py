@@ -42,6 +42,8 @@ def getShowid(showName):
 	return showid
 
 def getSubLink(showid, lang, releaseDetails):
+	if showid==-1:
+	    return None
 	quality = None
 	releasegrp = None
 	source = None
@@ -231,8 +233,7 @@ def checkSub(wantedQueue, toDownloadQueue):
 		
 		if title in Config.Properties.showid_cache.keys():
 			showid = Config.Properties.showid_cache[title]
-		if showid==-1:
-		    continue
+		
 		if not title in Config.Properties.showid_cache.keys():
 			showid = getShowid(title)
 			if not showid: 
