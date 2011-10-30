@@ -53,7 +53,7 @@ def ReturnUpper(text):
 	except:
 		pass
 
-def ProcessFileName(file):
+def ProcessFileName(filename,extension):
 	processedFilenameResults = {}
 	title = None			#The Show Name
 	season = None 			#Season number
@@ -63,11 +63,10 @@ def ProcessFileName(file):
 	source = None 			#The source, can either be hdtv, dvdrip, bdrip, blueray or web-dl
 	matchdic = {}
 	
-	file = file.lower()
-	filesplit = os.path.splitext(file)[0] #remove the file extension
+	filename = filename.lower()
 	# Try to determine the TV Episode information
 	for regexes in REGEXES: #Lets try all the regexpresions in REGEXES
-		matches = regexes.search(filesplit)
+		matches = regexes.search(filename)
 		try:
 			matchdic = matches.groupdict()
 			log.debug("ProcessFileName: Hit with a regex, dumping it for debug purpose: " + str(matchdic))
@@ -79,17 +78,17 @@ def ProcessFileName(file):
 	if 'season' in matchdic.keys(): season = matchdic["season"]
 	if 'episode' in matchdic.keys(): episode = matchdic["episode"]
 	if 'source' in matchdic.keys(): 
-		source =  ReturnUpper(matchdic["source"])
+		source =  matchdic["source"]
 		if source != None:
 			source = re.sub("[. _-]", "-", source)  
 	if 'releasegrp' in matchdic.keys(): releasegrp = matchdic["releasegrp"]
-	if 'quality' in matchdic.keys(): quality = ReturnUpper(matchdic["quality"])
+	if 'quality' in matchdic.keys(): quality = ReturnUpper(matchdic["quality"]) #Quality should be upper case, in case the quality is SD
 
 	# Fallback for the quality and source mkv files and mp4 are most likely HD quality
 	# Other files are more likely sd quality
 	# Will search the file for a couple of possible sources, also parse out dots and dashes and replace with a dash
 	if source == None:
-		results = re.search(QUALITY_PARSER,filesplit)
+		results = re.search(QUALITY_PARSER,filename)
 		try:
 			source = results.group(0)
 			source = re.sub("[. _-]", "-", source) 
@@ -103,8 +102,7 @@ def ProcessFileName(file):
 			pass
 
 	if quality == None:
-		filesplit2 = os.path.splitext(file)[1]
-		if filesplit2 == ".mkv" or filesplit2 == ".mp4":
+		if extension == ".mkv" or extension == ".mp4":
 			quality = '720'
 			log.debug("ProcessFileName: Fallback, file seems to be mkv or mp4 so best guess for quality would be 720")
 		else:

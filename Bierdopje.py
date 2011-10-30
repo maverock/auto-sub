@@ -80,17 +80,17 @@ def getSubLink(showid, lang, releaseDetails):
 		
 		if quality and releasegrp and source:
 			log.debug("getSubLink: Trying to match against Quality & Releasegrp & Source for %s" %release) 
-			if Helpers.matchQuality(quality, release) and re.search(releasegrp, release) and re.search(source, release):
+			if Helpers.matchQuality(quality, release) and re.search(releasegrp, release, re.IGNORECASE) and re.search(source, release, re.IGNORECASE):
 				return sub.getElementsByTagName('downloadlink')[0].firstChild.data
 			
 		elif quality and releasegrp and not source:
 			log.debug("getSubLink: Trying to match against Quality & Releasegrp for %s" %release)
-			if Helpers.matchQuality(quality, release) and re.search(releasegrp, release):
+			if Helpers.matchQuality(quality, release) and re.search(releasegrp, release, re.IGNORECASE):
 				return sub.getElementsByTagName('downloadlink')[0].firstChild.data
 				
 		elif quality and source and not releasegrp:
 			log.debug("getSubLink: Trying to match against Quality & Source for %s" %release) 
-			if Helpers.matchQuality(quality, release) and re.search(source, release):
+			if Helpers.matchQuality(quality, release) and re.search(source, release, re.IGNORECASE):
 				return sub.getElementsByTagName('downloadlink')[0].firstChild.data
 				
 		elif quality and not source and not releasegrp:
@@ -122,7 +122,7 @@ def checkRSS(wantedQueue, toDownloadQueue):
 		
 		for rssTitle in rssTitleList:
 			log.debug("checkRSS: Normalizing the following entry in the RSS results: %s" %rssTitle.firstChild.data)
-			normalizedRssTitle = Helpers.ProcessFileName(str(rssTitle.firstChild.data))
+			normalizedRssTitle = Helpers.ProcessFileName(str(rssTitle.firstChild.data),'')
 			if 'title' in normalizedRssTitle.keys():
 				if 'season' in normalizedRssTitle.keys():
 					if 'episode' in normalizedRssTitle.keys():		

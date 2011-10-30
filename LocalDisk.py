@@ -70,8 +70,9 @@ def scanDir(rootpath):
 				srtfile = os.path.join(filename[:-4] + ".srt")
 				
 				if not os.path.exists(os.path.join(dirname,srtfile)):
-					log.debug("scanDir: File %s does not yet have a srt file" %filename)				
-					filenameResults = Helpers.ProcessFileName(filename)
+					log.debug("scanDir: File %s does not yet have a srt file" %filename)
+					# Helpers.ProcessFileName requires 2 arguments, the filename and the extension				
+					filenameResults = Helpers.ProcessFileName(os.path.splitext(filename)[0],os.path.splitext(filename)[1])
 					
 					if 'title' in filenameResults.keys():
 						
