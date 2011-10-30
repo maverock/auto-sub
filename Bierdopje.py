@@ -231,7 +231,8 @@ def checkSub(wantedQueue, toDownloadQueue):
 		
 		if title in Config.Properties.showid_cache.keys():
 			showid = Config.Properties.showid_cache[title]
-		
+		if showid==-1
+		    continue
 		if not title in Config.Properties.showid_cache.keys():
 			showid = getShowid(title)
 			if not showid: 
@@ -239,6 +240,7 @@ def checkSub(wantedQueue, toDownloadQueue):
 				showid = Config.nameMapping(title)
 				if not showid:
 					log.error("checkSub: Could not find a show ID for %s" %title)
+					Config.Properties.showid_cache[title] = -1
 					continue
 			log.debug("checkSub: Got the following showid: %s" %showid)
 			Config.Properties.showid_cache[title] = showid
