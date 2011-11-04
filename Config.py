@@ -82,6 +82,8 @@ class Properties():
 		cfg.add_section('namemapping')
 		edited=True
 	
+	usernamemapping = dict(cfg.items('namemapping'))
+	
 	if edited:
 		with open(configfile, 'wb') as file:
 			cfg.write(file)
