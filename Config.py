@@ -67,9 +67,6 @@ class Properties():
 	except:
 		cfg.add_section('skipshow')
 		edited=True  
-	if edited:
-		with open(configfile, 'wb') as file:
-			cfg.write(file)
 
 	# Try to read skipshow section in the config
 	skipshow = dict(cfg.items('skipshow'))
@@ -78,6 +75,16 @@ class Properties():
 	skipshowupper = {}
 	for x in skipshow:
 		skipshowupper[x.upper()] = skipshow[x].split(',')
+	
+	try:
+		usernamemapping = dict(cfg.items('namemapping'))
+	except:
+		cfg.add_section('namemapping')
+		edited=True
+	
+	if edited:
+		with open(configfile, 'wb') as file:
+			cfg.write(file)
 	
 	# Settings
 	showid_cache = {}
@@ -93,15 +100,25 @@ class Properties():
 			"Spartacus Blood And Sand":"13942",
 			"Hawaii Five 0":"14211",
 			"Hawaii Five-0":"14211",
-			"Castle (2009)":"12708"
-
+			"Castle (2009)":"12708",
+			"Against the Wall":"15522",
+			"Body of Proof":"14420"
 	}
-	
+	usernamemappingupper = {}
+	for x in usernamemapping.keys():
+		usernamemappingupper[x.upper()] = usernamemapping[x]
+		
+	namemappingupper = {}
+	for x in namemapping.keys():
+		namemappingupper[x.upper()] = namemapping[x]
+
 def nameMapping(showName):
-	namemappingupper = [x.upper() for x in Properties.namemapping.keys()]
-	if showName.upper() in namemappingupper:
+	if showName.upper() in Properties.usernamemappingupper.keys():
+		log.debug("nameMapping: found match in user's namemapping for %s" %showName)
+		return Properties.usernamemappingupper[showName.upper()]
+	elif showName.upper() in Properties.namemappingupper.keys():
 		log.debug("nameMapping: found match for %s" %showName)
-		return Properties.namemapping[showName]
+		return Properties.namemappingupper[showName.upper()]
 		
 def SkipShow(showName,season,episode):
 	if showName.upper() in Properties.skipshowupper.keys():

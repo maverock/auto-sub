@@ -235,10 +235,10 @@ def checkSub(wantedQueue, toDownloadQueue):
 			showid = Config.Properties.showid_cache[title]
 		
 		if not title in Config.Properties.showid_cache.keys():
-			showid = getShowid(title)
+			showid = Config.nameMapping(title)
 			if not showid: 
-				log.debug("checkSub: The showid not be found on bierdopje.com for %s, trying the namemapping" %title)
-				showid = Config.nameMapping(title)
+				log.debug("checkSub: no NameMapping found for %s, trying the Bierdopje API" %title)
+				showid = getShowid(title)
 				if not showid:
 					log.error("checkSub: Could not find a show ID for %s" %title)
 					Config.Properties.showid_cache[title] = -1
