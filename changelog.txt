@@ -1,3 +1,21 @@
+v0.3.2 (rev:8cd0afd12415) changes:
++ Various minor Bugfixes
++ Changed: priority in returning the bierdopjeID. Current process is as followed:
+	1. Try cache
+	2. Try UserNameMapping
+	3. Try NameMapping
+	4. Try BierdopjeAPI
+	5. Return -1 to prevent from retrying
++ Fixed namemapping case sensitivity
++ Added with statement import to support Python 2.5 users
+
+v0.3.1 changes:
++ Added new namemappings
++ Minor fix in REG expression
++ Support for SickBeard file naming (Serie.Name.S01E02.SD.TV.avi)
++ Remove case sensitive problem with matching quality and source
++ Fixed  issue 18
+
 v0.3 changes:
 + Added support for RSS feed
 + Added support for Config file / Property file
