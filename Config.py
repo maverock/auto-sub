@@ -3,6 +3,9 @@
 # The Autosub config Module
 # 
 
+#python 2.5 support
+from __future__ import with_statement 
+
 import urllib
 import urllib2
 import os
