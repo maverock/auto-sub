@@ -33,6 +33,32 @@ Example:
 class Usage(Exception):
 	def __init__(self, msg):
 		self.msg = msg
+
+def initLogging(logfile):
+	LOGLEVEL=logging.DEBUG
+	LOGSIZE= 100000000
+	LOGNUM = 10
+
+	# initialize logging
+	# A log directory has to be created below the start directory
+	log = logging.getLogger("thelogger")
+	log.setLevel(LOGLEVEL)
+
+	log_script = logging.handlers.RotatingFileHandler(logfile, 'a', LOGSIZE, LOGNUM)
+	log_script_formatter=logging.Formatter('%(asctime)s %(levelname)s  %(message)s')
+	log_script.setFormatter(log_script_formatter)
+	log_script.setLevel(LOGLEVEL)
+	log.addHandler(log_script)
+
+	#CONSOLE log handler
+	console = logging.StreamHandler()
+	console.setLevel(logging.DEBUG)
+	# set a format which is simpler for console use
+	formatter = logging.Formatter('%(asctime)s %(levelname)s  %(message)s')
+	console.setFormatter(formatter)
+	log.addHandler(console)
+	
+	return log
 	
 def main(argv=None):
 	if argv is None:
@@ -62,31 +88,8 @@ def main(argv=None):
 	
 	#load configuration
 	config = Config.Properties()
-	#config.load()
-	
-	LOGLEVEL=logging.DEBUG
-	LOGSIZE= 100000000
-	LOGNUM = 10
-
-	# initialize logging
-	# A log directory has to be created below the start directory
-	log = logging.getLogger("thelogger")
-	log.setLevel(LOGLEVEL)
-
-	log_script = logging.handlers.RotatingFileHandler(config.logfile, 'a', LOGSIZE, LOGNUM)
-	log_script_formatter=logging.Formatter('%(asctime)s %(levelname)s  %(message)s')
-	log_script.setFormatter(log_script_formatter)
-	log_script.setLevel(LOGLEVEL)
-	log.addHandler(log_script)
-
-	#CONSOLE log handler
-	console = logging.StreamHandler()
-	console.setLevel(logging.INFO)
-	# set a format which is simpler for console use
-	formatter = logging.Formatter('%(asctime)s %(levelname)s  %(message)s')
-	console.setFormatter(formatter)
-	log.addHandler(console)
-	
+	# init logging
+	log = initLogging(config.logfile)
 	
 	#initial scan&check
 	wantedQueue = LocalDisk.scanDir(config.rootpath)
