@@ -136,4 +136,26 @@ def matchQuality(quality, item):
 	elif quality == "720" and re.search('720', item):
 		log.debug("matchQuality: Quality is 720 matched to %s" %item)
 		return 1
-		
+
+def scoreMatch(release, quality, releasegrp, source):
+	# scoreMatch return how high the match is. Currently 7 is the best match
+	# This function give the flexibility to change the most important attribute for matching or even give the user the possibility to set his own preference
+	# release is the filename as it is in the result from bierdopje
+	# If quality is matched, score increased with 2
+	# If releasegrp is matched, score is increased with 1
+	# If source is matched, score is increased with 4
+	
+	score = 0
+	log.debug("scoreMatch: Giving a matchscore for: %s. Try to match it with Q: %s GRP: %s S: %s" % (release, quality, releasegrp, source))
+	if releasegrp:
+		if (re.search(releasegrp, release, re.IGNORECASE)):
+			score+=1
+	if source:
+		if (re.search(source, release, re.IGNORECASE)):
+			score+=4
+	if quality:
+		if (matchQuality(quality, release)):
+			score+=2
+	log.debug("scoreMatch: MatchScore is %s" % str(score))
+	return score
+

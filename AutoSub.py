@@ -52,7 +52,7 @@ def initLogging(logfile):
 
 	#CONSOLE log handler
 	console = logging.StreamHandler()
-	console.setLevel(logging.DEBUG)
+	console.setLevel(logging.info)
 	# set a format which is simpler for console use
 	formatter = logging.Formatter('%(asctime)s %(levelname)s  %(message)s')
 	console.setFormatter(formatter)

@@ -12,7 +12,7 @@ import re
 import logging
 
 from xml.dom import minidom
-
+from operator import itemgetter
 # Settings
 log = logging.getLogger('thelogger')
 apikey = "AFC34E2C2FE8B9F7"
@@ -67,43 +67,23 @@ def getSubLink(showid, lang, releaseDetails):
 	if not dom or len(dom.getElementsByTagName('result')) == 0 :
 		return None
 	
+	scoredict = {}
+
 	for sub in dom.getElementsByTagName('result'):
 		release = sub.getElementsByTagName('filename')[0].firstChild.data
 		release = release.lower()
+		# Remove the .srt extension some of the uploaders leave on the file
 		if release.endswith(".srt"):
 			release = release[:-4]
-		
-		# Try to determine the attributes required to make a match on bierdopje
-		# 0 Match on Quality (HD1080/HD720/SD), Release Group and Source --> 100% hit
-		# 1 Match on Quality (HD1080/HD720/SD), Release Group --> 95% hit
-		# 2 Match on Quality (HD1080/HD720/SD), Source --> 75% hit
-		# 3 Match on Quality (HD1080/HD720/SD) --> 50% hit
-		# 4 Blind match
-		
-		if quality and releasegrp and source:
-			log.debug("getSubLink: Trying to match against Quality & Releasegrp & Source for %s" %release) 
-			if Helpers.matchQuality(quality, release) and re.search(releasegrp, release, re.IGNORECASE) and re.search(source, release, re.IGNORECASE):
-				return sub.getElementsByTagName('downloadlink')[0].firstChild.data
-			
-		elif quality and releasegrp and not source:
-			log.debug("getSubLink: Trying to match against Quality & Releasegrp for %s" %release)
-			if Helpers.matchQuality(quality, release) and re.search(releasegrp, release, re.IGNORECASE):
-				return sub.getElementsByTagName('downloadlink')[0].firstChild.data
-				
-		elif quality and source and not releasegrp:
-			log.debug("getSubLink: Trying to match against Quality & Source for %s" %release) 
-			if Helpers.matchQuality(quality, release) and re.search(source, release, re.IGNORECASE):
-				return sub.getElementsByTagName('downloadlink')[0].firstChild.data
-				
-		elif quality and not source and not releasegrp:
-			log.debug("getSubLink: Trying to match against Quality for %s" %release) 
-			
-			if Helpers.matchQuality(quality, release):
-				return sub.getElementsByTagName('downloadlink')[0].firstChild.data				
-
-		elif not quality and not source and not releasegrp:
-			log.debug("getSubLink: Making a blind match because ProcessFileName could not determine anything")
+		# Scoredict is a dictionary with a download link and its match score. This will be used to determine the best match (the highest matchscore)
+		scoredict[sub.getElementsByTagName('downloadlink')[0].firstChild.data] = Helpers.scoreMatch(release, quality, releasegrp, source)
+		if scoredict[sub.getElementsByTagName('downloadlink')[0].firstChild.data] == 7:
+			# Sometimes you just find a perfect match, why should we continue to search if we got a perfect match?
+			log.debug('getSubLink: A perfect match found, returning the download link')
 			return sub.getElementsByTagName('downloadlink')[0].firstChild.data
+	# Done comparing all the results, lets sort them and return the highest result
+	# If there are results with the same score, the download links which comes first (alphabetically) will be returned
+	return sorted(scoredict.items(), key=itemgetter(1), reverse=True)[0][0]
 
 
 def checkRSS(wantedQueue, toDownloadQueue):	
@@ -246,8 +226,10 @@ def checkSub(wantedQueue, toDownloadQueue):
 			log.debug("checkSub: Got the following showid: %s" %showid)
 			Config.Properties.showid_cache[title] = showid
 		
+		log.debug("checkSub: trying to get a downloadlink for %s" % originalfile)
+		
 		downloadLink = getSubLink(showid, "nl", wantedItem)
-
+		
 		if not downloadLink:
 			if Config.Properties.fallbackToEng == False:
 				log.debug("checkSub: No dutch subtitles found on bierdopje.com for %s - Season %s - Episode %s" %(title, season,episode))
