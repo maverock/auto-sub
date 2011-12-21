@@ -105,9 +105,20 @@ class Properties():
 			"Spartacus Blood And Sand":"13942",
 			"Hawaii Five 0":"14211",
 			"Hawaii Five-0":"14211",
+			"Hawaii Five 0 2010":"14211",
 			"Castle (2009)":"12708",
 			"Against the Wall":"15522",
-			"Body of Proof":"14420"
+			"Body of Proof":"14420",
+			"Rizzoli And Isles":"14175",
+			"Melissa And Joey":"14470",
+			"Charlies Angels 2011":"15205",
+			"Femme Fatales":"15519",
+			"Free Agents Us":"15256",
+			"Merlin 2008":"5985",
+			"Shameless Us":"14718",
+			"Prime Suspect Us":"15249",
+			"Harrys Law":"14489",
+			"Man Up":"15209"
 	}
 	usernamemappingupper = {}
 	for x in usernamemapping.keys():
