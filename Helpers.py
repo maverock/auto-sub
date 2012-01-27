@@ -8,6 +8,7 @@ import urllib2
 import logging
 import re
 import os
+import subprocess
 from string import capwords
 
 # Settings
@@ -19,6 +20,16 @@ REGEXES = [
 		re.compile("^(?P<title>.+?)[. _-]+(?P<season>\d{1,2})(?P<episode>\d{2})([. _-]*(?P<quality>(1080|720|SD))*[pi]*[. _-]*(?P<source>(hdtv|dvdrip|bdrip|blu[e]*ray|web[. _-]*dl))*[. _]*(?P<extra_info>.+?)((?<![. _-])-(?P<releasegrp>[^-]+))?)?$",re.IGNORECASE)
 		]
 QUALITY_PARSER = re.compile("(hdtv|tv|dvdrip|dvd|bdrip|blu[e]*ray|web[. _-]*dl)",re.IGNORECASE)
+
+def RunCmd(cmd):
+	process = subprocess.Popen(cmd,
+							shell = True,
+							stdin = subprocess.PIPE,
+							stdout = subprocess.PIPE,
+							stderr = subprocess.PIPE)
+	shell = process.stdout.read()
+	shellerr = process.stderr.read()
+	return shell,shellerr
 
 def CleanSerieName(series_name):
 	"""Cleans up series name by removing any . and _

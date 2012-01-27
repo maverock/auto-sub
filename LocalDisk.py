@@ -38,6 +38,16 @@ def downloadSubs(toDownloadQueue):
 			
 			log.info("downloadSubs: DOWNLOADED: %s" %destsrt)
 			toDelete_toDownloadQueue.append(index)
+			
+			if Config.Properties.postprocesscmd:
+				postprocesscmdconstructed = Config.Properties.postprocesscmd + " " + downloadItem["destinationFileLocationOnDisk"] + " " + downloadItem["originalFileLocationOnDisk"]
+				log.debug("downloadSubs: Postprocess: running %s" %postprocesscmdconstructed)
+				log.info("downloadSubs: Running PostProcess")
+				postprocessoutput,postprocesserr = Helpers.RunCmd(postprocesscmdconstructed)
+				if postprocesserr:
+					log.error("downloadSubs: PostProcess: %s" %postprocesserr)
+				log.debug("downloadSubs: PostProcess Output:% s" %postprocessoutput)
+			
 			#toDownloadQueue.remove(downloadItem)
 		else:
 			log.error("downloadSub: No downloadLink or locationOnDisk found at downloadItem, skipping")
