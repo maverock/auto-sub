@@ -80,9 +80,13 @@ if what == "twitter":
         authorize_application()  
     else:
         if (sys.argv[1] and sys.argv[2] and token_key!=""):
-            var = sys.argv[1].split('/')
-            var2 = sys.argv[2].split('/')
-            tweet = "Downloaded: " + var[-1] + ' for ' + var2[-1]
+            var = sys.argv[1]
+            var2 = sys.argv[2]
+            
+            var = var.split('/')
+            var2 = var2.split('/')
+            tweet = "Downloaded: " + var[-1] + " for " + var2[-1] 
+            print "Sending the following tweet %s" %tweet
             send_tweet(tweet)
         elif (sys.argv[1] and sys.argv[2]):
             print "ERROR: token_key not set yet, run script without any arguments"

@@ -40,7 +40,7 @@ def downloadSubs(toDownloadQueue):
 			toDelete_toDownloadQueue.append(index)
 			
 			if Config.Properties.postprocesscmd:
-				postprocesscmdconstructed = Config.Properties.postprocesscmd + " " + downloadItem["destinationFileLocationOnDisk"] + " " + downloadItem["originalFileLocationOnDisk"]
+				postprocesscmdconstructed = Config.Properties.postprocesscmd + " '" + downloadItem["destinationFileLocationOnDisk"] + "' '" + downloadItem["originalFileLocationOnDisk"] + "'"
 				log.debug("downloadSubs: Postprocess: running %s" %postprocesscmdconstructed)
 				log.info("downloadSubs: Running PostProcess")
 				postprocessoutput,postprocesserr = Helpers.RunCmd(postprocesscmdconstructed)
