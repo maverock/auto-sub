@@ -1,38 +1,476 @@
-v0.3.2 (rev:8cd0afd12415) changes:
-+ Various minor Bugfixes
-+ Changed: priority in returning the bierdopjeID. Current process is as followed:
-	1. Try cache
-	2. Try UserNameMapping
-	3. Try NameMapping
-	4. Try BierdopjeAPI
-	5. Return -1 to prevent from retrying
-+ Fixed namemapping case sensitivity
-+ Added with statement import to support Python 2.5 users
+2012-01-29  zyronix  <romke.vandijk@gmail.com>
 
-v0.3.1 changes:
-+ Added new namemappings
-+ Minor fix in REG expression
-+ Support for SickBeard file naming (Serie.Name.S01E02.SD.TV.avi)
-+ Remove case sensitive problem with matching quality and source
-+ Fixed  issue 18
+	* AutoSub.py, Config.py, Helpers.py:
+	Fixed issue 28 Minor bug fixes
+	[9562bc6f6887] [tip]
 
-v0.3 changes:
-+ Added support for RSS feed
-+ Added support for Config file / Property file
-+ Support for "schedule" based checking of Bierdopje:
-	++ local disk is scanned every hour
-	++ bierdopje is scanned every 8 hours
-	++ RSS is checked every 5 minutes
-	++ Once subtitle is found, download will be started
-+ Improved filename processing
-+ Added mp4 support
-+ Refactored core to have seperate modules
-+ Various bugfixes (issue 1 to 15)
+	* AutoSub.py, Bierdopje.py, Config.py, ExamplePostProcess.py,
+	LocalDisk.py, libary/__init__.py, libary/growl/__init__.py,
+	libary/growl/gntp.py, libary/httplib2/__init__.py,
+	libary/httplib2/iri2uri.py, libary/oauth2/__init__.py,
+	libary/pythontwitter/__init__.py, library/__init__.py,
+	library/growl/__init__.py, library/growl/gntp.py,
+	library/httplib2/__init__.py, library/httplib2/iri2uri.py,
+	library/oauth2/__init__.py, library/pythontwitter/__init__.py:
+	update typo in file naming Fixed issue 22 Fixed issue 27 Rewriten
+	config module to allow different file name / locating Added feature:
+	ability to change workdirectory
+	[357b53640f6a]
 
-v0.2 changes:
-+ Improved filename processing
-+ Improved bierdopje matching against downloaded content
-+ Added a logfile
+	* libary/__init__.pyc, libary/httplib2/__init__.pyc,
+	libary/httplib2/iri2uri.pyc, libary/oauth2/__init__.pyc,
+	libary/pythontwitter/__init__.pyc:
+	Cleaning up repository
+	[324403b03e34]
 
-v0.1 changes:
-+ Initiation version
+	* Config.py, ExamplePostProcess.py, libary/growl/__init__.py,
+	libary/growl/gntp.py:
+	ExamplePostProcess: Feature release: growl notifications
+	[4165bd7bd987]
+
+	* ExamplePostProcess.py:
+	ExamplePostProcess Fix: Reduced tweet maximum to 140 char to prefent
+	errors
+	[91ad61b5d377]
+
+2012-01-28  zyronix  <romke.vandijk@gmail.com>
+
+	* ExamplePostProcess.py, LocalDisk.py:
+	Fix: space error in examplepostprocess
+	[36d4d8ebd113]
+
+	* ExamplePostProcess.py, libary/__init__.py, libary/__init__.pyc,
+	libary/httplib2/__init__.py, libary/httplib2/__init__.pyc,
+	libary/httplib2/iri2uri.py, libary/httplib2/iri2uri.pyc,
+	libary/oauth2/__init__.py, libary/oauth2/__init__.pyc,
+	libary/pythontwitter/__init__.py, libary/pythontwitter/__init__.pyc:
+	Added support for Twitter in ExamplePostProcess.py
+	[fa8fae7b0e45]
+
+2012-01-27  zyronix  <romke.vandijk@gmail.com>
+
+	* Config.py, ExamplePostProcess.py, Helpers.py, LocalDisk.py:
+	Added the support for PostProcess To use PostProcess add the
+	postprocesscmd variable to the config.properties Added:
+	ExamplePostProcess.py To use this script as PostProcess at the
+	following to config.properties postprocesscmd = <pythoncmd>
+	ExamplePostProcess.py Of course change: <pythoncmd> to the command
+	you use it run python application
+	[84f0a5fdaeba]
+
+2011-12-21  Zyronix  <romke.vandijk@gmail.com>
+
+	* Config.py:
+	New namemappings
+	[b12616adb3e8]
+
+2011-12-18  Zyronix  <romke.vandijk@gmail.com>
+
+	* AutoSub.py:
+	Human error fixed in AutoSub
+	[a10a7ef43803]
+
+	* AutoSub.py, Bierdopje.py, Helpers.py:
+	Rewriten the process of matching. This new way will always return a
+	downloadlink and still tries it best to get the best match. Fixed
+	issue 16
+	[1a4f3599cc5d]
+
+2011-11-10  mintje  <mintje>
+
+	* AutoSub.py, Db.py:
+	+ Created logging initialize function for unittest or standalone
+	module testing purposes + Added work-in-progress Db.py
+	[b086af443962]
+
+2011-11-09  mintje  <mintje>
+
+	* changelog.txt:
+	update changelog for release 0.3.2
+	[a7a65bc5df0d]
+
+	* Config.py:
+	+ Added support for Python 2.5, import line is ignored by newer
+	versions of python
+	[8cd0afd12415]
+
+2011-11-04  Zyronix  <romke.vandijk@gmail.com>
+
+	* Config.py:
+	Fixed: error due to missing namemapping in config
+	[751280386b1b]
+
+	* Bierdopje.py, Config.py:
+	Fixed: NameMapping case sensitive Added: UserNameMapping Changed:
+	priority in returning the bierdopjeID. Current process is as
+	followed: 1. Try cache 2. Try UserNameMapping 3. Try NameMapping 4.
+	Try BierdopjeAPI 5. Return -1 to prevent from retrying
+	[7d131f7f0438]
+
+2011-10-30  rien genie  <rien.genie@gmail.com>
+
+	* Bierdopje.py:
+	
+	[8448adbc62eb]
+
+	* Bierdopje.py:
+	
+	[cbca156633d5]
+
+	* Bierdopje.py:
+	
+	[4b9a8733d475]
+
+2011-10-30  Zyronix  <romke.vandijk@gmail.com>
+
+	* Bierdopje.py:
+	Heads merged
+	[4f691424e11a]
+
+2011-10-29  Zyronix  <romke.vandijk@gmail.com>
+
+	* Bierdopje.py:
+	Small bug fix, nameMapping was not defined
+	[9785266eddcc]
+
+2011-10-30  Zyronix  <romke.vandijk@gmail.com>
+
+	* Bierdopje.py, Helpers.py, LocalDisk.py:
+	Fixed issue 20 Fixed issue 21
+	[3632634235fe]
+
+2011-10-28  Zyronix  <romke.vandijk@gmail.com>
+
+	* Helpers.py:
+	Small bug fix, when there is no serie name parsed out auto-sub
+	returned a TypeError
+	[b636221839db]
+
+2011-10-27  Zyronix  <romke.vandijk@gmail.com>
+
+	* Config.py, Helpers.py:
+	Added new namemappings Minor fix in REG expression Support for
+	SickBeard file naming (Serie.Name.S01E02.SD.TV.avi) Remove case
+	sensitive problem with matching quality and source
+	[7d913c5df92f]
+
+	* Helpers.py:
+	Fixed issue 18
+	[f2061a0ceca5]
+
+2011-10-25  mintje  <mintje>
+
+	* README.txt, changelog.txt:
+	Added README file for the default built on the website
+	[bdab2704082a]
+
+	* Fixed return whenever RSS returns an invalid response
+	[a6ca29ec1d2c]
+
+2011-10-02  rien genie  <rien.genie@gmail.com>
+
+	* Bierdopje.py:
+	classe naam ervoor gezet.
+	[50cf91421cbe]
+
+2011-10-25  mintje  <mintje>
+
+	* Bierdopje.py:
+	Fixed return whenever RSS returned an invalid response
+	[a55356008ced]
+
+2011-09-13  Zyronix  <romke.vandijk@gmail.com>
+
+	* Helpers.py:
+	Quick fix for Typerror in Helpers
+	[2d48b6585ee4]
+
+2011-09-13  rien genie  <rien.genie@gmail.com>
+
+	* AutoSub_dev.py:
+	
+	[03293a4af009]
+
+2011-09-13  mintje  <mintje>
+
+	* Config.py, Helpers.py:
+	resolved skipshow upper error
+	[c99bb545642e]
+
+2011-09-13  rien genie  <rien.genie@gmail.com>
+
+	* AutoSub_dev.py:
+	
+	[f27625c0cf3d]
+
+2011-09-13  mintje  <mintje>
+
+	* AutoSub.py, Bierdopje.py, Config.py, Helpers.py:
+	Resolved issue 8 Resolved issue 9 Fixed config properties in
+	checkRSS Minor tweaks to processfilename with the matchdic
+	dictionairy
+	[72088cf6a1ab]
+
+2011-09-13  rien genie  <rien.genie@gmail.com>
+
+	* AutoSub_dev.py:
+	Removed the global try catch for the property file. Now he will only
+	add the missing property with a default value.
+
+	Added a global exception handler on the processfilename function.
+	[caee30aa51d2]
+
+2011-09-13  mintje  <mintje>
+
+	* AutoSub_dev.py, AutoSub_test.py, Config.py:
+	minor update to config.py, removal of unused function`
+	[3891005d37cb]
+
+2011-09-10  Zyronix  <romke.vandijk@gmail.com>
+
+	* AutoSub_dev.py:
+	Issue's fixed Fixed issue 14 Fixed issue 15
+	[d815fb0b961c]
+
+2011-09-13  mintje  <mintje>
+
+	* AutoSub.py, Bierdopje.py, Config.py, Helpers.py, LocalDisk.py:
+	Cleaned up the archive Splitted the main Autosub_dev file into
+	multiple modules: Autosub.py - main program Bierdopje.py - the
+	bierdopje api abstraction layer Helpers.py - generic helper
+	functions LocalDisk.py - module for the local disk IO Config.py -
+	Class and functions to carry the various settings and properties
+	accross the file
+	[4329a544750a]
+
+2011-09-05  Zyronix  <romke.vandijk@gmail.com>
+
+	* AutoSub_dev.py:
+	Fixed issue 13
+	[60d106bf697a]
+
+	* AutoSub_dev.py:
+	Added: Fallback for source Fixed issue 3
+	[43abefe00808]
+
+2011-09-04  Zyronix  <romke.vandijk@gmail.com>
+
+	* AutoSub_dev.py:
+	The ifstatement checking for web-dl caused an error when source was
+	None, fixed.
+	[3cc77b4034a4]
+
+	* AutoSub_dev.py:
+	Minor fix in regular expressions. Issue fixed: issue 3
+	[f6d474a0e3df]
+
+	* AutoSub_dev.py:
+	Rewritten the ProcessFileName function. The ProcessFileName is now
+	more efficient, replaced small regular expressions with three large
+	expressions Fixed: issue 12
+	[3f817c9bb687]
+
+2011-09-01  mintje  <mintje>
+
+	* AutoSub_dev.py:
+	+ Added Skipshow functionality to Property file
+
+	Skipshow properties example: [skipshow] The Secret Life Of The
+	American Teenager=1,2,3 Lost=0
+	[71a0d8c44c97]
+
+	* AutoSub_dev.py:
+	+ Added Rien's property file feature + Made http error handling
+	simpler, more robust
+
+	TODO: + Add skipshow to config property reader
+	[b2f4c524fd84]
+
+2011-08-16  mintje  <mintje>
+
+	* AutoSub_dev.py:
+	+ Fixed Issue 4: Titles with ' (e.g. 's) are being
+	capitalized + Fixed Issue 5: No error when root path is
+	invalid + Fixed Issue 6: No support for MP4 files + Fixed
+	Issue 7: AutoSub only downloads 1-5 subs (randomly?)
+	[1a866a87260c]
+
+2011-08-15  mintje  <mintje>
+
+	* AutoSub_dev.py:
+	Fixed issue 2 - Improved HTTP handling, added better error handling
+	Fixed issue 7 - Should not modify a containing while in a for loop,
+	changed to a while length loop
+
+	Added arguments again, -h and --help should now be working again
+	[0a1e5bdb634e]
+
+2011-08-14  Zyronix  <romke.vandijk@gmail.com>
+
+	* AutoSub_dev.py:
+	Fix: Quick fix function in Eclipse deleted too many unused
+	variables.
+	[dfcbbc67a5da]
+
+	* AutoSub_dev.py:
+	Bug fix: error returned when using namemapping, cause by rule 371,
+	Title change to new variable name: wantedItemtitle
+	[163755717e6a]
+
+2011-07-30  mintje  <mintje>
+
+	* AutoSub_dev.py:
+	Fixed toDownloadSub logline
+	[5edd707cdfbc]
+
+	* AutoSub_dev.py:
+	Updated scanDisk frequency, minor change to logging
+	[48ba2b5184c1]
+
+2011-07-29  mintje  <mintje>
+
+	* AutoSub_dev.py:
+	Added scheduling to AutoSub
+	[8b3046e0fd79]
+
+2011-07-27  mintje  <mintje>
+
+	* AutoSub_dev.py:
+	Added wantedQueue and DownloadQueue, refined checkRSS, create more
+	modular functions PLEASE NOTE: This revision will not conitnuesly
+	scan! Still need to implement a proper routine in the MAIN function
+
+	TODO: Create proper loop routine in the Main function
+	[f2a6588b62ea]
+
+2011-07-25  mintje  <mintje>
+
+	* AutoSub_dev.py:
+	Added RSS watcher Added main function, seperated scanDisk Added
+	argument checking, ability to respond with a help message
+
+	TODO: Refine RSS watching, is currently only based on Show Name
+	[79b9b3c3ade7]
+
+2011-07-24  Zyronix  <romke.vandijk@gmail.com>
+
+	* AutoSub_dev.py:
+	Minor fix: remove cases sensitive from skipshow function Minor fix:
+	Changed the flow, skipping is now checked before getting the ID
+	Minor tweak: add feedback recieved from m1nt, optimizing the code
+	[93003e38b15b]
+
+2011-07-23  Zyronix  <romke.vandijk@gmail.com>
+
+	* AutoSub_dev.py:
+	Added feature: SkipShow. This function allows user to skip shows and
+	season. For example when a serie contains hardcoded subtitles Fix:
+	NameMapping, removed from getShowId moved to main process
+	[376a80601cae]
+
+2011-07-22  mintje  <mintje>
+
+	* changelog.txt:
+	added changelog.txt
+	[7cb423ccf853]
+
+	* AutoSub.py, AutoSub_test.py:
+	Copied dev to test and stable release for now
+	[5280c52623cd]
+
+2011-07-21  mintje  <mintje>
+
+	* AutoSub_dev.py:
+	minor fix to namespaces
+	[ce5282c7d22c]
+
+	* AutoSub_dev.py:
+	- Improved filename resolution process
+	- Improved matching against subtitles for better accuracy
+	- Added logging log handler for a logfile
+	- Merge with namespace revision
+	[3e1b2c257d43]
+
+2011-07-21  Zyronix  <romke.vandijk@gmail.com>
+
+	* AutoSub_dev.py:
+	Added namemapping feature
+	[335637136249]
+
+2011-07-21  mintje  <mintje>
+
+	* AutoSub_dev.py, AutoSub_test.py:
+	- Improved File resolving alghorhitm to better determine the type of
+	file
+	- Improved Matching alghorhitm for best effort accuracy on the to
+	download subtitle
+	- Added Python Logger and added a default logfile
+	[e77c997fe01d]
+
+2011-07-21  Zyronix  <romke.vandijk@gmail.com>
+
+	* AutoSub_dev.py:
+	Removed unnecessary modules
+	[aa75e6edf457]
+
+2011-07-19  mintje  <mintje>
+
+	* AutoSub.py, AutoSub_dev.py, AutoSub_test.py, AutoSub_v6.py:
+	Added the following copies:
+
+	AutoSub.py - Latest stable version (used in the Download section)
+	AutoSub_test.py - Latest test version, next candidate for the stable
+	version AutoSub_dev.py - Latest work in progress, not recommended
+	for users unless you know what you are doing (expect things to not
+	work)
+	[4681c039d66c]
+
+2011-07-18  mintje  <mintje>
+
+	* AutoSub_v6.py:
+	* Added Bierdopje specific API key for the script
+	[5dabf947ed01]
+
+2011-07-13  mintje  <mintje>
+
+	* AutoSub_v6.py:
+	initial version for google code
+
+	TODO:
+	* Add RSS watcher to trigger looking for new subtitles (currently just
+	loops)
+	[8a7b9a2e7246]
+
+	* AutoSub_v6.py:
+	author is still wrong
+	[07d618c03381]
+
+	* AutoSub_v6.py:
+	Initial version for Google Code
+
+	TODO:
+	* Add RSS watcher to trigger looking for new subtitles
+
+	Known limitations:
+	* Does a dummy lookup each and every time, costs a bit more resource
+	towards BD
+	[78709756904d]
+
+2011-07-13  wouter  <wouter@eeepc.tilbu1.nb.home.nl>
+
+	* AutoSub_v6.py:
+	retrying to add`
+	[0b6acd4942bf]
+
+	* AutoSub_v6.py:
+	initial version for google code
+
+	Known limitations:
+	* Only caches showid from Bierdopje
+	* Will retry to find subtitles endlessly
+
+	Todo:
+	* Add RSS watcher as a trigger to look for new subtitles (instead of
+	looping each and every time)
+	[1da290c9a3a5]
+
