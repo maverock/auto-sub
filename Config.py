@@ -122,7 +122,13 @@ class Properties():
 			"Shameless Us":"14718",
 			"Prime Suspect Us":"15249",
 			"Harrys Law":"14489",
-			"Man Up":"15209"
+			"Man Up":"15209",
+			"The La Complex":"15953",
+			"Spartacus":"13942",
+			"The Kennedys":"15067",
+			"Last Man Standing Us":"15201",
+			"Up All Night 2011":"15261",
+			"Are You There Chelsea":"15259"
 	}
 	usernamemappingupper = {}
 	for x in usernamemapping.keys():

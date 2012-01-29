@@ -4,6 +4,10 @@
 import sys
 import libary.pythontwitter as twitter
 import libary.oauth2 as oauth
+import socket
+
+from libary.growl import gntp
+
 try:
     from urlparse import parse_qsl 
 except:
@@ -11,16 +15,66 @@ except:
 
 
 #OPTIONS EDIT HERE
+#What options:
+# twitter - send notifications to twitter
+# growl - send notification to a growl server
+# echo - echo's the arguments given to the script
 
 what = "echo"
+
+#Growl Options:
+growl_host=""
+growl_port=23053
+growl_pass=""
+#/Growl Options
 
 #Twitter options:
 token_key=''
 token_secret=''
-
 #/Twitter options
 
 #/OPTIONS STOP EDITING BELOW THIS LINE
+
+#GROWL APPLICATION SOURCE
+def send_growl(host,port,message):
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect((host,port))
+        s.send(message)
+        response = gntp.parse_gntp(s.recv(1024))
+        print response
+        s.close()
+    except socket.error:
+        print "ERROR: Unable to send growl notification to growl server. Check your settings."
+    
+    
+def create_growl(message):
+    notice = gntp.GNTPNotice()
+    notice.add_header('Application-Name',"AutoSub")
+    notice.add_header('Notification-Name',"Subtitle Download")
+    notice.add_header('Notification-Title',"AutoSub: Subtitle Download")
+    notice.add_header('Notification-Text',message)
+    if growl_pass!="":
+        notice.set_password(growl_pass)
+    send_growl(growl_host,growl_port,notice.encode())
+    
+def register_growl():
+    register = gntp.GNTPRegister()
+    register.add_header('Application-Name', "AutoSub")
+    register.add_notification('Test', True)
+    register.add_notification('Subtitle Download', True)
+    if growl_pass!="":
+        register.set_password(growl_pass)
+    send_growl(growl_host,growl_port,register.encode())
+    
+    notice = gntp.GNTPNotice()
+    notice.add_header('Application-Name',"AutoSub")
+    notice.add_header('Notification-Name',"Test")
+    notice.add_header('Notification-Title',"Testing notification")
+    notice.add_header('Notification-Text',"This is a test notification send by AutoSub, check!")
+    if growl_pass!="":
+        notice.set_password(growl_pass)
+    send_growl(growl_host,growl_port,notice.encode())
     
 #TWITTER APPLICATION SOURCE
 consumer_key='CRMvUogoJ5kMErtU9fiw'
@@ -73,8 +127,11 @@ def send_tweet(message):
 #MAIN FUNCTION
 if what == "echo":
     print
-    print sys.argv[1]
-    print sys.argv[2]
+    try:
+        print sys.argv[1]
+        print sys.argv[2]
+    except IndexError:
+        print "ERROR: Trying to setup this script? Make sure you set the 'what' variable. "
 
 if what == "twitter":
     if token_key=="":
@@ -89,3 +146,11 @@ if what == "twitter":
             send_tweet(tweet[:140])
         elif (sys.argv[1] and sys.argv[2]):
             print "ERROR: token_key not set yet, run script without any arguments"
+
+if what== "growl":
+    if len(sys.argv) == 1:
+        register_growl()
+    elif (sys.argv[1] and sys.argv[2] and growl_host!=""):
+        var = sys.argv[1]
+        var = var.split('/')
+        create_growl(var[-1])    
