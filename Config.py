@@ -18,19 +18,36 @@ from ConfigParser import SafeConfigParser
 
 # Settings -----------------------------------------------------------------------------------------------------------------------------------------
 # Location of the configuration file:
-configfile = "config.properties"
+#configfile = "config.properties"
 # Set the logger
 log = logging.getLogger('thelogger')
 #/Settings -----------------------------------------------------------------------------------------------------------------------------------------
 
-
 class Properties():
+	rootpath=None
+	fallbackToEng=None
+	subeng=None
+	logfile=None
+	subnl=None
+	loglevel=None
+	loglevelconsole=None
+	logsize=None
+	lognum=None
+	skipshow=None
+	skipshowupper=None
+	usernamemapping=None
+	postprocesscmd=None
+	namemapping=None
+	usernamemappingupper=None
+	namemappingupper=None
+	showid_cache=None
 	
-	# Read config file
-	rootpath = os.getcwd()
-	fallbackToEng = True
-	subeng="en"
-	logfile="AutoSubService.log"
+def ReadConfig(configfile):
+		# Read config file
+	Properties.rootpath = os.getcwd()
+	Properties.fallbackToEng = True
+	Properties.subeng="en"
+	Properties.logfile="AutoSubService.log"
 	edited=False
 		
 	cfg = SafeConfigParser()
@@ -41,66 +58,116 @@ class Properties():
 	except:
 		cfg.add_section('config')
 		edited=True
-	try:    
-		rootpath=cfg.get("config", "ROOTPATH")
+	try:	
+		Properties.rootpath=cfg.get("config", "ROOTPATH")
 	except:
-		cfg.set("config","ROOTPATH",rootpath)
+		cfg.set("config","ROOTPATH",Properties.rootpath)
 		edited=True
 	try:
-		fallbackToEng=cfg.getboolean("config", "FALLBACKTOENG")
+		Properties.fallbackToEng=cfg.getboolean("config", "FALLBACKTOENG")
 	except:
-		cfg.set("config","FALLBACKTOENG",str(fallbackToEng))
+		cfg.set("config","FALLBACKTOENG",str(Properties.fallbackToEng))
 		edited=True
-	try:    
-		subeng=cfg.get("config", "SUBENG")
+	try:	
+		Properties.subeng=cfg.get("config", "SUBENG")
 	except:
-		cfg.set("config","SUBENG",subeng)
+		cfg.set("config","SUBENG",Properties.subeng)
 		edited=True
 	try:
-		logfile= cfg.get("config", "LOGFILE")
+		Properties.subnl=cfg.get("config","SUBNL")
 	except:
-		cfg.set("config","LOGFILE",logfile) 
+		Properties.subnl=""
+	
+	try:
+		Properties.workdir=cfg.get("config","workdir")
+	except:
+		Properties.workdir=""
+	
+	try:
+		Properties.logfile= cfg.get("config", "LOGFILE")
+	except:
+		cfg.set("config","LOGFILE",Properties.logfile) 
 		edited=True
 	
-	skipshow={}
+	try:
+		Properties.loglevel=cfg.get("logfile","LOGLEVEL")
+		if Properties.loglevel.lower()=='error':
+			Properties.loglevel=logging.ERROR
+		elif Properties.loglevel.lower()=="warning":
+			Properties.loglevel=logging.WARNING
+		elif Properties.loglevel.lower()=="debug":
+			Properties.loglevel=logging.DEBUG
+		elif Properties.loglevel.lower()=="info":
+			Properties.loglevel=logging.WARNING
+		elif Properties.loglevel.lower()=="critical":
+			Properties.loglevel=logging.CRITICAL
+	except:
+		Properties.loglevel=logging.ERROR
+	
+	try:
+		Properties.loglevelconsole=cfg.get("logfile","loglevelconsole")
+		if Properties.loglevelconsole.lower()=='error':
+			Properties.loglevelconsole=logging.ERROR
+		elif Properties.loglevelconsole.lower()=="warning":
+			Properties.loglevelconsole=logging.WARNING
+		elif Properties.loglevelconsole.lower()=="debug":
+			Properties.loglevelconsole=logging.DEBUG
+		elif Properties.loglevelconsole.lower()=="info":
+			Properties.loglevelconsole=logging.WARNING
+		elif Properties.loglevelconsole.lower()=="critical":
+			Properties.loglevelconsole=logging.CRITICAL
+	except:
+		Properties.loglevelconsole=logging.INFO
+	
+	try:
+		Properties.logsize=int(cfg.get("logfile","LOGSIZE"))
+	except:
+		Properties.logsize=100000
+	
+	try :
+		Properties.lognum=int(cfg.get("logfile"),"LOGNUM")
+	except:
+		Properties.lognum=3
+	
+	Properties.skipshow={}
 	
 	try:
 	# Try to read skipshow section in the config
-		skipshow = dict(cfg.items('skipshow'))
+		Properties.skipshow = dict(cfg.items('skipshow'))
 	except:
 		cfg.add_section('skipshow')
 		edited=True  
 
 	# Try to read skipshow section in the config
-	skipshow = dict(cfg.items('skipshow'))
+	Properties.skipshow = dict(cfg.items('skipshow'))
 
 	# The following 4 lines convert the skipshow to uppercase. And also convert the variables to a list 
-	skipshowupper = {}
-	for x in skipshow:
-		skipshowupper[x.upper()] = skipshow[x].split(',')
+	Properties.skipshowupper = {}
+	for x in Properties.skipshow:
+		Properties.skipshowupper[x.upper()] = Properties.skipshow[x].split(',')
 	
 	try:
-		usernamemapping = dict(cfg.items('namemapping'))
+		Properties.usernamemapping = dict(cfg.items('namemapping'))
 	except:
 		cfg.add_section('namemapping')
 		edited=True
-	usernamemapping = dict(cfg.items('namemapping'))
+	Properties.usernamemapping = dict(cfg.items('namemapping'))
 	
 	try:
-		postprocesscmd = cfg.get("config", "POSTPROCESSCMD")
+		Properties.postprocesscmd = cfg.get("config", "POSTPROCESSCMD")
 	except:
-		postprocesscmd = False
+		Properties.postprocesscmd = False
 		
 	if edited:
 		with open(configfile, 'wb') as file:
 			cfg.write(file)
 	
 	# Settings
-	showid_cache = {}
+	Properties.showid_cache = {}
 
 	# This dictionary maps local series names to BierDopje ID's
 	# Example: namemapping = {"Castle":"12708"}
-	namemapping = {
+	Properties.namemapping = {
 			"Greys Anatomy" : "3733",
 			"Grey's Anatomy" : "3733",
 			"Csi Miami" : "2187",
@@ -130,13 +197,14 @@ class Properties():
 			"Up All Night 2011":"15261",
 			"Are You There Chelsea":"15259"
 	}
-	usernamemappingupper = {}
-	for x in usernamemapping.keys():
-		usernamemappingupper[x.upper()] = usernamemapping[x]
+	Properties.usernamemappingupper = {}
+	for x in Properties.usernamemapping.keys():
+		Properties.usernamemappingupper[x.upper()] = Properties.usernamemapping[x]
 		
-	namemappingupper = {}
-	for x in namemapping.keys():
-		namemappingupper[x.upper()] = namemapping[x]
+	Properties.namemappingupper = {}
+	for x in Properties.namemapping.keys():
+		Properties.namemappingupper[x.upper()] = Properties.namemapping[x]
+
 
 def nameMapping(showName):
 	if showName.upper() in Properties.usernamemappingupper.keys():

@@ -9,6 +9,7 @@ import logging.handlers
 import time
 import sys
 import getopt
+import os
 
 
 # Autosub specific modules:
@@ -23,10 +24,12 @@ import Config
 help_message = '''
 Usage:
 	-h (--help)	Prints this message
-	
+	-c | --config= Forces AutoSub.py to use another configfile then ./config.properties
 
 Example:
 	python AutoSub.py
+	python AutoSub.py -c/home/user/config.properties
+	python AutoSub.py --config=/home/user/config.properties
 '''
 
 	
@@ -35,10 +38,11 @@ class Usage(Exception):
 		self.msg = msg
 
 def initLogging(logfile):
-	LOGLEVEL=logging.DEBUG
-	LOGSIZE= 100000000
-	LOGNUM = 10
-
+	LOGLEVEL=Config.Properties.loglevel
+	LOGSIZE= Config.Properties.logsize
+	LOGNUM = Config.Properties.lognum
+	LOGLEVELCONSOLE = Config.Properties.loglevelconsole
+	
 	# initialize logging
 	# A log directory has to be created below the start directory
 	log = logging.getLogger("thelogger")
@@ -52,7 +56,7 @@ def initLogging(logfile):
 
 	#CONSOLE log handler
 	console = logging.StreamHandler()
-	console.setLevel(logging.INFO)
+	console.setLevel(LOGLEVELCONSOLE)
 	# set a format which is simpler for console use
 	formatter = logging.Formatter('%(asctime)s %(levelname)s  %(message)s')
 	console.setFormatter(formatter)
@@ -65,7 +69,7 @@ def main(argv=None):
 		argv = sys.argv
 	try:
 		try:
-			opts, args= getopt.getopt(argv[1:], "h", ["help"])
+			opts, args= getopt.getopt(argv[1:], "hc:", ["help","config="])
 		except getopt.error, msg:
 			raise Usage(msg)
 	
@@ -73,6 +77,8 @@ def main(argv=None):
 		for option, value in opts:
 			if option in ("-h", "--help"):
 				raise Usage(help_message)
+			elif option in ("-c", "--config"):
+				configfile = value
 	
 	except Usage, err:
 		print >> sys.stderr, sys.argv[0].split("/")[-1] + ": " + str(err.msg)
@@ -87,7 +93,18 @@ def main(argv=None):
 	toDownloadQueue = []
 	
 	#load configuration
+	#Config.configfile = "/home/me/SyncDir/pythonprojects/auto-sub/config.properties"
+	try:
+		Config.ReadConfig(configfile)
+	except UnboundLocalError:
+		Config.ReadConfig("config.properties")
+		
 	config = Config.Properties()
+	
+	#change to the new work directory
+	if config.workdir!="":
+		os.chdir(config.workdir)
+		
 	# init logging
 	log = initLogging(config.logfile)
 	

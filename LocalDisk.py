@@ -77,7 +77,10 @@ def scanDir(rootpath):
 			if ext in ('avi','mkv','wmv','ts','mp4'):
 				if re.search('sample', filename): continue
 				
-				srtfile = os.path.join(filename[:-4] + ".srt")
+				if (Config.Properties.subnl!=""):
+					srtfile = os.path.join(filename[:-4] + "." + Config.Properties.subnl +".srt")
+				else:
+					srtfile = os.path.join(filename[:-4] + ".srt")
 				
 				if not os.path.exists(os.path.join(dirname,srtfile)):
 					log.debug("scanDir: File %s does not yet have a srt file" %filename)

@@ -2,11 +2,11 @@
 #The Current options available are:
 # echo | simply echo the arguments given to the post process script
 import sys
-import libary.pythontwitter as twitter
-import libary.oauth2 as oauth
+import library.pythontwitter as twitter
+import library.oauth2 as oauth
 import socket
 
-from libary.growl import gntp
+from library.growl import gntp
 
 try:
     from urlparse import parse_qsl 

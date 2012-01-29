@@ -208,7 +208,11 @@ def checkSub(wantedQueue, toDownloadQueue):
 		episode = wantedItem['episode']
 		originalfile = wantedItem['originalFileLocationOnDisk']
 		
-		srtfile = os.path.join(originalfile[:-4] + ".srt")
+		if Config.Properties.subnl!="":
+			srtfile = os.path.join(originalfile[:-4] + "." + Config.Properties.subnl + ".srt")
+		else:
+			srtfile = os.path.join(originalfile[:-4] + ".srt")
+		
 		engsrtfile = os.path.join(originalfile[:-4] + "."+ Config.Properties.subeng +".srt")
 		
 		if title in Config.Properties.showid_cache.keys():
