@@ -17,6 +17,7 @@ what = "echo"
 #Twitter options:
 token_key=''
 token_secret=''
+
 #/Twitter options
 
 #/OPTIONS STOP EDITING BELOW THIS LINE
@@ -66,7 +67,7 @@ def send_tweet(message):
         api.PostUpdate(message)
         print "Tweet sended!"
     except:
-        print "ERROR: Could not send tweet, check token_key & token_secret"
+        print "ERROR: Could not send tweet, make sure token_key & token_secret are correct."
 
 
 #MAIN FUNCTION
@@ -81,12 +82,10 @@ if what == "twitter":
     else:
         if (sys.argv[1] and sys.argv[2] and token_key!=""):
             var = sys.argv[1]
-            var2 = sys.argv[2]
             
             var = var.split('/')
-            var2 = var2.split('/')
-            tweet = "Downloaded: " + var[-1] + " for " + var2[-1] 
-            print "Sending the following tweet %s" %tweet
-            send_tweet(tweet)
+            tweet = "AutoSub Downloaded: " + var[-1] 
+            print "Sending the following tweet %s" %tweet[:140]
+            send_tweet(tweet[:140])
         elif (sys.argv[1] and sys.argv[2]):
             print "ERROR: token_key not set yet, run script without any arguments"
