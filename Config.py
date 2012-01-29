@@ -98,7 +98,7 @@ def ReadConfig(configfile):
 		elif Properties.loglevel.lower()=="debug":
 			Properties.loglevel=logging.DEBUG
 		elif Properties.loglevel.lower()=="info":
-			Properties.loglevel=logging.WARNING
+			Properties.loglevel=logging.INFO
 		elif Properties.loglevel.lower()=="critical":
 			Properties.loglevel=logging.CRITICAL
 	except:
@@ -113,7 +113,7 @@ def ReadConfig(configfile):
 		elif Properties.loglevelconsole.lower()=="debug":
 			Properties.loglevelconsole=logging.DEBUG
 		elif Properties.loglevelconsole.lower()=="info":
-			Properties.loglevelconsole=logging.WARNING
+			Properties.loglevelconsole=logging.INFO
 		elif Properties.loglevelconsole.lower()=="critical":
 			Properties.loglevelconsole=logging.CRITICAL
 	except:

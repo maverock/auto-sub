@@ -24,7 +24,7 @@ import Config
 help_message = '''
 Usage:
 	-h (--help)	Prints this message
-	-c | --config= Forces AutoSub.py to use another configfile then ./config.properties
+	-c | --config= Forces AutoSub.py to use a configfile other than ./config.properties
 
 Example:
 	python AutoSub.py

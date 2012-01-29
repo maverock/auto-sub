@@ -29,6 +29,7 @@ def RunCmd(cmd):
 							stderr = subprocess.PIPE)
 	shell = process.stdout.read()
 	shellerr = process.stderr.read()
+	process.wait()
 	return shell,shellerr
 
 def CleanSerieName(series_name):
