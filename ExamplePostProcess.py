@@ -42,8 +42,8 @@ def send_growl(host,port,message):
         s.connect((host,port))
         s.send(message)
         response = gntp.parse_gntp(s.recv(1024))
-        print response
         s.close()
+        print "Growl notification send"
     except socket.error:
         print "ERROR: Unable to send growl notification to growl server. Check your settings."
     

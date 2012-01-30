@@ -102,7 +102,7 @@ def ReadConfig(configfile):
 		elif Properties.loglevel.lower()=="critical":
 			Properties.loglevel=logging.CRITICAL
 	except:
-		Properties.loglevel=logging.ERROR
+		Properties.loglevel=logging.INFO
 	
 	try:
 		Properties.loglevelconsole=cfg.get("logfile","loglevelconsole")
@@ -117,7 +117,7 @@ def ReadConfig(configfile):
 		elif Properties.loglevelconsole.lower()=="critical":
 			Properties.loglevelconsole=logging.CRITICAL
 	except:
-		Properties.loglevelconsole=logging.INFO
+		Properties.loglevelconsole=logging.ERROR
 	
 	try:
 		Properties.logsize=int(cfg.get("logfile","LOGSIZE"))
