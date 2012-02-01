@@ -22,6 +22,10 @@ import autosub
 log = logging.getLogger('thelogger')
 #/Settings -----------------------------------------------------------------------------------------------------------------------------------------
 
+# TODO: Complete rewrite this function, remove try and replace with if statements if cfg.has_section etc.
+# TODO: Webserver config
+# TODO: Create example config.properties in linux style
+
 def ReadConfig(configfile):
 		# Read config file
 	autosub.ROOTPATH = os.getcwd()

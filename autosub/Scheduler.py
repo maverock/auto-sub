@@ -10,9 +10,11 @@ class Scheduler:
         self.name = name
         self.interval = interval
         self.thread = threading.Thread(None, self.runcommand, self.name)
+        self.stop = False
         if runnow:
             try:
                 self.command.run()
+                self.runnow = False
             except:
                 print traceback.format_exc()
                 os._exit(1)
@@ -27,4 +29,15 @@ class Scheduler:
                 except:
                     print traceback.format_exc()
                     os._exit(1)
+            
+            if self.runnow:
+                try:
+                    if self.command.run():
+                        self.lastrun = currentime
+                        self.runnow = False
+                except:
+                    print traceback.format_exc()
+                    os._exit(1)
+            if self.stop:
+                break
             time.sleep(1)

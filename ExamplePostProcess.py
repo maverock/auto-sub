@@ -13,6 +13,7 @@ try:
 except:
     from cgi import parse_qsl
 
+# TODO: create notification library and integrate it
 
 #OPTIONS EDIT HERE
 #What options:

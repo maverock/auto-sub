@@ -9,6 +9,8 @@ import autosub.Helpers
 import autosub.Bierdopje
 
 log = logging.getLogger('thelogger')
+
+# TODO: checkRss need to support the new matching system
 class checkRss():
     def run(self):    
         log.debug("checkRSS: Starting round of RSS checking")

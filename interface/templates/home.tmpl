@@ -1,0 +1,39 @@
+#import autosub
+#import time
+<html>
+<head>
+	<title>AutoSub</title>
+</head>
+<body>
+<table>
+<tr>
+	<td>
+		Next RSSCheck in:
+	</td> 
+	<td>
+		$time.strftime('%H:%M:%S', $time.gmtime(($autosub.CHECKRSS.interval - ($time.time() - $autosub.CHECKRSS.lastrun) ))) <br>
+	</td>
+</tr>
+<tr>
+	<td>
+		Next ScanDisk in: 
+	</td>
+	<td>
+		$time.strftime('%H:%M:%S', $time.gmtime(($autosub.SCANDISK.interval - ($time.time() - $autosub.SCANDISK.lastrun) ))) <br>
+	</td>
+</tr>
+<tr>
+	<td>
+		Next CheckSub in: 
+	</td>
+	<td>
+		$time.strftime('%H:%M:%S', $time.gmtime(($autosub.CHECKSUB.interval - ($time.time() - $autosub.CHECKSUB.lastrun) ))) <br>
+	</td>
+</tr>
+</table>
+<p>
+<a href='runNow'>Run Everything Now</a>
+<p>
+<a href='shutdown'>Shutdown</a>
+</body>
+</html>

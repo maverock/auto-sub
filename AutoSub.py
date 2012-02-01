@@ -19,6 +19,8 @@ Example:
     python AutoSub.py --config=/home/user/config.properties
 '''
 
+# TODO: comments in everyfile
+
 class Usage(Exception):
     def __init__(self, msg):
         self.msg = msg
