@@ -48,16 +48,21 @@ def main(argv=None):
     #load configuration
     if os.path.isfile('config.properties.dev'):
         autosub.CONFIGFILE='config.properties.dev'
-    
+    print "AutoSub: Initializing variables and loading config"
     autosub.Initialize()
     
     #change to the new work directory
     if autosub.WORKDIR!=None:
+        print "AutoSub: Changing to workdirectory"
         os.chdir(autosub.WORKDIR)
     
+    print "AutoSub: Changing output to log"
     log = autosub.initLogging(autosub.LOGFILE)
     
+    log.info("AutoSub: Starting threads")
     autosub.AutoSub.start()
+    
+    log.info("AutoSub: threads started, going into a loop to keep the main thread going")
     
     while True:
         pass

@@ -188,7 +188,7 @@ def ReadConfig(configfile):
 	autosub.USERNAMEMAPPINGUPPER = {}
 	for x in autosub.USERNAMEMAPPING.keys():
 		autosub.USERNAMEMAPPINGUPPER[x.upper()] = autosub.USERNAMEMAPPING[x]
-	print autosub.USERNAMEMAPPING
+
 	autosub.NAMEMAPPINGUPPER = {}
 	for x in autosub.NAMEMAPPING.keys():
 		autosub.NAMEMAPPINGUPPER[x.upper()] = autosub.NAMEMAPPING[x]
