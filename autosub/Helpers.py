@@ -3,13 +3,12 @@
 # The Autosub helper functions
 # 
 
-import urllib
-import urllib2
 import logging
 import re
-import os
 import subprocess
 from string import capwords
+
+import autosub
 
 # Settings
 log = logging.getLogger('thelogger')
@@ -171,3 +170,23 @@ def scoreMatch(release, quality, releasegrp, source):
 	log.debug("scoreMatch: MatchScore is %s" % str(score))
 	return score
 
+def nameMapping(showName):
+	print showName.upper()
+	print autosub.NAMEMAPPINGUPPER
+	if showName.upper() in autosub.USERNAMEMAPPINGUPPER.keys():
+		log.debug("nameMapping: found match in user's namemapping for %s" %showName)
+		return autosub.USERNAMEMAPPINGUPPER[showName.upper()]
+	elif showName.upper() in autosub.NAMEMAPPINGUPPER.keys():
+		log.debug("nameMapping: found match for %s" %showName)
+		return autosub.NAMEMAPPINGUPPER[showName.upper()]
+		
+def SkipShow(showName,season,episode):
+	if showName.upper() in autosub.SKIPSHOWUPPER.keys():
+		log.debug("SkipShow: Found %s in skipshow dictonary" %showName)
+		for seasontmp in autosub.SKIPSHOWUPPER[showName.upper()]:
+			if seasontmp == '0':
+				log.debug("SkipShow: variable of %s is set to 0, skipping the complete Serie" %showName)
+				return True
+			elif int(seasontmp) == int(season):
+				log.debug("SkipShow: Season matches variable of %s, skipping season" %showName)
+				return True	
