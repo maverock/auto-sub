@@ -28,8 +28,13 @@ class checkRss():
             req = urllib2.urlopen(autosub.RSSURL)
             dom = minidom.parse(req)
             req.close()
-        except:  
-            log.error("getSubLink: The server returned an error for request %s" %autosub.RSSURL)
+        except:
+            # Because of the latest problems with the RSS feed, the progress will return as if all went ok.
+            log.error("checkRss: The server returned an error for request %s" %autosub.RSSURL)
+            autosub.TODOWNLOADQUEUELOCK=False
+            autosub.WANTEDQUEUELOCK=False
+            log.info("checkRss: Retrying later, something is wrong with the network connect or with the bierdopje rssfeed.")
+            return True
         
         if not dom or len(dom.getElementsByTagName('result')) == 0:
             rssTitleList = dom.getElementsByTagName('title')
