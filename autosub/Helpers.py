@@ -171,8 +171,6 @@ def scoreMatch(release, quality, releasegrp, source):
 	return score
 
 def nameMapping(showName):
-	print showName.upper()
-	print autosub.NAMEMAPPINGUPPER
 	if showName.upper() in autosub.USERNAMEMAPPINGUPPER.keys():
 		log.debug("nameMapping: found match in user's namemapping for %s" %showName)
 		return autosub.USERNAMEMAPPINGUPPER[showName.upper()]

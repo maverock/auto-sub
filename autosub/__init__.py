@@ -19,7 +19,7 @@ NAMEMAPPINGUPPER=None
 SHOWID_CACHE=None
 POSTPROCESSCMD=None
 CONFIGFILE=None
-WORKDIR=None
+PATH=None
 
 TODOWNLOADQUEUE=None
 WANTEDQUEUE=None
@@ -40,6 +40,11 @@ CHECKSUB=None
 CHECKRSS=None
 DOWNLOADSUBS=None
 
+WEBSERVERIP=None
+WEBSERVERPORT=None
+
+DAEMON=None
+
 def Initialize():
     global ROOTPATH, FALLBACKTOENG, SUBENG, LOGFILE, SUBNL, LOGLEVEL, \
     SUBNL, LOGLEVEL, LOGLEVELCONSOLE, LOGSIZE, LOGNUM, SKIPSHOW, SKIPSHOWUPPER, \
@@ -47,7 +52,8 @@ def Initialize():
     SHOWID_CACHE, POSTPROCESSCMD, CONFIGFILE, WORKDIR, \
     TODOWNLOADQUEUE, WANTEDQUEUE, \
     RSSURL, APIKEY, API, \
-    SCHEDULERSCANDISK, SCHEDULERCHECKSUB, SCHEDULERCHECKRSS, SCHEDULERDOWNLOADSUBS
+    SCHEDULERSCANDISK, SCHEDULERCHECKSUB, SCHEDULERCHECKRSS, SCHEDULERDOWNLOADSUBS, \
+    DAEMON
     
     TODOWNLOADQUEUE = []
     WANTEDQUEUE = []
@@ -68,7 +74,8 @@ def Initialize():
     API = "http://api.bierdopje.com/%s/" %APIKEY
     
 def initLogging(logfile):
-    global LOGLEVEL, LOGSIZE, LOGNUM, LOGLEVELCONSOLE
+    global LOGLEVEL, LOGSIZE, LOGNUM, LOGLEVELCONSOLE, \
+    DAEMON
     
     # initialize logging
     # A log directory has to be created below the start directory
@@ -80,13 +87,14 @@ def initLogging(logfile):
     log_script.setFormatter(log_script_formatter)
     log_script.setLevel(LOGLEVEL)
     log.addHandler(log_script)
-
+    
     #CONSOLE log handler
-    console = logging.StreamHandler()
-    console.setLevel(LOGLEVELCONSOLE)
-    # set a format which is simpler for console use
-    formatter = logging.Formatter('%(asctime)s %(levelname)s  %(message)s')
-    console.setFormatter(formatter)
-    log.addHandler(console)
+    if DAEMON!=True:
+        console = logging.StreamHandler()
+        console.setLevel(LOGLEVELCONSOLE)
+        # set a format which is simpler for console use
+        formatter = logging.Formatter('%(asctime)s %(levelname)s  %(message)s')
+        console.setFormatter(formatter)
+        log.addHandler(console)
     
     return log

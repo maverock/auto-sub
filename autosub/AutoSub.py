@@ -8,12 +8,37 @@ import autosub.WebServer
 import logging
 import os
 import cherrypy
+import sys
 
 # Settings
 log = logging.getLogger('thelogger')
 
-# TODO: Daemon support
-
+def daemon():
+	print "AutoSub: Starting as a daemon"
+	try:
+		pid = os.fork()
+		if pid > 0:
+			sys.exit(0)
+	except OSError:
+		sys.exit(1)
+	
+	os.chdir(autosub.PATH) 
+	os.setsid() 
+	os.umask(0)
+	try:
+		pid = os.fork()
+		if pid > 0:
+			sys.exit(0)
+	except OSError:
+		sys.exit(1)
+	
+	print "AutoSub: Disabling console output for daemon."
+	
+	cherrypy.log.screen = False
+	sys.stdin.close()
+	sys.stdout.flush()
+	sys.stderr.flush()
+	
 def start():
 	log.info("AutoSub: Starting scanDisk thread")
 	autosub.SCANDISK = autosub.Scheduler.Scheduler(autosub.scanDisk.scanDisk(),autosub.SCHEDULERSCANDISK,True,"LOCALDISK")
@@ -35,15 +60,21 @@ def start():
 	autosub.DOWNLOADSUBS.thread.start()
 	log.info("AutoSub: downloadSubs thread started")
 	
-	
+	cherrypy.config.update({'server.socket_host': autosub.WEBSERVERIP,
+                        'server.socket_port': autosub.WEBSERVERPORT,
+                       })
 	
 	cherrypy.tree.mount(autosub.WebServer.WebServerInit())
 	log.info("AutoSub: Starting CherryPy webserver")
 	
-	# TODO: Let cherrypy log in our logger
-	# TODO: CherryPy settings
-	
-	cherrypy.server.start()
+	# TODO: Let CherryPy log do another log file and not to screen
+	# TODO: CherryPy settings, password protected etc...
+	try:
+		cherrypy.server.start()
+	except:
+		log.error("AutoSub: Could not start webserver. Exiting")
+		os._exit(1)
+		
 	cherrypy.server.wait()
 
 def stop():

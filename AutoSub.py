@@ -4,9 +4,10 @@ import sys
 import getopt
 import os
 import signal
+import time
 
 signal.signal(signal.SIGINT, autosub.AutoSub.signal_handler)
-signal.signal(signal.SIGTERM, autosub.AutoSub.signal_handler)
+#signal.signal(signal.SIGTERM, autosub.AutoSub.signal_handler)
 
 help_message = '''
 Usage:
@@ -31,7 +32,7 @@ def main(argv=None):
         argv = sys.argv
     try:
         try:
-            opts, args= getopt.getopt(argv[1:], "hc:", ["help","config="])
+            opts, args= getopt.getopt(argv[1:], "hc:d", ["help","config=","daemon"])
         except getopt.error, msg:
             raise Usage(msg)
     
@@ -39,8 +40,14 @@ def main(argv=None):
         for option, value in opts:
             if option in ("-h", "--help"):
                 raise Usage(help_message)
-            elif option in ("-c", "--config"):
+            if option in ("-c", "--config"):
                 autosub.CONFIGFILE = value
+            if option in ("-d", "--daemon"):
+                if sys.platform == "win32":
+                    print "ERROR: No support for daemon mode in Windows"
+                    # TODO: Service support for Windows
+                else:
+                    autosub.DAEMON = True
     
     except Usage, err:
         print >> sys.stderr, sys.argv[0].split("/")[-1] + ": " + str(err.msg)
@@ -53,12 +60,17 @@ def main(argv=None):
     print "AutoSub: Initializing variables and loading config"
     autosub.Initialize()
     
-    #change to the new work directory
-    if autosub.WORKDIR!=None:
-        print "AutoSub: Changing to workdirectory"
-        os.chdir(autosub.WORKDIR)
+    if autosub.DAEMON==True:
+        autosub.AutoSub.daemon()
     
-    print "AutoSub: Changing output to log"
+    #change to the new work directory
+    if os.path.exists(autosub.PATH):
+        os.chdir(autosub.PATH)
+    else:
+        print "AutoSub: ERROR PATH does not exist, check config."
+        os._exit(1)
+    
+    print "AutoSub: Changing output to log. Bye!"
     log = autosub.initLogging(autosub.LOGFILE)
     
     log.info("AutoSub: Starting threads")
@@ -67,12 +79,6 @@ def main(argv=None):
     log.info("AutoSub: threads started, going into a loop to keep the main thread going")
     
     while True:
-        pass
+        time.sleep(1)
 if __name__ == "__main__":
     sys.exit(main())
-
-#while True:
-    #if not downloadSubs.thread.isAlive() or not downloadSubs.thread.isAlive() or not localdisk.thread.isAlive() or not downloadSubs.thread.isAlive():
-    #    print traceback.format_exc()
-    #    os._exit(1)
-#    time.sleep(1)

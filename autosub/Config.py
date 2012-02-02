@@ -23,8 +23,7 @@ log = logging.getLogger('thelogger')
 #/Settings -----------------------------------------------------------------------------------------------------------------------------------------
 
 # TODO: Complete rewrite this function, remove try and replace with if statements if cfg.has_section etc.
-# TODO: Webserver config
-# TODO: Create example config.properties in linux style
+# TODO: Webserver config, basic are done. CherryPy logging still needs a file only
 
 def ReadConfig(configfile):
 		# Read config file
@@ -37,15 +36,33 @@ def ReadConfig(configfile):
 	cfg = SafeConfigParser()
 	cfg.read(configfile)
 	
-	if cfg.has_section('config'):
-		if cfg.has_option('config', 'path'):
-			autosub.APIKEY = cfg.get('config','path')
+	if cfg.has_section('webserver'):
+		if cfg.has_option('webserver', 'webserverip') and cfg.has_option('webserver', 'webserverport'):
+			autosub.WEBSERVERIP = cfg.get('webserver', 'webserverip')
+			autosub.WEBSERVERPORT = int(cfg.get('webserver', 'webserverport'))
+	else:
+		cfg.add_section('webserver')
+		cfg.set("webserver","webserverip",'127.0.0.1')
+		cfg.set('webserver','webserverport','8080')
+		edited = True
+		autosub.WEBSERVERIP = '127.0.0.1'
+		autosub.WEBSERVERPORT = 8080
 	
 	try:
 		dict(cfg.items('config'))
 	except:
 		cfg.add_section('config')
 		edited=True
+	
+	if cfg.has_section('config'):
+		if cfg.has_option('config', 'path'):
+			autosub.PATH = cfg.get('config','path')
+		else:
+			print "Config ERROR: Variable PATH is missing. This is required! Using current working directory instead"
+			autosub.PATH = os.getcwd()
+			cfg.set("config","PATH",autosub.PATH)
+			edited=True
+	
 	try:	
 		autosub.ROOTPATH=cfg.get("config", "ROOTPATH")
 	except:
@@ -54,22 +71,23 @@ def ReadConfig(configfile):
 	try:
 		autosub.FALLBACKTOENG=cfg.getboolean("config", "FALLBACKTOENG")
 	except:
+		autosub.FALLBACKTOENG=True
 		cfg.set("config","FALLBACKTOENG",str(autosub.FALLBACKTOENG))
-		edited=True
 	try:	
 		autosub.SUBENG=cfg.get("config", "SUBENG")
 	except:
+		autosub.SUBENG='en'
 		cfg.set("config","SUBENG",autosub.SUBENG)
-		edited=True
 	try:
 		autosub.SUBNL=cfg.get("config","SUBNL")
 	except:
 		autosub.SUBNL=""
 	
 	try:
-		autosub.WORKDIR=cfg.get("config","workdir")
+		autosub.PATH=cfg.get("config","workdir")
+		print "Config WARNING: Workdir is an old variable. Replace it with 'path'"
 	except:
-		autosub.WORKDIR=None
+		pass
 	
 	try:
 		autosub.LOGFILE= cfg.get("config", "LOGFILE")
@@ -110,7 +128,7 @@ def ReadConfig(configfile):
 	try:
 		autosub.LOGSIZE=int(cfg.get("logfile","LOGSIZE"))
 	except:
-		autosub.LOGSIZE=100000
+		autosub.LOGSIZE=1000000
 	
 	try :
 		autosub.LOGNUM=int(cfg.get("logfile"),"LOGNUM")
