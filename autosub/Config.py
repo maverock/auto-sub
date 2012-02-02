@@ -149,8 +149,8 @@ def ReadConfig(configfile):
 
 	# The following 4 lines convert the skipshow to uppercase. And also convert the variables to a list 
 	autosub.SKIPSHOWUPPER = {}
-	for x in autosub.SKIPSHOWUPPER:
-		autosub.SKIPSHOWUPPER[x.upper()] = autosub.SKIPSHOWUPPER[x].split(',')
+	for x in autosub.SKIPSHOW:
+		autosub.SKIPSHOWUPPER[x.upper()] = autosub.SKIPSHOW[x].split(',')
 	
 	try:
 		autosub.USERNAMEMAPPING = dict(cfg.items('namemapping'))
