@@ -12,12 +12,15 @@ signal.signal(signal.SIGINT, autosub.AutoSub.signal_handler)
 help_message = '''
 Usage:
     -h (--help)    Prints this message
-    -c | --config= Forces AutoSub.py to use a configfile other than ./config.properties
-
+    -c (--config=) Forces AutoSub.py to use a configfile other than ./config.properties
+    -d (--daemon)  Run AutoSub in the background
 Example:
     python AutoSub.py
+    python AutoSub.py -d
     python AutoSub.py -c/home/user/config.properties
     python AutoSub.py --config=/home/user/config.properties
+    python AutoSub.py --config=/home/user/config.properties --daemon
+    
 '''
 
 # TODO: comments in everyfile

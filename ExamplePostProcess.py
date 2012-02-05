@@ -5,8 +5,11 @@ import sys
 import library.pythontwitter as twitter
 import library.oauth2 as oauth
 import socket
+import email.utils
+import smtplib
 
 from library.growl import gntp
+from email.mime.text import MIMEText
 
 try:
     from urlparse import parse_qsl 
@@ -20,6 +23,7 @@ except:
 # twitter - send notifications to twitter
 # growl - send notification to a growl server
 # echo - echo's the arguments given to the script
+# mail - send an email when a subtitle is downloaded
 
 what = "echo"
 
@@ -34,7 +38,35 @@ token_key=''
 token_secret=''
 #/Twitter options
 
+#Mail Options:
+#WARNING! YOUR PASSWORD IS STORED IN PLAIN TEXT MAKE SURE THE FILE IS NOT 
+#READABLE BY EVERYONE.
+#!USE AT OWN RISK!
+srv = 'smtp.gmail.com:587'
+fromaddr = 'example@gmail.com'
+toaddrs  = 'example@gmail.com'
+username = 'example@gmail.com'
+password = 'mysecretpassword'
+subject = 'Subs info'
+#/Mail Options
+
 #/OPTIONS STOP EDITING BELOW THIS LINE
+#MAIL APPLICATION SOURCE
+def send_mail(message):
+    msg = MIMEText('Hi,\n \n AutoSub downloaded the following subtitle:\n %s' % message)
+    msg['To'] = email.utils.formataddr(('Recipient', toaddrs))
+    msg['Subject'] = subject
+    msg=msg.as_string()
+    
+    try:
+        server = smtplib.SMTP(srv)
+        server.starttls()
+        server.login(username,password)
+        server.sendmail(fromaddr, toaddrs, msg)
+        server.quit()
+        print "Email notification send"
+    except:
+        print "ERROR: Unable to send an email notification. Check your email settings."
 
 #GROWL APPLICATION SOURCE
 def send_growl(host,port,message):
@@ -155,3 +187,13 @@ if what== "growl":
         var = sys.argv[1]
         var = var.split('/')
         create_growl(var[-1])    
+
+if what== "mail":
+    if (sys.argv[1] and sys.argv[2] and srv!="" and fromaddr!="" and toaddrs!=""):
+        var = sys.argv[1]
+        var = var.split('/')
+        send_mail(var[-1])
+    elif (sys.argv[1] and sys.argv[2]):
+        print "ERROR: Minimum mail settings aren't set."
+    else:
+        print "ERROR: Mail settings not set"

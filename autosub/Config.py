@@ -205,7 +205,8 @@ def ReadConfig(configfile):
 			"The Kennedys":"15067",
 			"Last Man Standing Us":"15201",
 			"Up All Night 2011":"15261",
-			"Are You There Chelsea":"15259"
+			"Are You There Chelsea":"15259",
+			"Touch":"15761"
 	}
 	autosub.USERNAMEMAPPINGUPPER = {}
 	for x in autosub.USERNAMEMAPPING.keys():
