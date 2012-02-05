@@ -5,6 +5,51 @@
 	<title>AutoSub</title>
 </head>
 <body>
+<a href='runNow'>Run Everything Now</a>
+<p>
+<a href='shutdown'>Shutdown</a>
+<p>
+
+#if $len($autosub.WANTEDQUEUE) >= 1
+<b>Wanted queue:</b>
+<table border=1>
+<tr>
+	<td>Show name</td>
+	<td>Season</td>
+	<td>Episode</td>
+	<td>Quality</td>
+</tr>
+#for $var in $autosub.WANTEDQUEUE
+<tr>
+<td>$var['title']</td>
+<td>$var['season']</td>
+<td>$var['episode']</td>
+<td>$var['quality']</td>
+</tr>
+#end for
+</table>
+#end if
+<p>
+#if $len($autosub.LASTESTDOWNLOAD) >= 1
+<b>Last 10 subtitle:</b>
+<table border=1>
+<tr>
+	<td>Show name</td>
+	<td>Season</td>
+	<td>Episode</td>
+	<td>Quality</td>
+</tr>
+#for $var in $autosub.LASTESTDOWNLOAD
+<tr>
+<td>$var['title']</td>
+<td>$var['season']</td>
+<td>$var['episode']</td>
+<td>$var['quality']</td>
+</tr>
+#end for
+</table>
+#end if
+<p>
 <table>
 <tr>
 	<td>
@@ -31,9 +76,5 @@
 	</td>
 </tr>
 </table>
-<p>
-<a href='runNow'>Run Everything Now</a>
-<p>
-<a href='shutdown'>Shutdown</a>
 </body>
 </html>

@@ -36,6 +36,12 @@ class downloadSubs():
                     log.info("downloadSubs: DOWNLOADED: %s" %destsrt)
                     toDelete_toDownloadQueue.append(index)
                     
+                    if len(autosub.LASTESTDOWNLOAD) >= 10:
+                        autosub.LASTESTDOWNLOAD.pop(0)
+                        autosub.LASTESTDOWNLOAD.append(autosub.TODOWNLOADQUEUE[index])
+                    else:
+                        autosub.LASTESTDOWNLOAD.append(autosub.TODOWNLOADQUEUE[index])
+                    
                     if autosub.POSTPROCESSCMD:
                         postprocesscmdconstructed = autosub.POSTPROCESSCMD + " '" + downloadItem["destinationFileLocationOnDisk"] + "' '" + downloadItem["originalFileLocationOnDisk"] + "'"
                         log.debug("downloadSubs: Postprocess: running %s" %postprocesscmdconstructed)

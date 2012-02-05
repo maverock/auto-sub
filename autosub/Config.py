@@ -216,3 +216,4 @@ def ReadConfig(configfile):
 	for x in autosub.NAMEMAPPING.keys():
 		autosub.NAMEMAPPINGUPPER[x.upper()] = autosub.NAMEMAPPING[x]
 
+	autosub.LASTESTDOWNLOAD = []
