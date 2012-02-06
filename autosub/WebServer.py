@@ -1,13 +1,27 @@
 import cherrypy
 from Cheetah.Template import Template
-import autosub
 import threading
+import autosub.Config
 
 # TODO: Create webdesign
 class PageTemplate (Template):
     #Placeholder for future, this object can be used to add stuff to the template
     #Like menu, footers etc. Currently this object does nothing
     pass
+
+class Config:
+    @cherrypy.expose
+    def skipShow(self, title, season):
+        if not title:
+            raise cherrypy.HTTPError(400, "No show supplied")
+        if title.upper() in autosub.SKIPSHOWUPPER:
+            for x in autosub.SKIPSHOWUPPER[title.upper()]:
+                if x == season or x == '0':
+                    return "Already skipped <br> <a href='/home'>Return home</a>"
+            season = season + ',' +','.join(autosub.SKIPSHOWUPPER[title.upper()])
+        autosub.Config.SaveToConfig('skipshow',title,season)
+        autosub.Config.applyskipShow()
+        return "Add %s and season %s to the skipshow and applied it. <br> Remember, WantedQueue will be refresh at the next run of scanDisk <br> <a href='/home'>Return home</a>" % (title, season)
 
 class Home:
     @cherrypy.expose
@@ -35,3 +49,4 @@ class WebServerInit():
         raise cherrypy.HTTPRedirect("/home")
     
     home = Home()
+    config = Config()

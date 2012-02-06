@@ -1,9 +1,19 @@
 #import autosub
 #import time
+#import cgi
+
 <html>
 <head>
 	<title>AutoSub</title>
 </head>
+<script language="JavaScript">
+
+function clickFirstButton(divname,title,season)
+    {
+      document.getElementById(divname).innerHTML = "<input type=button value='Skip " + title + "' onClick=location.href='/config/skipShow/" + title + "/0' >\
+      <input type=button value='Skip " + title + " Season " + season + "' onClick=location.href='/config/skipShow/" + title + "/" + season +"' >";
+    }
+</script>
 <body>
 <a href='runNow'>Run Everything Now</a>
 <p>
@@ -11,6 +21,7 @@
 <p>
 
 #if $len($autosub.WANTEDQUEUE) >= 1
+<form>
 <b>Wanted queue:</b>
 <table border=1>
 <tr>
@@ -19,12 +30,24 @@
 	<td>Episode</td>
 	<td>Quality</td>
 </tr>
+#set $counter = 1
 #for $var in $autosub.WANTEDQUEUE
+#set $divname = "skipshow-" + $var['title'] + $var['season'] + $var['episode'] + $var['quality'] + str($counter)
+#set $counter = $counter + 1
+#set $functionname = "clickFirstButton(" + "'" + $divname + "'" + "," + "'" + $var['title'] + "'" + "," + "'" + $var['season'] + "'" +  ")"
 <tr>
 <td>$var['title']</td>
 <td>$var['season']</td>
 <td>$var['episode']</td>
 <td>$var['quality']</td>
+<td><input type="button" value="Skip Show" name="$var['season']" onClick="$functionname">
+</tr>
+<tr>
+	<td colspan="5" >
+		<div ID="$divname"></div>
+	</td>
+</tr>
+
 </tr>
 #end for
 </table>
@@ -46,6 +69,7 @@
 <td>$var['episode']</td>
 <td>$var['quality']</td>
 </tr>
+</form>
 #end for
 </table>
 #end if

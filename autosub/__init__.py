@@ -71,7 +71,6 @@ def Initialize():
         CONFIGFILE = "config.properties"
     
     Config.ReadConfig(CONFIGFILE)
-    
     API = "http://api.bierdopje.com/%s/" %APIKEY
     
 def initLogging(logfile):

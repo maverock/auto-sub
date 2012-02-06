@@ -217,3 +217,27 @@ def ReadConfig(configfile):
 		autosub.NAMEMAPPINGUPPER[x.upper()] = autosub.NAMEMAPPING[x]
 
 	autosub.LASTESTDOWNLOAD = []
+	
+def SaveToConfig(section=None,variable=None,value=None):
+	cfg = SafeConfigParser()
+	cfg.read(autosub.CONFIGFILE)
+	
+	if cfg.has_section(section):
+		cfg.set(section,variable,value)
+		edited=True
+	else:
+		cfg.add_section(section)
+		cfg.set(section,variable,value)
+		edited=True
+			
+	if edited:
+		with open(autosub.CONFIGFILE, 'wb') as file:
+			cfg.write(file)
+
+def applyskipShow():
+	cfg = SafeConfigParser()
+	cfg.read(autosub.CONFIGFILE)
+	autosub.SKIPSHOW = dict(cfg.items('skipshow'))
+	autosub.SKIPSHOWUPPER = {}
+	for x in autosub.SKIPSHOW:
+		autosub.SKIPSHOWUPPER[x.upper()] = autosub.SKIPSHOW[x].split(',')
