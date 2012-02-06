@@ -10,8 +10,10 @@
 
 function clickFirstButton(divname,title,season)
     {
-      document.getElementById(divname).innerHTML = "<input type=button value='Skip " + title + "' onClick=location.href='/config/skipShow/" + title + "/0' >\
-      <input type=button value='Skip " + title + " Season " + season + "' onClick=location.href='/config/skipShow/" + title + "/" + season +"' >";
+      var newurlall= "onClick=location.href='/config/skipShow/" + escape(title) + "/0'";
+      var newurlseason= "onClick=location.href='/config/skipShow/" + escape(title) + "/" + season + "'";
+      document.getElementById(divname).innerHTML = "<input type=button value='Skip " + title + "'" + newurlall +">\
+      <input type=button value='Skip " + title + " Season " + season + "'" + newurlseason + ">";
     }
 </script>
 <body>
