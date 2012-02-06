@@ -234,6 +234,14 @@ def SaveToConfig(section=None,variable=None,value=None):
 		with open(autosub.CONFIGFILE, 'wb') as file:
 			cfg.write(file)
 
+def applynameMapping():
+	cfg = SafeConfigParser()
+	cfg.read(autosub.CONFIGFILE)
+	autosub.USERNAMEMAPPING = dict(cfg.items('namemapping'))
+	autosub.USERNAMEMAPPINGUPPER = {}
+	for x in autosub.USERNAMEMAPPING.keys():
+		autosub.USERNAMEMAPPINGUPPER[x.upper()] = autosub.USERNAMEMAPPING[x]
+
 def applyskipShow():
 	cfg = SafeConfigParser()
 	cfg.read(autosub.CONFIGFILE)
@@ -241,3 +249,7 @@ def applyskipShow():
 	autosub.SKIPSHOWUPPER = {}
 	for x in autosub.SKIPSHOW:
 		autosub.SKIPSHOWUPPER[x.upper()] = autosub.SKIPSHOW[x].split(',')
+
+def applyAllSettings():
+	applynameMapping()
+	applyskipShow()

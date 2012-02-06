@@ -11,6 +11,10 @@ class PageTemplate (Template):
 
 class Config:
     @cherrypy.expose
+    def index(self):
+        tmpl = PageTemplate(file="interface/templates/config.tmpl")
+        return str(tmpl)
+    @cherrypy.expose
     def skipShow(self, title, season):
         if not title:
             raise cherrypy.HTTPError(400, "No show supplied")
@@ -18,11 +22,17 @@ class Config:
             for x in autosub.SKIPSHOWUPPER[title.upper()]:
                 if x == season or x == '0':
                     return "Already skipped <br> <a href='/home'>Return home</a>"
-            season = season + ',' +','.join(autosub.SKIPSHOWUPPER[title.upper()])
+            season = str(int(season)) + ',' +','.join(autosub.SKIPSHOWUPPER[title.upper()])
+        else:
+            season = str(int(season))
         autosub.Config.SaveToConfig('skipshow',title,season)
         autosub.Config.applyskipShow()
         return "Add %s and season %s to the skipshow and applied it. <br> Remember, WantedQueue will be refresh at the next run of scanDisk <br> <a href='/home'>Return home</a>" % (title, season)
-
+    
+    @cherrypy.expose
+    def applyConfig(self):
+        autosub.Config.applyAllSettings()
+        return "Settings read & applied<br><a href='/config'>Return</a>"
 class Home:
     @cherrypy.expose
     def index(self):
