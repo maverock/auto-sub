@@ -4,6 +4,7 @@ import autosub.checkRss
 import autosub.checkSub
 import autosub.downloadSubs
 import autosub.WebServer
+import autosub.wipStatus
 
 import logging
 import os
@@ -60,6 +61,11 @@ def start():
 	autosub.DOWNLOADSUBS.thread.start()
 	log.info("AutoSub: downloadSubs thread started")
 	
+	log.info("AutoSub: Starting wipStatus thread")
+	autosub.WIPSTATUS = autosub.Scheduler.Scheduler(autosub.wipStatus.wipStatus(),autosub.SCHEDULERWIPSTATUS,True,"WIPSTATUS")
+	autosub.WIPSTATUS.thread.start()
+	log.info("AutoSub: wipStatus thread started")
+	
 	cherrypy.config.update({'server.socket_host': autosub.WEBSERVERIP,
                         'server.socket_port': autosub.WEBSERVERPORT,
                        })
@@ -93,6 +99,10 @@ def stop():
 	log.info("AutoSub: Stopping downloadSubs thread")
 	autosub.DOWNLOADSUBS.stop = True
 	autosub.DOWNLOADSUBS.thread.join(10)
+	
+	log.info("AutoSub: Stopping wipStatus thread")
+	autosub.WIPSTATUS.stop = True
+	autosub.WIPSTATUS.thread.join(10)
 	
 	cherrypy.engine.exit()
 	

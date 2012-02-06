@@ -45,7 +45,13 @@ class Home:
         autosub.CHECKRSS.runnow = True
         autosub.CHECKSUB.runnow = True
         autosub.DOWNLOADSUBS.runnow = True
-        raise cherrypy.HTTPRedirect("/home")
+        autosub.WIPSTATUS.runnow = True
+        return "Running everything! <br> <a href='/home'>Return</a>"
+    
+    @cherrypy.expose
+    def runwipStatusNow(self):
+        autosub.WIPSTATUS.runnow = True
+        return "WipStatus updating <br> <a href='/home'>Return</a>"
     
     @cherrypy.expose
     def shutdown(self):

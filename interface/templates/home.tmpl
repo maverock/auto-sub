@@ -25,6 +25,8 @@ function clickFirstButton(divname,title,season)
 <p>
 #if $len($autosub.WANTEDQUEUE) >= 1
 <form>
+<input type="button" value="Update WipStatus" name="wipstatusbutton" onClick="location.href='/home/runwipStatusNow'">
+<p>
 <b>Wanted queue:</b>
 <table border=1>
 <tr>
@@ -32,6 +34,8 @@ function clickFirstButton(divname,title,season)
 	<td>Season</td>
 	<td>Episode</td>
 	<td>Quality</td>
+	<td>Procent Done</td>
+	<td>Expected</td>
 </tr>
 #set $counter = 1
 #for $var in $autosub.WANTEDQUEUE
@@ -43,10 +47,23 @@ function clickFirstButton(divname,title,season)
 <td>$var['season']</td>
 <td>$var['episode']</td>
 <td>$var['quality']</td>
+#if 'WIPProc' in $var.keys()
+<td>$var['WIPProc']</td>
+#else
+<td>?</td>
+#end if
+
+#if 'WIPDate' in $var.keys()
+<td>$var['WIPDate']</td>
+#else
+<td>?</td>
+#end if
+
+
 <td><input type="button" value="Skip Show" name="$var['season']" onClick="$functionname">
 </tr>
 <tr>
-	<td colspan="5" >
+	<td colspan="7" >
 		<div ID="$divname"></div>
 	</td>
 </tr>
@@ -100,6 +117,14 @@ function clickFirstButton(divname,title,season)
 	</td>
 	<td>
 		$time.strftime('%H:%M:%S', $time.gmtime(($autosub.CHECKSUB.interval - ($time.time() - $autosub.CHECKSUB.lastrun) ))) <br>
+	</td>
+</tr>
+<tr>
+	<td>
+		Next WipStatus in:
+	</td>
+	<td>
+		$time.strftime('%H:%M:%S', $time.gmtime(($autosub.WIPSTATUS.interval - ($time.time() - $autosub.WIPSTATUS.lastrun) )))
 	</td>
 </tr>
 </table>
