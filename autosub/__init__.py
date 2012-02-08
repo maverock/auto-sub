@@ -3,6 +3,7 @@ import logging.handlers
 
 ROOTPATH=None
 FALLBACKTOENG=None
+DOWNLOADENG=None
 SUBENG=None
 LOGFILE=None
 SUBNL=None

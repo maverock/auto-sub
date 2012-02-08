@@ -81,6 +81,7 @@ function clickFirstButton(divname,title,season)
 	<td>Season</td>
 	<td>Episode</td>
 	<td>Quality</td>
+	<td>Language</td>
 </tr>
 #for $var in $autosub.LASTESTDOWNLOAD
 <tr>
@@ -88,6 +89,7 @@ function clickFirstButton(divname,title,season)
 <td>$var['season']</td>
 <td>$var['episode']</td>
 <td>$var['quality']</td>
+<td>$var['lang']</td>
 </tr>
 </form>
 #end for

@@ -118,8 +118,10 @@ class checkRss():
     
                         if downloadLink: 
                             originalfile = wantedItem['originalFileLocationOnDisk']
-                            srtfile = os.path.join(originalfile[:-4] + ".srt")
-                            
+                            if autosub.SUBNL!="":
+                                srtfile = os.path.join(originalfile[:-4] + "." + autosub.SUBNL + ".srt")
+                            else:
+                                srtfile = os.path.join(originalfile[:-4] + ".srt")
                             wantedItem['downloadLink'] = downloadLink
                             wantedItem['destinationFileLocationOnDisk'] = srtfile
                             autosub.TODOWNLOADQUEUE.append(wantedItem)

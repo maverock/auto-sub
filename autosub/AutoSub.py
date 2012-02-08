@@ -41,6 +41,11 @@ def daemon():
 	sys.stderr.flush()
 	
 def start():
+	log.info("AutoSub: Starting wipStatus thread")
+	autosub.WIPSTATUS = autosub.Scheduler.Scheduler(autosub.wipStatus.wipStatus(),autosub.SCHEDULERWIPSTATUS,True,"WIPSTATUS")
+	autosub.WIPSTATUS.thread.start()
+	log.info("AutoSub: wipStatus thread started")
+	
 	log.info("AutoSub: Starting scanDisk thread")
 	autosub.SCANDISK = autosub.Scheduler.Scheduler(autosub.scanDisk.scanDisk(),autosub.SCHEDULERSCANDISK,True,"LOCALDISK")
 	autosub.SCANDISK.thread.start()
@@ -61,10 +66,7 @@ def start():
 	autosub.DOWNLOADSUBS.thread.start()
 	log.info("AutoSub: downloadSubs thread started")
 	
-	log.info("AutoSub: Starting wipStatus thread")
-	autosub.WIPSTATUS = autosub.Scheduler.Scheduler(autosub.wipStatus.wipStatus(),autosub.SCHEDULERWIPSTATUS,True,"WIPSTATUS")
-	autosub.WIPSTATUS.thread.start()
-	log.info("AutoSub: wipStatus thread started")
+	
 	
 	cherrypy.config.update({'server.socket_host': autosub.WEBSERVERIP,
                         'server.socket_port': autosub.WEBSERVERPORT,

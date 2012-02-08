@@ -62,6 +62,10 @@ def ReadConfig(configfile):
 			autosub.PATH = os.getcwd()
 			cfg.set("config","PATH",autosub.PATH)
 			edited=True
+		if cfg.has_option('config', 'downloadeng'):
+			autosub.DOWNLOADENG = cfg.getboolean('config','downloadeng')
+		else:
+			autosub.DOWNLOADENG = False
 	
 	try:	
 		autosub.ROOTPATH=cfg.get("config", "ROOTPATH")
@@ -206,7 +210,8 @@ def ReadConfig(configfile):
 			"Last Man Standing Us":"15201",
 			"Up All Night 2011":"15261",
 			"Are You There Chelsea":"15259",
-			"Touch":"15761"
+			"Touch":"15761",
+			"Ncis Los Angeles":"12994"
 	}
 	autosub.USERNAMEMAPPINGUPPER = {}
 	for x in autosub.USERNAMEMAPPING.keys():
