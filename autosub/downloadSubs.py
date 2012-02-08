@@ -43,7 +43,7 @@ class downloadSubs():
                         autosub.LASTESTDOWNLOAD.append(autosub.TODOWNLOADQUEUE[index])
                     
                     if autosub.POSTPROCESSCMD:
-                        postprocesscmdconstructed = autosub.POSTPROCESSCMD + " '" + downloadItem["destinationFileLocationOnDisk"] + "' '" + downloadItem["originalFileLocationOnDisk"] + "'"
+                        postprocesscmdconstructed = autosub.POSTPROCESSCMD + ' "' + downloadItem["destinationFileLocationOnDisk"] + '" "' + downloadItem["originalFileLocationOnDisk"] + '"'
                         log.debug("downloadSubs: Postprocess: running %s" %postprocesscmdconstructed)
                         log.info("downloadSubs: Running PostProcess")
                         postprocessoutput,postprocesserr = autosub.Helpers.RunCmd(postprocesscmdconstructed)

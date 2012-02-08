@@ -79,7 +79,6 @@ class checkSub():
                 if language == 'nl':
                     wantedItem['destinationFileLocationOnDisk'] = srtfile
                 elif language == 'en':
-                    print 'hier'
                     wantedItem['destinationFileLocationOnDisk'] = engsrtfile
                 autosub.TODOWNLOADQUEUE.append(wantedItem)
                 log.info("checkSub: The episode %s - Season %s Episode %s has a matching subtitle on bierdopje, adding to toDownloadQueue" %(title,season,episode))
