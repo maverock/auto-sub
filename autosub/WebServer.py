@@ -70,4 +70,7 @@ class WebServerInit():
 
     def error_page_401(status, message, traceback, version):
         return "Error %s - Well, I'm very sorry but you don't have access to this resource!" % status
-    _cp_config = {'error_page.401':error_page_401}
+    def error_page_404(status, message, traceback, version):
+        return "Error %s - Well, I'm very sorry but this page could not be found!" % status
+    _cp_config = {'error_page.401':error_page_401,
+                  'error_page.404':error_page_404}

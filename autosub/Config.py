@@ -215,6 +215,7 @@ def ReadConfig(configfile):
 			"Are You There Chelsea":"15259",
 			"Touch":"15761",
 			"Ncis Los Angeles":"12994"
+			"Mike and Molly":"14258"
 	}
 	autosub.USERNAMEMAPPINGUPPER = {}
 	for x in autosub.USERNAMEMAPPING.keys():
