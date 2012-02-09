@@ -60,9 +60,14 @@ class Home:
         return str(tmpl)
     
 class WebServerInit():
+
     @cherrypy.expose
     def index(self):
         raise cherrypy.HTTPRedirect("/home")
     
     home = Home()
     config = Config()
+
+    def error_page_401(status, message, traceback, version):
+        return "Error %s - Well, I'm very sorry but you don't have access to this resource!" % status
+    _cp_config = {'error_page.401':error_page_401}
