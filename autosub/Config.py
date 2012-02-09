@@ -40,10 +40,15 @@ def ReadConfig(configfile):
 		if cfg.has_option('webserver', 'webserverip') and cfg.has_option('webserver', 'webserverport'):
 			autosub.WEBSERVERIP = cfg.get('webserver', 'webserverip')
 			autosub.WEBSERVERPORT = int(cfg.get('webserver', 'webserverport'))
+		if cfg.has_option('webserver', 'username') and cfg.has_option('webserver', 'password'):
+			autosub.USERNAME = cfg.get('webserver', 'username')
+			autosub.PASSWORD = cfg.get('webserver', 'password')
 	else:
 		cfg.add_section('webserver')
 		cfg.set("webserver","webserverip",'127.0.0.1')
 		cfg.set('webserver','webserverport','8080')
+		cfg.set("webserver","username",'admin')
+		cfg.set("webserver","password",'admin')
 		edited = True
 		autosub.WEBSERVERIP = '127.0.0.1'
 		autosub.WEBSERVERPORT = 8080

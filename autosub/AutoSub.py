@@ -67,16 +67,25 @@ def start():
 	log.info("AutoSub: downloadSubs thread started")
 	
 	
-	
-	cherrypy.config.update({'server.socket_host': autosub.WEBSERVERIP,
-                        'server.socket_port': autosub.WEBSERVERPORT,
-                       })
+	#Only use authentication in CherryPy is a username and password is set by the user
+	if autosub.USERNAME and autosub.PASSWORD:
+		users = {autosub.USERNAME:autosub.PASSWORD}
+		cherrypy.config.update({'server.socket_host': autosub.WEBSERVERIP,
+                            'server.socket_port': autosub.WEBSERVERPORT,
+                            'tools.digest_auth.on': True,
+                            'tools.digest_auth.realm': 'AutoSub website',
+                            'tools.digest_auth.users': users
+                           })
+	else:
+		cherrypy.config.update({'server.socket_host': autosub.WEBSERVERIP,
+                            'server.socket_port': autosub.WEBSERVERPORT
+                           })	
 	
 	cherrypy.tree.mount(autosub.WebServer.WebServerInit())
 	log.info("AutoSub: Starting CherryPy webserver")
 	
 	# TODO: Let CherryPy log do another log file and not to screen
-	# TODO: CherryPy settings, password protected etc...
+	# TODO: CherryPy settings, etc...
 	try:
 		cherrypy.server.start()
 	except:
