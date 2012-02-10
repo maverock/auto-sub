@@ -214,7 +214,7 @@ def ReadConfig(configfile):
 			"Up All Night 2011":"15261",
 			"Are You There Chelsea":"15259",
 			"Touch":"15761",
-			"Ncis Los Angeles":"12994"
+			"Ncis Los Angeles":"12994",
 			"Mike and Molly":"14258"
 	}
 	autosub.USERNAMEMAPPINGUPPER = {}
