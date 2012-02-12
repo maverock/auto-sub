@@ -95,4 +95,20 @@ def getSubLink(showid, lang, releaseDetails):
             return sub.getElementsByTagName('downloadlink')[0].firstChild.data
     # Done comparing all the results, lets sort them and return the highest result
     # If there are results with the same score, the download links which comes first (alphabetically) will be returned
-    return sorted(scoredict.items(), key=itemgetter(1), reverse=True)[0][0]
+    # Also check if the result match the minimal score
+    sortedscoredict = sorted(scoredict.items(), key=itemgetter(1), reverse=True)
+    toDelete = []
+    for index, item in enumerate(sortedscoredict):
+        log.debug('getSubLink: checking minimal match score for %s. Minimal match score is: %s' %(item,autosub.MINMATCHSCORE))
+        score = item[1]
+        link = item[0]
+        if not score >= autosub.MINMATCHSCORE:
+            log.debug('getSubLink: %s does not match the minimal match score' % link)
+            toDelete.append(index)
+    i = len(toDelete) - 1
+    while i >= 0:
+        log.debug("getSubLink: Removed item from the ScoreDict at index %s" % toDelete[i])
+        sortedscoredict.pop(toDelete[i])
+        i = i - 1
+    if len (sortedscoredict) > 0:
+        return sortedscoredict[0][0]

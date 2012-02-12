@@ -65,10 +65,16 @@ def ReadConfig(configfile):
 			autosub.PATH = os.getcwd()
 			cfg.set("config","PATH",autosub.PATH)
 			edited=True
+			
 		if cfg.has_option('config', 'downloadeng'):
 			autosub.DOWNLOADENG = cfg.getboolean('config','downloadeng')
 		else:
 			autosub.DOWNLOADENG = False
+
+		if cfg.has_option('config','minmatchscore'):
+			autosub.MINMATCHSCORE = cfg.get('config','minmatchscore')
+		else:
+			autosub.MINMATCHSCORE = 0
 	
 	try:	
 		autosub.ROOTPATH=cfg.get("config", "ROOTPATH")
