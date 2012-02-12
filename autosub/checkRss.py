@@ -140,6 +140,8 @@ class checkRss():
                                 log.error("checkRSS: Could not find a show ID for %s" % wantedItemtitle)
                                 continue
                         autosub.SHOWID_CACHE[wantedItemtitle] = showid
+                    else:
+                        showid = autosub.SHOWID_CACHE[wantedItemtitle]
     
                     for normalizedRssTitle in normalizedRssTitleList:
                         toDownloadItem = None
