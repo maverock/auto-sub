@@ -35,6 +35,7 @@ class checkRss():
         langs = ["nl"]
         # default is to only check for Dutch subs
         # but if English should be downloaden, check them too
+        # It is very important that the dutch language is run first!
         if autosub.FALLBACKTOENG or autosub.DOWNLOADENG:
             langs.append("en")
             log.debug("checkRSS: We also want to check the English RSS feed")
@@ -46,7 +47,7 @@ class checkRss():
             else:
                 RSSURL = autosub.NLRSSURL
                 log.debug("checkRSS: Now using the Dutch RSS feed")
-
+            
             try:  
                 req = urllib2.urlopen(RSSURL)
                 dom = minidom.parse(req)
@@ -119,8 +120,14 @@ class checkRss():
                     wantedItemseason = wantedItem['season']
                     wantedItemepisode = wantedItem['episode']
                     wantedItemlanguage = wantedItem['lang']
+                    originalfile = wantedItem['originalFileLocationOnDisk']
                     
-                    if not wantedItemlanguage == lang:
+                    if not wantedItemlanguage == lang and autosub.FALLBACKTOENG == True:
+                        engsrtfile = os.path.join(originalfile[:-4] + "." + autosub.SUBENG + ".srt")
+                        if os.path.exists(engsrtfile):
+                            continue
+                        
+                    if not wantedItemlanguage == lang and autosub.FALLBACKTOENG == False:
                         continue 
                     
                     if 'quality' in wantedItem.keys(): wantedItemquality = wantedItem['quality']
