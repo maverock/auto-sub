@@ -118,7 +118,11 @@ class checkRss():
                     wantedItemtitle = wantedItem['title']
                     wantedItemseason = wantedItem['season']
                     wantedItemepisode = wantedItem['episode']
-    
+                    wantedItemlanguage = wantedItem['lang']
+                    
+                    if not wantedItemlanguage == lang:
+                        continue 
+                    
                     if 'quality' in wantedItem.keys(): wantedItemquality = wantedItem['quality']
                     if 'releasegrp' in wantedItem.keys(): wantedItemreleasegrp = wantedItem['releasegrp']
                     if 'source' in wantedItem.keys(): wantedItemsource = wantedItem['source']
