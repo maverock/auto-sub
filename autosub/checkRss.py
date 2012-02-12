@@ -82,13 +82,8 @@ class checkRss():
                                         if len (title) > 0:
                                             item['title'] = title
                                     
-                                    elif item_node.nodeName == 'link':
-                                        link = ""
-                                        for text_node in item_node.childNodes:
-                                            if text_node.nodeType == Node.TEXT_NODE:
-                                                link += text_node.nodeValue
-                                        if len (link) > 0:
-                                            item['link'] = link
+                                    elif item_node.nodeName == 'enclosure':
+                                        item['link'] = item_node.getAttribute('url')
                                     elif item_node.nodeName == 'show_id':
                                         show_id = ""
                                         for text_node in item_node.childNodes:
@@ -166,8 +161,9 @@ class checkRss():
                             score = autosub.Helpers.scoreMatch(normalizedRssTitlerssfile, wantedItemquality, wantedItemreleasegrp, wantedItemsource)
                             if score >= autosub.MINMATCHSCORERSS:
                                 log.debug ("checkRss: A match got a high enough score. MinMatchscore is %s " % autosub.MINMATCHSCORERSS)
-                                downloadLink = normalizedRssTitlelink       
-    
+                                downloadLink = normalizedRssTitlelink + autosub.APIRSS
+                                log.info ("checkRss: Got a match, matching file is: %s" %normalizedRssTitlerssfile)       
+                                log.debug("checkRss: Dumping downloadlink for debug purpose: %s" %downloadLink)
                             if downloadLink:
                                 originalfile = wantedItem['originalFileLocationOnDisk']
                                 # Dutch subs
@@ -182,8 +178,9 @@ class checkRss():
                                     srtfile = os.path.join(originalfile[:-4] + ".srt")
                                 wantedItem['downloadLink'] = downloadLink
                                 wantedItem['destinationFileLocationOnDisk'] = srtfile
-                                autosub.TODOWNLOADQUEUE.append(wantedItem)
                                 log.info("checkRSS: The episode %s - Season %s Episode %s has a matching subtitle on the RSSFeed, adding to toDownloadQueue" % (wantedItemtitle, wantedItemseason, wantedItemepisode))
+                                autosub.TODOWNLOADQUEUE.append(wantedItem)
+                                
                                 toDelete_wantedQueue.append(index)
                                 break
                             else:

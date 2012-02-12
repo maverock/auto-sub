@@ -77,6 +77,7 @@ class checkSub():
                         continue
                     elif downloadLink:
                         wantedItem['downloadLink'] = downloadLink
+                        log.debug('checkSub: Dumping downloadlink for debug perpuse %s' %downloadLink)
                         wantedItem['destinationFileLocationOnDisk'] = engsrtfile
                         autosub.TODOWNLOADQUEUE.append(wantedItem)
                         continue
@@ -92,6 +93,7 @@ class checkSub():
                     wantedItem['destinationFileLocationOnDisk'] = engsrtfile
                 autosub.TODOWNLOADQUEUE.append(wantedItem)
                 log.info("checkSub: The episode %s - Season %s Episode %s has a matching subtitle on bierdopje, adding to toDownloadQueue" % (title, season, episode))
+                log.debug('checkSub: Dumping downloadlink for debug perpuse %s' %downloadLink)
                 log.debug("checkSub: destination filename %s" % wantedItem['destinationFileLocationOnDisk'])
                 toDelete_wantedQueue.append(index)
                 log.debug("checkSub: Removed item: %s from the wantedQueue at index %s" % (wantedItem, index))
