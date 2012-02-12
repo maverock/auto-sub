@@ -1,4 +1,4 @@
-# Autosub Db.py - http://code.google.com/p/auto-sub/
+# Autosub autosub/checkRss.py - http://code.google.com/p/auto-sub/
 #
 # The Autosub checkRss module
 #
@@ -7,7 +7,7 @@ import logging
 import urllib2
 import os
 
-from xml.dom import minidom
+from xml.dom import minidom, Node
 #from operator import itemgetter
 
 import autosub.Helpers
@@ -15,7 +15,6 @@ import autosub.Bierdopje
 
 log = logging.getLogger('thelogger')
 
-# TODO: checkRss need to support the new matching system
 class checkRss():
     """
     Check the RSS feed for subtitles of episodes that are in the WANTEDQUEUE.
@@ -35,7 +34,7 @@ class checkRss():
 
         langs = ["nl"]
         # default is to only check for Dutch subs
-        # but if English should be downloaden, check them to
+        # but if English should be downloaden, check them too
         if autosub.FALLBACKTOENG or autosub.DOWNLOADENG:
             langs.append("en")
             log.debug("checkRSS: We also want to check the English RSS feed")
@@ -62,16 +61,60 @@ class checkRss():
     
             if not dom or len(dom.getElementsByTagName('result')) == 0:
                 rssTitleList = dom.getElementsByTagName('title')
+                rssItemList = []
+                rssRootNode = dom.documentElement
+                
+                # Parse all the item-tags from the RSSFeed
+                # The information that is parsed is: title, link and show_id
+                # The show_id is later used to match with the wanted items
+                # The title is used the determine the quality / source / releasegrp
+                for node in rssRootNode.childNodes:
+                    if node.nodeName == 'channel':
+                        for channel_node in node.childNodes:
+                            if channel_node.nodeName == 'item':
+                                item = {}
+                                for item_node in channel_node.childNodes:
+                                    if item_node.nodeName == 'title':
+                                        title = ""
+                                        for text_node in item_node.childNodes:
+                                            if text_node.nodeType == Node.TEXT_NODE:
+                                                title += text_node.nodeValue
+                                        if len (title) > 0:
+                                            item['title'] = title
+                                    
+                                    elif item_node.nodeName == 'link':
+                                        link = ""
+                                        for text_node in item_node.childNodes:
+                                            if text_node.nodeType == Node.TEXT_NODE:
+                                                link += text_node.nodeValue
+                                        if len (link) > 0:
+                                            item['link'] = link
+                                    elif item_node.nodeName == 'show_id':
+                                        show_id = ""
+                                        for text_node in item_node.childNodes:
+                                            if text_node.nodeType == Node.TEXT_NODE:
+                                                show_id += text_node.nodeValue
+                                        if len (show_id) > 0:
+                                            item['show_id'] = show_id
+                                rssItemList.append(item)
+                
                 normalizedRssTitleList = []
-    
-                for rssTitle in rssTitleList:
-                    log.debug("checkRSS: Normalizing the following entry in the RSS results: %s" % rssTitle.firstChild.data)
-                    normalizedRssTitle = autosub.Helpers.ProcessFileName(str(rssTitle.firstChild.data), '')
+                
+                # Now we create a new rsslist, containing information like: episode, season, etc
+                for item in rssItemList:
+                    title = item['title']
+                    link = item['link']
+                    show_id = item['show_id']
+                    log.debug("checkRSS: Normalizing the following entry in the RSS results: %s" % title)
+                    normalizedRssTitle = autosub.Helpers.ProcessFileName(str(title),'')
+                    normalizedRssTitle['rssfile'] = title
+                    normalizedRssTitle['link'] = link
+                    normalizedRssTitle['show_id'] = str(show_id)
                     if 'title' in normalizedRssTitle.keys():
                         if 'season' in normalizedRssTitle.keys():
                             if 'episode' in normalizedRssTitle.keys():        
                                 normalizedRssTitleList.append(normalizedRssTitle)
-    
+                
                 #check versus wantedItem list
                 for index, wantedItem in enumerate(autosub.WANTEDQUEUE):
                     wantedItemquality = None
@@ -107,38 +150,21 @@ class checkRss():
                         normalizedRssTitletitle = normalizedRssTitle['title']
                         normalizedRssTitleseason = normalizedRssTitle['season']
                         normalizedRssTitleepisode = normalizedRssTitle['episode']
-    
+                        normalizedRssTitlerssfile = normalizedRssTitle['rssfile']
+                        normalizedRssTitleshowid = normalizedRssTitle['show_id']
+                        normalizedRssTitlelink = normalizedRssTitle['link']
+                        
                         if 'quality' in normalizedRssTitle.keys(): normalizedRssTitlequality = normalizedRssTitle['quality']
                         if 'releasegrp' in normalizedRssTitle.keys(): normalizedRssTitlereleasegrp = normalizedRssTitle['releasegrp']
                         if 'source' in normalizedRssTitle.keys(): normalizedRssTitlesource = normalizedRssTitle['source']
     
-                        if wantedItemtitle == normalizedRssTitletitle and wantedItemseason == normalizedRssTitleseason and wantedItemepisode == normalizedRssTitleepisode:
+                        if showid == normalizedRssTitleshowid and wantedItemseason == normalizedRssTitleseason and wantedItemepisode == normalizedRssTitleepisode:
                             log.debug("checkRSS:  The episode %s - Season %s Episode %s was found in the RSS list, attempting to match a proper match" % (wantedItemtitle, wantedItemseason, wantedItemepisode))
     
-                            if wantedItemquality and wantedItemreleasegrp and wantedItemsource:
-                                log.debug("checkRSS: Trying to match against Quality & Releasegrp & Sourcefor %s - Season %s Episode %s" %(wantedItemtitle, wantedItemseason, wantedItemepisode))
-                                if wantedItemquality == normalizedRssTitlequality and wantedItemreleasegrp == normalizedRssTitlereleasegrp and wantedItemsource == normalizedRssTitlesource:
-                                    log.debug("Found a match for %s - Season %s Episode %s, getting downloadLink" % (wantedItemtitle, wantedItemseason, wantedItemepisode))
-                                    downloadLink = autosub.Bierdopje.getSubLink(showid, "nl", wantedItem)
-    
-                            elif wantedItemquality and wantedItemreleasegrp and not wantedItemsource:
-                                log.debug("checkRSS: Trying to match against Quality & Releasegrpfor %s - Season %s Episode %s" % (wantedItemtitle, wantedItemseason, wantedItemepisode))
-                                if wantedItemquality == normalizedRssTitlequality and wantedItemreleasegrp == normalizedRssTitlereleasegrp:
-                                    log.debug("Found a match for %s - Season %s Episode %s, getting downloadLink"  % (wantedItemtitle, wantedItemseason, wantedItemepisode))
-                                    downloadLink = autosub.Bierdopje.getSubLink(showid, lang, wantedItem)
-    
-                            elif wantedItemquality and wantedItemsource and not wantedItemreleasegrp:
-                                log.debug("checkRSS: Trying to match against Quality & Source")
-                                if wantedItemquality == normalizedRssTitlequality and wantedItemsource == normalizedRssTitlesource:
-                                    log.debug("Found a match for %s - Season %s Episode %s, getting downloadLink" % (wantedItemtitle, wantedItemseason, wantedItemepisode))
-                                    downloadLink = autosub.Bierdopje.getSubLink(showid, lang, wantedItem)
-    
-                            elif wantedItemquality and not wantedItemsource and not wantedItemreleasegrp:
-                                log.debug("checkRSS: Trying to match against Quality for %s - Season %s Episode %s" % (wantedItemtitle, wantedItemseason, wantedItemepisode))
-    
-                                if wantedItemquality == normalizedRssTitlequality:
-                                    log.debug("Found a match for %s - Season %s Episode %s, getting downloadLink" % (wantedItemtitle, wantedItemseason, wantedItemepisode))
-                                    downloadLink = autosub.Bierdopje.getSubLink(showid, lang, wantedItem)                
+                            score = autosub.Helpers.scoreMatch(normalizedRssTitlerssfile, wantedItemquality, wantedItemreleasegrp, wantedItemsource)
+                            if score >= autosub.MINMATCHSCORERSS:
+                                log.debug ("checkRss: A match got a high enough score. MinMatchscore is %s " % autosub.MINMATCHSCORERSS)
+                                downloadLink = normalizedRssTitlelink       
     
                             if downloadLink:
                                 originalfile = wantedItem['originalFileLocationOnDisk']
@@ -155,15 +181,18 @@ class checkRss():
                                 wantedItem['downloadLink'] = downloadLink
                                 wantedItem['destinationFileLocationOnDisk'] = srtfile
                                 autosub.TODOWNLOADQUEUE.append(wantedItem)
-                                log.info("checkRSS: The episode %s - Season %s Episode %s has a matching subtitle on bierdopje, adding to toDownloadQueue" % (wantedItemtitle, wantedItemseason, wantedItemepisode))
+                                log.info("checkRSS: The episode %s - Season %s Episode %s has a matching subtitle on the RSSFeed, adding to toDownloadQueue" % (wantedItemtitle, wantedItemseason, wantedItemepisode))
                                 toDelete_wantedQueue.append(index)
                                 break
-    
+                            else:
+                                log.debug("checkRss: Matching score is not high enough. Score is %s should be %s" %(str(score),autosub.MINMATCHSCORERSS))
             i = len(toDelete_wantedQueue)-1
             while i >= 0:
                 log.debug("checkRSS: Removed item from the wantedQueue at index %s" % toDelete_wantedQueue[i])
                 autosub.WANTEDQUEUE.pop(toDelete_wantedQueue[i])
                 i = i-1
+            # Resetting the toDelete queue for the next run (if need)
+            toDelete_wantedQueue =[]
     
         log.debug("checkRSS: Finished round of RSS checking")
         autosub.TODOWNLOADQUEUELOCK = False

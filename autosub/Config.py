@@ -72,9 +72,14 @@ def ReadConfig(configfile):
 			autosub.DOWNLOADENG = False
 
 		if cfg.has_option('config','minmatchscore'):
-			autosub.MINMATCHSCORE = cfg.get('config','minmatchscore')
+			autosub.MINMATCHSCORE = int(cfg.get('config','minmatchscore'))
 		else:
 			autosub.MINMATCHSCORE = 0
+		
+		if cfg.has_option('config','minmatchscoreRSS'):
+			autosub.MINMATCHSCORERSS = int(cfg.get('config','minmatchscorerss'))
+		else:
+			autosub.MINMATCHSCORERSS = 4
 	
 	try:	
 		autosub.ROOTPATH=cfg.get("config", "ROOTPATH")
