@@ -10,7 +10,7 @@ import logging
 import os
 import cherrypy
 import sys
-
+import time
 # Settings
 log = logging.getLogger('thelogger')
 
@@ -43,6 +43,20 @@ def daemon():
 
 
 def start():
+    # Setting fake times so the webserver can load
+    autosub.CHECKRSS = autosub.Scheduler.fake()
+    autosub.CHECKRSS.interval = 900
+    autosub.CHECKRSS.lastrun = time.time()
+    autosub.SCANDISK = autosub.Scheduler.fake()
+    autosub.SCANDISK.interval = 3600
+    autosub.SCANDISK.lastrun = time.time()
+    autosub.CHECKSUB = autosub.Scheduler.fake()
+    autosub.CHECKSUB.interval = 28800
+    autosub.CHECKSUB.lastrun = time.time()
+    autosub.WIPSTATUS = autosub.Scheduler.fake()
+    autosub.WIPSTATUS.interval = 86400
+    autosub.WIPSTATUS.lastrun = time.time()
+
     # Only use authentication in CherryPy is a username and password is set by the user
     if autosub.USERNAME and autosub.PASSWORD:
         users = {autosub.USERNAME: autosub.PASSWORD}
