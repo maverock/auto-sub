@@ -58,7 +58,7 @@ class checkRss():
                 autosub.TODOWNLOADQUEUELOCK = False
                 autosub.WANTEDQUEUELOCK = False
                 log.info("checkRss: Retrying later, something is wrong with the network connect or with the bierdopje rssfeed.")
-                return True
+                continue
     
             if not dom or len(dom.getElementsByTagName('result')) == 0:
                 rssTitleList = dom.getElementsByTagName('title')
