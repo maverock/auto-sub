@@ -46,13 +46,3 @@ class Scheduler:
             if self.stop:
                 break
             time.sleep(1)
-
-
-class fake:
-    """
-    Fake class with the necessary fields to fool
-    the webserver and let it start up.
-    """
-    def __init__(self):
-        self.interval = 0
-        self.lastrun = time.time()

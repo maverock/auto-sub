@@ -102,7 +102,11 @@ function clickFirstButton(divname,title,season)
 		Next RSSCheck in:
 	</td> 
 	<td>
-		$time.strftime('%H:%M:%S', $time.gmtime(($autosub.CHECKRSS.interval - ($time.time() - $autosub.CHECKRSS.lastrun) ))) <br>
+		#try
+		  $time.strftime('%H:%M:%S', $time.gmtime(($autosub.CHECKRSS.interval - ($time.time() - $autosub.CHECKRSS.lastrun) ))) <br>
+		#except
+		  Please wait... <br>
+		#end try
 	</td>
 </tr>
 <tr>
@@ -110,7 +114,11 @@ function clickFirstButton(divname,title,season)
 		Next ScanDisk in: 
 	</td>
 	<td>
-		$time.strftime('%H:%M:%S', $time.gmtime(($autosub.SCANDISK.interval - ($time.time() - $autosub.SCANDISK.lastrun) ))) <br>
+		#try
+		  $time.strftime('%H:%M:%S', $time.gmtime(($autosub.SCANDISK.interval - ($time.time() - $autosub.SCANDISK.lastrun) ))) <br>
+		#except
+		  Please wait... <br>
+		#end try
 	</td>
 </tr>
 <tr>
@@ -118,7 +126,11 @@ function clickFirstButton(divname,title,season)
 		Next CheckSub in: 
 	</td>
 	<td>
-		$time.strftime('%H:%M:%S', $time.gmtime(($autosub.CHECKSUB.interval - ($time.time() - $autosub.CHECKSUB.lastrun) ))) <br>
+		#try
+		  $time.strftime('%H:%M:%S', $time.gmtime(($autosub.CHECKSUB.interval - ($time.time() - $autosub.CHECKSUB.lastrun) ))) <br>
+		#except
+		  Please wait... <br>
+		#end try
 	</td>
 </tr>
 <tr>
@@ -126,7 +138,11 @@ function clickFirstButton(divname,title,season)
 		Next WipStatus in:
 	</td>
 	<td>
-		$time.strftime('%H:%M:%S', $time.gmtime(($autosub.WIPSTATUS.interval - ($time.time() - $autosub.WIPSTATUS.lastrun) )))
+		#try
+		  $time.strftime('%H:%M:%S', $time.gmtime(($autosub.WIPSTATUS.interval - ($time.time() - $autosub.WIPSTATUS.lastrun) )))
+		#except
+		  Please wait... <br>
+		#end try
 	</td>
 </tr>
 </table>
