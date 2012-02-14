@@ -56,8 +56,17 @@ def start():
         cherrypy.config.update({'server.socket_host': autosub.WEBSERVERIP,
                             'server.socket_port': autosub.WEBSERVERPORT
                            })
-
-    cherrypy.tree.mount(autosub.WebServer.WebServerInit())
+    
+    conf = {
+            '/media':{
+            'tools.staticdir.on': True,
+            'tools.staticdir.root': os.path.join(autosub.PATH, 'interface/'),
+            'tools.staticdir.dir': "media",
+            'tools.expires.on': True,
+            'tools.expires.secs': 3600 * 24 * 7
+        }}
+    
+    cherrypy.tree.mount(autosub.WebServer.WebServerInit(),config = conf)
     log.info("AutoSub: Starting CherryPy webserver")
 
     # TODO: Let CherryPy log do another log file and not to screen

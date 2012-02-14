@@ -34,6 +34,7 @@ function clickFirstButton(divname,title,season)
 	<td>Season</td>
 	<td>Episode</td>
 	<td>Quality</td>
+	<td>Source</td>
 	<td>Procent Done</td>
 	<td>Expected</td>
 </tr>
@@ -47,6 +48,13 @@ function clickFirstButton(divname,title,season)
 <td>$var['season']</td>
 <td>$var['episode']</td>
 <td>$var['quality']</td>
+
+#if 'source' in $var.keys()
+	<td>$var['source']</td>
+#else
+	<td>?</td>
+#end if
+
 #if 'WIPProc' in $var.keys()
 <td>$var['WIPProc']</td>
 #else
@@ -81,6 +89,7 @@ function clickFirstButton(divname,title,season)
 	<td>Season</td>
 	<td>Episode</td>
 	<td>Quality</td>
+	<td>Source</td>
 	<td>Language</td>
 </tr>
 #for $var in $autosub.LASTESTDOWNLOAD
@@ -89,6 +98,13 @@ function clickFirstButton(divname,title,season)
 <td>$var['season']</td>
 <td>$var['episode']</td>
 <td>$var['quality']</td>
+
+#if 'source' in $var.keys()
+	<td>$var['source']</td>
+#else
+	<td>?</td>
+#end if
+
 <td>$var['lang']</td>
 </tr>
 </form>
