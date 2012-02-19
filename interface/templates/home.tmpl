@@ -1,6 +1,7 @@
 #import autosub
 #import time
 #import cgi
+#import urllib
 
 #include $os.path.join($autosub.PATH, "interface/templates/header.tmpl")
 
@@ -9,11 +10,11 @@
 \$(document).ready(function() {
 #set $counter = 1
 #for $var in $autosub.WANTEDQUEUE
-	#set $divname = "skipshow-" + $var['title'] + $var['season'] + $var['episode'] + $var['quality'] + str($counter)
-	#set $buttonname = "skipshowbutton-" + $var['title'] + $var['season'] + $var['episode'] + $var['quality'] + str($counter)
-	#set $buttonseason = "skipshowbuttonseason-" + $var['title'] + $var['season'] + $var['episode'] + $var['quality'] + str($counter)
-	#set $buttonall = "skipshowbuttonall-" + $var['title'] + $var['season'] + $var['episode'] + $var['quality'] + str($counter)
-	#set $url = "/config/skipShow/" + $cgi.escape($var['title'])
+	#set $divname = "skipshow-" + str($counter)
+	#set $buttonname = "skipshowbutton-" + str($counter)
+	#set $buttonseason = "skipshowbuttonseason-" + str($counter)
+	#set $buttonall = "skipshowbuttonall-" + str($counter)
+	#set $url = "/config/skipShow/" + $urllib.quote($var['title'])
   	\$("#$divname").hide();
     \$("#$buttonname").click(function () {
     	\$("#$divname").show();
@@ -61,11 +62,11 @@
       <tbody>
 #set $counter = 1
 #for $var in $autosub.WANTEDQUEUE
-#set $divname = "skipshow-" + $var['title'] + $var['season'] + $var['episode'] + $var['quality'] + str($counter)
-#set $buttonname = "skipshowbutton-" + $var['title'] + $var['season'] + $var['episode'] + $var['quality'] + str($counter)
-#set $buttonseason = "skipshowbuttonseason-" + $var['title'] + $var['season'] + $var['episode'] + $var['quality'] + str($counter)
+#set $divname = "skipshow-" + str($counter)
+#set $buttonname = "skipshowbutton-" + str($counter)
+#set $buttonseason = "skipshowbuttonseason-" + str($counter)
+#set $buttonall = "skipshowbuttonall-" + str($counter)
 #set $counter = $counter + 1
-#set $buttonall = "skipshowbuttonall-" + $var['title'] + $var['season'] + $var['episode'] + $var['quality'] + str($counter)
 <tr class="alt">
 <td align="center"><b>$var['title']<b></td>
 <td align="center">$var['season']</td>
