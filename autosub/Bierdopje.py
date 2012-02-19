@@ -6,6 +6,7 @@
 import urllib
 import urllib2
 import logging
+import socket
 
 from xml.dom import minidom
 from operator import itemgetter
@@ -15,6 +16,8 @@ import autosub.Helpers
 # Settings
 log = logging.getLogger('thelogger')
 
+import socket
+socket.setdefaulttimeout(autosub.TIMEOUT)
 
 def getShowid(showName):
     """

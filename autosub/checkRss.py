@@ -6,6 +6,7 @@
 import logging
 import urllib2
 import os
+import socket
 
 from library.beautifulsoup import BeautifulStoneSoup
 
@@ -13,6 +14,8 @@ from library.beautifulsoup import BeautifulStoneSoup
 
 import autosub.Helpers
 import autosub.Bierdopje
+
+socket.setdefaulttimeout(autosub.TIMEOUT)
 
 log = logging.getLogger('thelogger')
 

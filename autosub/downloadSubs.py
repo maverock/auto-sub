@@ -7,9 +7,10 @@ import logging
 import urllib2
 
 import autosub
-
+import socket
 log = logging.getLogger('thelogger')
 
+socket.setdefaulttimeout(autosub.TIMEOUT)
 
 class downloadSubs():
     """

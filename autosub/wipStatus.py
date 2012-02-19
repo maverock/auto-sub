@@ -1,7 +1,16 @@
+# Autosub autosub/wipStatus.py - http://code.google.com/p/auto-sub/
+#
+# The Autosub checkStatus module
+#
+
+
 import urllib2
 import re
 import autosub
 from library.beautifulsoup import BeautifulSoup
+
+import socket
+socket.setdefaulttimeout(autosub.TIMEOUT)
 
 class wipStatus():
     def run(self):
