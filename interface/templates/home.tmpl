@@ -2,77 +2,109 @@
 #import time
 #import cgi
 
-<html>
-<head>
-	<title>AutoSub</title>
-</head>
+#include $os.path.join($autosub.PATH, "interface/templates/header.tmpl")
+
 <script language="JavaScript">
 
-function clickFirstButton(divname,title,season)
-    {
-      var newurlall= "onClick=location.href='/config/skipShow/" + escape(title) + "/0'";
-      var newurlseason= "onClick=location.href='/config/skipShow/" + escape(title) + "/" + season + "'";
-      document.getElementById(divname).innerHTML = "<input type=button value='Skip " + title + "'" + newurlall +">\
-      <input type=button value='Skip " + title + " Season " + season + "'" + newurlseason + ">";
-    }
+\$(document).ready(function() {
+#set $counter = 1
+#for $var in $autosub.WANTEDQUEUE
+	#set $divname = "skipshow-" + $var['title'] + $var['season'] + $var['episode'] + $var['quality'] + str($counter)
+	#set $buttonname = "skipshowbutton-" + $var['title'] + $var['season'] + $var['episode'] + $var['quality'] + str($counter)
+	#set $buttonseason = "skipshowbuttonseason-" + $var['title'] + $var['season'] + $var['episode'] + $var['quality'] + str($counter)
+	#set $buttonall = "skipshowbuttonall-" + $var['title'] + $var['season'] + $var['episode'] + $var['quality'] + str($counter)
+	#set $url = "/config/skipShow/" + $cgi.escape($var['title'])
+  	\$("#$divname").hide();
+    \$("#$buttonname").click(function () {
+    	\$("#$divname").show();
+    });
+    \$("#$buttonall").click(function () {
+    	document.location.href="$url/0";
+    });
+    \$("#$buttonseason").click(function () {
+    	document.location.href="$url/$var['season']";
+    });
+    #set $counter = $counter + 1 
+#end for
+    
+   });
+
 </script>
 <body>
-<a href='runNow'>Run Everything Now</a>
-<p>
-<a href='shutdown'>Shutdown</a>
-<p>
-<a href='/config'>Config</a>
-<p>
+
+#include $os.path.join($autosub.PATH, "interface/templates/menu.tmpl")
+
+
+<br>
+<h1>Wanted Subtitles</h1>
+
 #if $len($autosub.WANTEDQUEUE) >= 1
 <form>
-<input type="button" value="Update WipStatus" name="wipstatusbutton" onClick="location.href='/home/runwipStatusNow'">
-<p>
-<b>Wanted queue:</b>
-<table border=1>
+<table id="historyTable" class="queueTable" cellspacing="0">
+<thead>
 <tr>
-	<td>Show name</td>
-	<td>Season</td>
-	<td>Episode</td>
-	<td>Quality</td>
-	<td>Source</td>
-	<td>Procent Done</td>
-	<td>Expected</td>
+	<th>Show name</th>
+	<th>Season</th>
+	<th>Episode</th>
+	<th>Quality</th>
+	<th>Source</th>
+	<th>Procent Done</th>
+	<th>Expected</th>
+	<th>Skip Show</th>
 </tr>
+</thead>
+      <tfoot>
+        <tr>
+          <th rowspan="1" colspan="8"></th>
+        </tr>
+      </tfoot>
+      <tbody>
 #set $counter = 1
 #for $var in $autosub.WANTEDQUEUE
 #set $divname = "skipshow-" + $var['title'] + $var['season'] + $var['episode'] + $var['quality'] + str($counter)
+#set $buttonname = "skipshowbutton-" + $var['title'] + $var['season'] + $var['episode'] + $var['quality'] + str($counter)
+#set $buttonseason = "skipshowbuttonseason-" + $var['title'] + $var['season'] + $var['episode'] + $var['quality'] + str($counter)
 #set $counter = $counter + 1
-#set $functionname = "clickFirstButton(" + "'" + $divname + "'" + "," + "'" + $var['title'] + "'" + "," + "'" + $var['season'] + "'" +  ")"
-<tr>
-<td>$var['title']</td>
-<td>$var['season']</td>
-<td>$var['episode']</td>
-<td>$var['quality']</td>
+#set $buttonall = "skipshowbuttonall-" + $var['title'] + $var['season'] + $var['episode'] + $var['quality'] + str($counter)
+<tr class="alt">
+<td align="center"><b>$var['title']<b></td>
+<td align="center">$var['season']</td>
+<td align="center">$var['episode']</td>
+
+#if 'quality' in $var.keys()
+	<td align="center">$var['quality']</td>
+#else
+	<td align="center">?</td>
+#end if
 
 #if 'source' in $var.keys()
-	<td>$var['source']</td>
+	<td align="center">$var['source']</td>
 #else
-	<td>?</td>
+	<td align="center">?</td>
 #end if
 
 #if 'WIPProc' in $var.keys()
-<td>$var['WIPProc']</td>
+<td align="center">$var['WIPProc']</td>
 #else
-<td>?</td>
+<td align="center">?</td>
 #end if
 
 #if 'WIPDate' in $var.keys()
-<td>$var['WIPDate']</td>
+<td align="center">$var['WIPDate']</td>
 #else
-<td>?</td>
+<td align="center">?</td>
 #end if
 
 
-<td><input type="button" value="Skip Show" name="$var['season']" onClick="$functionname">
+<td align="center">
+<input type="button" value="Skip Show" id="$buttonname"></td>
 </tr>
-<tr>
-	<td colspan="7" >
-		<div ID="$divname"></div>
+
+<tr ID="$divname">
+
+	<td align="right" colspan="9">
+		<input id="$buttonseason" type=button value='Skip Season $var['season']'>
+		<input id="$buttonall" type=button value='Skip Complete Show'>
 	</td>
 </tr>
 
@@ -82,36 +114,44 @@ function clickFirstButton(divname,title,season)
 #end if
 <p>
 #if $len($autosub.LASTESTDOWNLOAD) >= 1
-<b>Last 10 subtitle:</b>
-<table border=1>
+    <br/><h1>Latest download subtitles</h1>
+<table id="historyTable" class="queueTable" cellspacing="0">
+<thead>
 <tr>
-	<td>Show name</td>
-	<td>Season</td>
-	<td>Episode</td>
-	<td>Quality</td>
-	<td>Source</td>
-	<td>Language</td>
+	<th>Show name</th>
+	<th>Season</th>
+	<th>Episode</th>
+	<th>Quality</th>
+	<th>Source</th>
+	<th>Language</th>
 </tr>
+</thead>
+ <tfoot>
+        <tr>
+          <th rowspan="1" colspan="8"></th>
+        </tr>
+      </tfoot>
 #for $var in $autosub.LASTESTDOWNLOAD
-<tr>
-<td>$var['title']</td>
-<td>$var['season']</td>
-<td>$var['episode']</td>
-<td>$var['quality']</td>
+<tr class="alt">
+<td align="center"><b>$var['title']</b></td>
+<td align="center">$var['season']</td>
+<td align="center">$var['episode']</td>
+<td align="center">$var['quality']</td>
 
 #if 'source' in $var.keys()
-	<td>$var['source']</td>
+	<td align="center">$var['source']</td>
 #else
-	<td>?</td>
+	<td align="center">?</td>
 #end if
 
-<td>$var['lang']</td>
+<td align="center"><img src="../media/images/#if $var['lang'] is "nl" then "nl.png\" alt=\"Y\"" else "en.png\" alt=\"N\""# /></td>
 </tr>
 </form>
 #end for
 </table>
 #end if
 <p>
+<br>
 <table>
 <tr>
 	<td>
@@ -162,5 +202,5 @@ function clickFirstButton(divname,title,season)
 	</td>
 </tr>
 </table>
-</body>
-</html>
+
+#include $os.path.join($autosub.PATH, "interface/templates/footer.tmpl")

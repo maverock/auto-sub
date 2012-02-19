@@ -26,7 +26,7 @@ log = logging.getLogger('thelogger')
 # TODO: Webserver config, basic are done. CherryPy logging still needs a file only
 
 def ReadConfig(configfile):
-		# Read config file
+	# Read config file
 	autosub.ROOTPATH = os.getcwd()
 	autosub.FALLBACKTOENG = True
 	autosub.SUBENG = "en"
@@ -81,6 +81,35 @@ def ReadConfig(configfile):
 		else:
 			autosub.MINMATCHSCORERSS = 4
 	
+		if cfg.has_option('config','scandisk'):
+			autosub.SCHEDULERSCANDISK = int(cfg.get('config','scandisk'))
+		else:
+			autosub.SCHEDULERSCANDISK=3600
+			
+		if cfg.has_option('config','checksub'):
+			autosub.SCHEDULERCHECKSUB = int(cfg.get('config','checksub'))
+			#CHECKSUB may only be runed 6 times a day, to prevent the API key from being banned
+			#If you want new subtitles faster, you should decrease the CHECKRSS time
+			if autosub.SCHEDULERCHECKSUB < 21600: 
+				print "Config WARNING: checksub variable is lower then 21600! This is not allowed, this is to prevent our API-key from being banned"
+				autosub.SCHEDULERCHECKSUB = 21600 #Run every 6 hours
+		else:
+			autosub.SCHEDULERCHECKSUB=28800 #Run every 8 hours
+			
+		if cfg.has_option('config','checkrss'):
+			autosub.SCHEDULERCHECKRSS = int(cfg.get('config','checkrss'))
+			#Because of the http timeout it is not recommened to set checkrss lower then 1 minute
+			if autosub.SCHEDULERCHECKRSS < 60:
+				print "Config WARNING: checkrss variable is lower then 60. Because of http timeout it is not recommended to set it below 60 seconds"
+				autosub.SCHEDULERCHECKRSS = 60 #Run every minute
+		else:
+			autosub.SCHEDULERCHECKRSS=900 #Run every 15 minutes
+		
+		if cfg.has_option('config','downloadsubs'):
+			autosub.SCHEDULERDOWNLOADSUBS= int(cfg.get('config','downloadsubs'))
+		else:
+			autosub.SCHEDULERDOWNLOADSUBS=1 #Run every second
+		
 	try:	
 		autosub.ROOTPATH=cfg.get("config", "ROOTPATH")
 	except:

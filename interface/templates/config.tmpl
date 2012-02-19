@@ -1,9 +1,12 @@
 #import autosub
-<html>
-<head>
-	<title>AutoSub</title>
-</head>
+
+#include $os.path.join($autosub.PATH, "interface/templates/header.tmpl")
+
+
 <body>
+
+#include $os.path.join($autosub.PATH, "interface/templates/menu.tmpl")
+
 Placeholder website, when finished, this page will allow you to change to settings on the fly.
 <p>
 NOTE!: This function read the config file and applies its settings. Currently only applies: SkipShow & Namemapping<br>

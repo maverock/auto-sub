@@ -6,7 +6,6 @@ import autosub.Config
 # TODO: Create webdesign
 class PageTemplate (Template):
     #Placeholder for future, this object can be used to add stuff to the template
-    #Like menu, footers etc. Currently this object does nothing
     pass
 
 class Config:
@@ -16,23 +15,29 @@ class Config:
         return str(tmpl)
     @cherrypy.expose
     def skipShow(self, title, season):
+        tmpl = PageTemplate(file="interface/templates/message.tmpl")
         if not title:
             raise cherrypy.HTTPError(400, "No show supplied")
         if title.upper() in autosub.SKIPSHOWUPPER:
             for x in autosub.SKIPSHOWUPPER[title.upper()]:
                 if x == season or x == '0':
-                    return "Already skipped <br> <a href='/home'>Return home</a>"
+                    tmpl.message = "Already skipped <br> <a href='/home'>Return home</a>"
+                    return str(tmpl)
             season = str(int(season)) + ',' +','.join(autosub.SKIPSHOWUPPER[title.upper()])
         else:
             season = str(int(season))
         autosub.Config.SaveToConfig('skipshow',title,season)
         autosub.Config.applyskipShow()
-        return "Add %s and season %s to the skipshow and applied it. <br> Remember, WantedQueue will be refresh at the next run of scanDisk <br> <a href='/home'>Return home</a>" % (title, season)
+        
+        tmpl.message = "Add %s and season %s to the skipshow and applied it. <br> Remember, WantedQueue will be refresh at the next run of scanDisk <br> <a href='/home'>Return home</a>" % (title, season)
+        return str(tmpl)
     
     @cherrypy.expose
     def applyConfig(self):
         autosub.Config.applyAllSettings()
-        return "Settings read & applied<br><a href='/config'>Return</a>"
+        tmpl = PageTemplate(file="interface/templates/message.tmpl")
+        tmpl.message = "Settings read & applied<br><a href='/config'>Return</a>"
+        return str(tmpl)
 class Home:
     @cherrypy.expose
     def index(self):
@@ -46,12 +51,17 @@ class Home:
         autosub.CHECKSUB.runnow = True
         autosub.DOWNLOADSUBS.runnow = True
         autosub.WIPSTATUS.runnow = True
-        return "Running everything! <br> <a href='/home'>Return</a>"
+        
+        tmpl = PageTemplate(file="interface/templates/message.tmpl")
+        tmpl.message = "Running everything! <br> <a href='/home'>Return</a>"
+        return str(tmpl)
     
     @cherrypy.expose
     def runwipStatusNow(self):
         autosub.WIPSTATUS.runnow = True
-        return "WipStatus updating <br> <a href='/home'>Return</a>"
+        tmpl = PageTemplate(file="interface/templates/message.tmpl")
+        tmpl.message = "WipStatus updating <br> <a href='/home'>Return</a>"
+        return str(tmpl)
     
     @cherrypy.expose
     def shutdown(self):

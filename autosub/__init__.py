@@ -75,11 +75,9 @@ def Initialize():
     APIKEY = "AFC34E2C2FE8B9F7"
     WIPURL = "http://www.bierdopje.com/wip/overview"
     
-    SCHEDULERSCANDISK=3600  #run scandisk every hour
-    SCHEDULERCHECKSUB=28800 #run checksub every 8 hours
-    SCHEDULERCHECKRSS=900   #run checkrss every 15 minutes
-    SCHEDULERDOWNLOADSUBS=1  #run downloadsubs every second
+    #There is no need to change WIPSTATUS, because it is runned after every scandisk
     SCHEDULERWIPSTATUS=86400 #run wipstatus every day
+    
     if CONFIGFILE==None:
         CONFIGFILE = "config.properties"
     

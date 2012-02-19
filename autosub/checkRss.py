@@ -136,15 +136,16 @@ class checkRss():
     
                     if wantedItemtitle in autosub.SHOWID_CACHE.keys():
                         showid = autosub.SHOWID_CACHE[wantedItemtitle]
-    
-                    if not wantedItemtitle in autosub.SHOWID_CACHE.keys():
-                        showid = autosub.Bierdopje.getShowid(wantedItemtitle)
+                    elif not wantedItemtitle in autosub.SHOWID_CACHE.keys():
+                        showid = autosub.Helpers.nameMapping(wantedItemtitle)
                         if not showid:
-                            log.debug("checkRSS: Could not be found on bierdopje.com for %s, trying the namemapping" % wantedItemtitle)
-                            showid = autosub.Helpers.nameMapping(wantedItemtitle)
+                            log.debug("checkRSS: no NameMapping found for %s, trying the Bierdopje API" % wantedItemtitle)
+                            showid = autosub.Bierdopje.getShowid(wantedItemtitle)
                             if not showid:
                                 log.error("checkRSS: Could not find a show ID for %s" % wantedItemtitle)
+                                autosub.SHOWID_CACHE[wantedItemtitle] = -1
                                 continue
+                        log.debug("checkRSS: Got the following showid: %s" % showid)
                         autosub.SHOWID_CACHE[wantedItemtitle] = showid
                     else:
                         showid = autosub.SHOWID_CACHE[wantedItemtitle]
