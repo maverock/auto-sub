@@ -7,7 +7,7 @@ import logging
 import urllib2
 import os
 
-from BeautifulSoup import BeautifulStoneSoup
+from library.beautifulsoup import BeautifulStoneSoup
 
 #from operator import itemgetter
 
