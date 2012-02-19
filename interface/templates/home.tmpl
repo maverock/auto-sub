@@ -49,6 +49,7 @@
 	<th>Episode</th>
 	<th>Quality</th>
 	<th>Source</th>
+	<th>Language</th>
 	<th>Procent Done</th>
 	<th>Expected</th>
 	<th>Skip Show</th>
@@ -56,7 +57,7 @@
 </thead>
       <tfoot>
         <tr>
-          <th rowspan="1" colspan="8"></th>
+          <th rowspan="1" colspan="9"></th>
         </tr>
       </tfoot>
       <tbody>
@@ -83,6 +84,8 @@
 #else
 	<td align="center">?</td>
 #end if
+
+<td align="center"><img src="../media/images/#if $var['lang'] is "nl" then "nl.png\" alt=\"Y\"" else "en.png\" alt=\"N\""# /></td>
 
 #if 'WIPProc' in $var.keys()
 <td align="center">$var['WIPProc']</td>
@@ -129,7 +132,7 @@
 </thead>
  <tfoot>
         <tr>
-          <th rowspan="1" colspan="8"></th>
+          <th rowspan="1" colspan="9"></th>
         </tr>
       </tfoot>
 #for $var in $autosub.LASTESTDOWNLOAD

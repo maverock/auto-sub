@@ -286,6 +286,7 @@ def SaveToConfig(section=None,variable=None,value=None):
 def applynameMapping():
 	cfg = SafeConfigParser()
 	cfg.read(autosub.CONFIGFILE)
+	autosub.SHOWID_CACHE = {}
 	autosub.USERNAMEMAPPING = dict(cfg.items('namemapping'))
 	autosub.USERNAMEMAPPINGUPPER = {}
 	for x in autosub.USERNAMEMAPPING.keys():

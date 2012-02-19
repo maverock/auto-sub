@@ -23,9 +23,13 @@ class Config:
                 if x == season or x == '0':
                     tmpl.message = "Already skipped <br> <a href='/home'>Return home</a>"
                     return str(tmpl)
-            season = str(int(season)) + ',' +','.join(autosub.SKIPSHOWUPPER[title.upper()])
+            if season == '00':
+                season = str(int(season)) + ',' + ','.join(autosub.SKIPSHOWUPPER[title.upper()])
+            else:
+                season = season + ',' + ','.join(autosub.SKIPSHOWUPPER[title.upper()])
         else:
-            season = str(int(season))
+            if not season == '00':
+                season = str(int(season))
         autosub.Config.SaveToConfig('skipshow',title,season)
         autosub.Config.applyskipShow()
         
