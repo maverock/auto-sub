@@ -113,16 +113,10 @@ class checkRss():
                 wantedItemtitle = wantedItem['title']
                 wantedItemseason = wantedItem['season']
                 wantedItemepisode = wantedItem['episode']
-                wantedItemlanguage = wantedItem['lang']
                 originalfile = wantedItem['originalFileLocationOnDisk']
                 
-                if not wantedItemlanguage == lang and autosub.FALLBACKTOENG == True:
-                    engsrtfile = os.path.join(originalfile[:-4] + "." + autosub.SUBENG + ".srt")
-                    if os.path.exists(engsrtfile):
-                        continue
-                    
-                if not wantedItemlanguage == lang and autosub.FALLBACKTOENG == False:
-                    continue 
+                if lang not in wantedItem['lang']:
+                    continue
                 
                 if 'quality' in wantedItem.keys(): wantedItemquality = wantedItem['quality']
                 if 'releasegrp' in wantedItem.keys(): wantedItemreleasegrp = wantedItem['releasegrp']
@@ -185,9 +179,20 @@ class checkRss():
                             wantedItem['downloadLink'] = downloadLink
                             wantedItem['destinationFileLocationOnDisk'] = srtfile
                             log.info("checkRSS: The episode %s - Season %s Episode %s has a matching subtitle on the RSSFeed, adding to toDownloadQueue" % (wantedItemtitle, wantedItemseason, wantedItemepisode))
-                            autosub.TODOWNLOADQUEUE.append(wantedItem)
                             
-                            toDelete_wantedQueue.append(index)
+                            downloadItem = wantedItem.copy()
+                            downloadItem['downlang'] = lang
+                            autosub.TODOWNLOADQUEUE.append(downloadItem)
+                            
+                            if lang == 'nl' and (autosub.FALLBACKTOENG and not autosub.DOWNLOADENG) and 'en' in wantedItem['lang']:
+                                log.debug('checkRss: We found a dutch subtitle and fallback is true. Removing the english subtitle from the wantedlist.')
+                                wantedItem['lang'].remove('en')
+                            
+                            wantedItem['lang'].remove(lang)
+
+                            if len(wantedItem['lang']) == 0:
+                                toDelete_wantedQueue.append(index)
+                                
                             break
                         else:
                             log.debug("checkRss: Matching score is not high enough. Score is %s should be %s" %(str(score),autosub.MINMATCHSCORERSS))

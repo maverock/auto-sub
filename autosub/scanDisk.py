@@ -48,13 +48,11 @@ class scanDisk():
 
                     srtfileeng = os.path.join(filename[:-4] + "." + autosub.SUBENG + ".srt")
 
-                    if not os.path.exists(os.path.join(dirname, srtfile)):
-                        log.debug("scanDir: File %s does not yet have a srt file" % filename)
-                        # Helpers.ProcessFileName requires 2 arguments, the filename and the extension
+                    if not os.path.exists(os.path.join(dirname, srtfile)) or (not os.path.exists(os.path.join(dirname, srtfileeng)) and autosub.DOWNLOADENG):
+                        log.debug("scanDir: File %s is missing a subtitle" % filename)
+                        lang = []
                         filenameResults = autosub.Helpers.ProcessFileName(os.path.splitext(filename)[0], os.path.splitext(filename)[1])
-
                         if 'title' in filenameResults.keys():
-
                             if 'season' in filenameResults.keys():
                                 if 'episode' in filenameResults.keys():
                                     title = filenameResults['title']
@@ -65,44 +63,17 @@ class scanDisk():
                                         log.debug("scanDir: SkipShow returned True")
                                         log.info("scanDir: Skipping %s - Season %s Episode %s" % (title, season, episode))
                                         continue
-
-                                    filenameResults['originalFileLocationOnDisk'] = os.path.join(dirname, filename)
-                                    filenameResults['lang'] = 'nl'
                                     log.info("scanDir: Dutch subtitle wanted for %s and added to wantedQueue" % filename)
-
-                                    autosub.WANTEDQUEUE.append(filenameResults)
-                                else:
-                                    log.error("scanDir: Could not process the filename properly filename: %s" % filename)
-                                    continue
-                            else:
-                                log.error("scanDir: Could not process the filename properly filename: %s" % filename)
-                                continue
-                        else:
-                            log.error("scanDir: Could not process the filename properly filename: %s" % filename)
-                            continue
-
-                    if not os.path.exists(os.path.join(dirname, srtfileeng)) and autosub.DOWNLOADENG == True:
-                        log.debug("scanDir: File %s does not yet have a English srt file" % filename)
-                        # Helpers.ProcessFileName requires 2 arguments, the filename and the extension
-                        filenameResults = autosub.Helpers.ProcessFileName(os.path.splitext(filename)[0], os.path.splitext(filename)[1])
-
-                        if 'title' in filenameResults.keys():
-                            if 'season' in filenameResults.keys():
-                                if 'episode' in filenameResults.keys():
-                                    title = filenameResults['title']
-                                    season = filenameResults['season']
-                                    episode = filenameResults['episode']
-
-                                    if autosub.Helpers.SkipShow(title, season, episode) == True:
-                                        log.debug("scanDir: SkipShow returned True")
-                                        log.info("scanDir: Skipping %s - Season %s Episode %s" % (title, season, episode))
-                                        continue
-
                                     filenameResults['originalFileLocationOnDisk'] = os.path.join(dirname, filename)
-                                    filenameResults['lang'] = 'en'
-                                    log.info("scanDir: English subtitle wanted for %s and added to wantedQueue" % filename)
-
+                                    
+                                    if not os.path.exists(os.path.join(dirname, srtfile)):
+                                        lang.append('nl')
+                                    if not os.path.exists(os.path.join(dirname, srtfileeng)) and (autosub.FALLBACKTOENG or autosub.DOWNLOADENG):
+                                        lang.append('en')
+                                    
+                                    filenameResults['lang'] = lang
                                     autosub.WANTEDQUEUE.append(filenameResults)
+                                    
                                 else:
                                     log.error("scanDir: Could not process the filename properly filename: %s" % filename)
                                     continue
@@ -112,7 +83,7 @@ class scanDisk():
                         else:
                             log.error("scanDir: Could not process the filename properly filename: %s" % filename)
                             continue
-
+                    
         log.debug("scanDir: Finished round of local disk checking")
         autosub.WANTEDQUEUELOCK = False
         autosub.WIPSTATUS.runnow = True

@@ -34,7 +34,7 @@ class checkSub():
             season = wantedItem['season']
             episode = wantedItem['episode']
             originalfile = wantedItem['originalFileLocationOnDisk']
-            language = wantedItem['lang']
+            languages = wantedItem['lang']
 
             if autosub.SUBNL != "":
                 srtfile = os.path.join(originalfile[:-4] + "." + autosub.SUBNL + ".srt")
@@ -58,46 +58,39 @@ class checkSub():
                 log.debug("checkSub: Got the following showid: %s" % showid)
                 autosub.SHOWID_CACHE[title] = showid
 
-            log.debug("checkSub: trying to get a downloadlink for %s, language is %s" % (originalfile, language))
-
-            downloadLink = autosub.Bierdopje.getSubLink(showid, language, wantedItem)
-
-            if not downloadLink and language == 'nl' and not autosub.DOWNLOADENG:
-                if autosub.FALLBACKTOENG == False:
-                    log.debug("checkSub: No dutch subtitles found on bierdopje.com for %s - Season %s - Episode %s" % (title, season, episode))
-                    continue
-                if os.path.exists(engsrtfile) and autosub.FALLBACKTOENG == True:
-                    log.info("checkSub: The english subtitle is found, will try again later for the dutch version %s - Season %s - Episode %s" % (title, season, episode))
-                    continue
-                if not os.path.exists(engsrtfile) and autosub.FALLBACKTOENG == True:
-                    log.debug("checkSub: Dutch subtitle could not be found on bierdopje.com, checking for the english version for %s - Season %s - Episode %s" % (title, season, episode))
-                    downloadLink = autosub.Bierdopje.getSubLink(showid, "en", wantedItem)
-                    if not downloadLink:
-                        log.info("checkSub: No english subtitles found on bierdopje.com for %s - Season %s - Episode %s" % (title, season, episode))
-                        continue
-                    elif downloadLink:
-                        wantedItem['downloadLink'] = downloadLink
-                        log.debug('checkSub: Dumping downloadlink for debug perpuse %s' %downloadLink)
+            langtmp = languages[:]
+            for lang in langtmp:
+                log.debug("checkSub: trying to get a downloadlink for %s, language is %s" % (originalfile, lang))
+                downloadLink = autosub.Bierdopje.getSubLink(showid, lang, wantedItem)
+                
+                if downloadLink:
+                    if lang == 'nl':
+                        wantedItem['destinationFileLocationOnDisk'] = srtfile
+                    elif lang == 'en':
                         wantedItem['destinationFileLocationOnDisk'] = engsrtfile
-                        autosub.TODOWNLOADQUEUE.append(wantedItem)
-                        continue
-            elif not downloadLink and language == 'en':
-                log.info('checkSub: no english subtitle found on bierdopje.com for %s - Season %s - Episode %s' % (title, season, episode))
-                continue
-
-            elif downloadLink:
-                wantedItem['downloadLink'] = downloadLink
-                if language == 'nl':
-                    wantedItem['destinationFileLocationOnDisk'] = srtfile
-                elif language == 'en':
-                    wantedItem['destinationFileLocationOnDisk'] = engsrtfile
-                autosub.TODOWNLOADQUEUE.append(wantedItem)
-                log.info("checkSub: The episode %s - Season %s Episode %s has a matching subtitle on bierdopje, adding to toDownloadQueue" % (title, season, episode))
-                log.debug('checkSub: Dumping downloadlink for debug perpuse %s' %downloadLink)
-                log.debug("checkSub: destination filename %s" % wantedItem['destinationFileLocationOnDisk'])
-                toDelete_wantedQueue.append(index)
-                log.debug("checkSub: Removed item: %s from the wantedQueue at index %s" % (wantedItem, index))
-
+                        
+                    log.info("checkSub: The episode %s - Season %s Episode %s has a matching subtitle on bierdopje, adding to toDownloadQueue" % (title, season, episode))
+                    log.debug('checkSub: Dumping downloadlink for debug perpuse %s' %downloadLink)
+                    log.debug("checkSub: destination filename %s" % wantedItem['destinationFileLocationOnDisk'])
+                    
+                    wantedItem['downloadLink'] = downloadLink
+                    downloadItem = wantedItem.copy()
+                    downloadItem['downlang'] = lang
+                    
+                    autosub.TODOWNLOADQUEUE.append(downloadItem)
+                    
+                    if lang == 'nl' and (autosub.FALLBACKTOENG and not autosub.DOWNLOADENG) and 'en' in languages:
+                        log.debug('checkSub: We found a dutch subtitle and fallback is true. Removing the english subtitle from the wantedlist.')
+                        languages.remove('en')
+                        languages.remove(lang)
+                        if len(languages) == 0:
+                            toDelete_wantedQueue.append(index)
+                        break
+                    
+                    languages.remove(lang)
+                    if len(languages) == 0:
+                        toDelete_wantedQueue.append(index)
+                        
         i = len(toDelete_wantedQueue) - 1
         while i >= 0:
             log.debug("checkSub: Removed item from the wantedQueue at index %s" % toDelete_wantedQueue[i])
