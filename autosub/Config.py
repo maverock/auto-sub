@@ -185,7 +185,7 @@ def ReadConfig(configfile):
             autosub.LOGSIZE = 1000000
 
         if cfg.has_option("logfile", "LOGNUM"):
-            autosub.LOGNUM = int(cfg.get("logfile"), "LOGNUM")
+            autosub.LOGNUM = int(cfg.get("logfile", "LOGNUM"))
         else:
             autosub.LOGNUM = 3
 
