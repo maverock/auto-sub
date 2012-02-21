@@ -13,6 +13,10 @@ import socket
 socket.setdefaulttimeout(autosub.TIMEOUT)
 
 class wipStatus():
+    """
+    Try to find a WIP for episodes in the WANTEDQUEUE.
+    If found the episode in the WANTEDQUEUE is updated with this information.
+    """
     def run(self):
         try:
             response = urllib2.urlopen(autosub.WIPURL)   
