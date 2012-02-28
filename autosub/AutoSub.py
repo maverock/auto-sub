@@ -64,7 +64,11 @@ def start():
             'tools.staticdir.dir': "media",
             'tools.expires.on': True,
             'tools.expires.secs': 3600 * 24 * 7
-        }}
+        },
+            '/favicon.ico':{
+            'tools.staticfile.on' : True,
+            'tools.staticfile.filename' : os.path.join(autosub.PATH, 'cherrypy/favicon.ico')}
+        }
     
     cherrypy.tree.mount(autosub.WebServer.WebServerInit(),config = conf)
     log.info("AutoSub: Starting CherryPy webserver")

@@ -1,5 +1,9 @@
 import cherrypy
-from Cheetah.Template import Template
+try:
+    from Cheetah.Template import Template
+except:
+    print "ERROR!!! Cheetah is not installed yet. Download it from: http://pypi.python.org/pypi/Cheetah/2.4.4"
+
 import threading
 import autosub.Config
 
@@ -24,9 +28,9 @@ class Config:
                     tmpl.message = "Already skipped <br> <a href='/home'>Return home</a>"
                     return str(tmpl)
             if season == '00':
-                season = str(int(season)) + ',' + ','.join(autosub.SKIPSHOWUPPER[title.upper()])
-            else:
                 season = season + ',' + ','.join(autosub.SKIPSHOWUPPER[title.upper()])
+            else:
+                season = str(int(season)) + ',' + ','.join(autosub.SKIPSHOWUPPER[title.upper()])
         else:
             if not season == '00':
                 season = str(int(season))

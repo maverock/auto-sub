@@ -120,7 +120,7 @@ def ProcessFileName(filename, extension):
             pass
 
     if quality == None:
-        if extension == ".mkv" or extension == ".mp4":
+        if extension == ".mkv":
             quality = '720'
             log.debug("ProcessFileName: Fallback, file seems to be mkv or mp4 so best guess for quality would be 720")
         else:
