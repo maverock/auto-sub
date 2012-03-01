@@ -1,0 +1,44 @@
+#! /bin/sh
+### BEGIN INIT INFO
+# Provides: AutoSub
+# Required-Start: $remote_fs $syslog
+# Required-Stop: $remote_fs $syslog
+# Default-Start: 2 3 4 5
+# Default-Stop: 0 1 6
+# Short-Description: AutoSub
+# Description: Script to control AutoSub
+### END INIT INFO
+
+## START EDIT ##
+
+NAME=AutoSub
+INIT_DIR=/etc/init.d
+DAEMON=/usr/bin/python
+DAEMON_OPTS=" /home/tja/auto-sub/AutoSub.py -c/home/tja/auto-sub/config.properties -d"
+
+## STOP EDIT ##
+
+case "$1" in
+	start)
+		echo "Starting $NAME"
+		$DAEMON ${DAEMON_OPTS}
+	;;
+	stop)
+		echo "Stopping $NAME"
+		for pid in $(/bin/pidof python); do
+			/bin/grep -q "AutoSub.py" /proc/$pid/cmdline && /bin/kill $pid
+		done
+		/bin/sleep 2
+	;;
+	restart|force-reload)
+		echo "Restarting $NAME"
+		$INIT_DIR/$0 stop
+		$INIT_DIR/$0 start
+	;;
+	*)
+		N=$QPKG_DIR/$QPKG_NAME
+		echo "Usage: $N {start|stop|restart|force-reload}" >&2
+		exit 1
+	;;
+esac
+exit 0
