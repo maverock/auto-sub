@@ -18,26 +18,32 @@ DAEMON_OPTS=" /home/user/auto-sub/AutoSub.py -c/home/user/auto-sub/config.proper
 
 ## STOP EDIT ##
 
+autosub_start() {
+	echo "Starting $NAME"
+	$DAEMON ${DAEMON_OPTS}
+}
+autosub_stop() {
+	echo "Stopping $NAME"
+	for pid in $(/bin/pidof python); do
+		/bin/grep -q "AutoSub.py" /proc/$pid/cmdline && /bin/kill $pid
+	done
+	/bin/sleep 2
+}
+
 case "$1" in
 	start)
-		echo "Starting $NAME"
-		$DAEMON ${DAEMON_OPTS}
+		autosub_start
 	;;
 	stop)
-		echo "Stopping $NAME"
-		for pid in $(/bin/pidof python); do
-			/bin/grep -q "AutoSub.py" /proc/$pid/cmdline && /bin/kill $pid
-		done
-		/bin/sleep 2
+		autosub_stop
 	;;
 	restart|force-reload)
 		echo "Restarting $NAME"
-		$INIT_DIR/$0 stop
-		$INIT_DIR/$0 start
+		autosub_start
+		autosub_stop
 	;;
 	*)
-		N=$QPKG_DIR/$QPKG_NAME
-		echo "Usage: $N {start|stop|restart|force-reload}" >&2
+		echo "Usage: $0 {start|stop|restart|force-reload}" >&2
 		exit 1
 	;;
 esac
