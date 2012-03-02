@@ -73,7 +73,7 @@ def Initialize():
 
     NLRSSURL = "http://www.bierdopje.com/rss/subs/nl"
     ENRSSURL = "http://www.bierdopje.com/rss/subs/en"
-    APIKEY = "AFC34E2C2FE8B9F7"
+    APIKEY = "39C48749FC7C341C"
     WIPURL = "http://www.bierdopje.com/wip/overview"
     TIMEOUT = 30
     #There is no need to change WIPSTATUS, because it is runned after every scandisk

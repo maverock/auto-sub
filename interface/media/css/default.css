@@ -10,6 +10,10 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockq
   vertical-align: baseline;
 }
 
+#container {
+	margin: 0 auto;
+	display: block;
+}
 
 * { outline: 0; }
 *:focus { outline: none; }
@@ -23,6 +27,7 @@ font-family:'Verdana', 'Helvetica', 'Sans-serif', 'sans';
 font-size:12px;
 margin:0;
 padding:0;
+background:  url(../images/bg.gif);
 }
 
 form {
@@ -33,27 +38,22 @@ padding:0;
 }
 
 #header {
-background-color:#3399FE;
-padding-left: 20px;
-height: 90px;
+	background: rgb(120,177,237); /* Old browsers */
+	background: -moz-linear-gradient(top,  rgba(120,177,237,1) 0%, rgba(65,123,181,1) 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(120,177,237,1)), color-stop(100%,rgba(65,123,181,1))); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  rgba(120,177,237,1) 0%,rgba(65,123,181,1) 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  rgba(120,177,237,1) 0%,rgba(65,123,181,1) 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  rgba(120,177,237,1) 0%,rgba(65,123,181,1) 100%); /* IE10+ */
+	background: linear-gradient(top,  rgba(120,177,237,1) 0%,rgba(65,123,181,1) 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#78b1ed', endColorstr='#417bb5',GradientType=0 ); /* IE6-9 */
+	padding-left: 20px;
+	height: 90px;
+	min-width:1024px;
+
 }
 
 table {
 margin:0;
-}
-
-h1 {
-text-align:left;
-font-size:21px;
-line-height:23px;
-font-weight:400;
-padding-bottom:4px;
-margin-bottom:12px;
-border-bottom:1px solid #4e4e4e;
-}
-
-h1 a {
-text-decoration:none;
 }
 
 .footer {
@@ -72,132 +72,39 @@ font-size: 1em;
 clear:left;
 }
 
-#MainMenu {
-background: url(../images/menu.png);
-width:100%;
--moz-box-shadow: 5px 5px 5px #888;
--webkit-box-shadow: 5px 5px 5px #888;
-box-shadow: 5px 5px 5px #888;
-}
 
 #content {
-    min-height: 100px;
     background: #fff;
     margin-left: auto;
     margin-right: auto;
     border-left: thin solid #000;
     border-right: thin solid #000;
     border-bottom: thin solid #000;
-
-    width: 70%;
-    min-width:650px;
-    z-index:1;
-    clear:both;
+    width: 80%;
+    min-width:1024px;
     padding: 10px 15px 15px;
+	
 }
 
-.sf-menu, .sf-menu * {
-    margin:			0;
-    padding:		0;
-    list-style:		none;
-    font-size:      13px;
+button.css3button {
+	button.css3button {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	color: #fff;
+	padding: 4px 14px;
+	background: -moz-linear-gradient(top,#ffffff 0%,#ebebeb 50%,#dbdbdb 50%,#b5b5b5);
+	background: -webkit-gradient(linear, left top, left bottom, from(#ffffff),color-stop(0.50, #ebebeb),color-stop(0.50, #dbdbdb),to(#b5b5b5));
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	border: 1px solid #949494;
+	-moz-box-shadow:
+		0px 1px 3px rgba(000,000,000,0.5),
+		inset 0px 0px 2px rgba(255,255,255,1);
+	-webkit-box-shadow:
+		0px 1px 3px rgba(000,000,000,0.5),
+		inset 0px 0px 2px rgba(255,255,255,1);
+	text-shadow:
+		0px -1px 0px rgba(000,000,000,0.2),
+		0px 1px 0px rgba(255,255,255,1);
 }
-
-.sf-menu li {
-    float:			left;
-    position:		relative;
-}
-.sf-menu a {
-    display:		block;
-    position:		relative;
-}
-
-.sf-menu {
-    float:			left;
-    /*margin-bottom:	1em;*/
-    line-height:	1em;
-}
-.sf-menu a {
-    border-right:	1px solid #CFCFCE;
-    padding: 		0.5em 1em;
-    text-decoration:none;
-}
-.sf-menu li li a, .sf-menu li li li a {
-    text-shadow: none;
-}
-.sf-menu a, .sf-menu a:visited { /* visited pseudo selector so IE6 applies text colour*/
-    color:			#000;
-}
-.sf-menu li { 
-background: url(../images/menu.png);
-}
-
-.sf-menu li li { 
-background:		url(../images/menu.png);
-}
-.sf-menu li li li {
-background:		url(../images/menu.png);
-}
-
-
-
-.queueTable {
-background-color: #E0E0E0;
-border-bottom: 1px solid white;
-border-bottom-width: 1px;
-border-bottom-style: solid;
-border-bottom-color: white;
-border-collapse: separate;
-border-spacing: 0px;
--webkit-border-horizontal-spacing: 0px;
--webkit-border-vertical-spacing: 0px;
-color: #606060;
-width: 100%;
--moz-box-shadow: 4px 4px 5px #888;
--webkit-box-shadow: 4x 4px 5px #888;
-box-shadow: 4px 4px 5px #888;
-}
-
-.queueTable tr.alt {
-background-color: #F1F1EF;
-color: #000;
-}
-
-.queueTable td {
-border-bottom: 1px solid #B1B1B1;
-border-bottom-width: 1px;
-border-bottom-style: solid;
-border-bottom-color: #B1B1B1;
-border-top: 1px solid white;
-border-top-width: 1px;
-border-top-style: solid;
-border-top-color: white;
-padding: 3px 0;
-padding-top: 3px;
-padding-right: 0px;
-padding-bottom: 3px;
-padding-left: 0px;
-vertical-align: middle;
-}
-.queueTable a {
-color: #404040;
-text-decoration: none;
-}
-
-th {
-background: url(../images/tableheader.gif);
-background-image: url(../images/tableheader.gif);
-background-repeat-x: initial;
-background-repeat-y: initial;
-background-attachment: initial;
-background-position-x: initial;
-background-position-y: initial;
-background-origin: initial;
-background-clip: initial;
-background-color: initial;
-color: white;
-padding: 4px;
-font-size: 13px;
-font-weight: bold;
-}
-

@@ -2,6 +2,7 @@
 #import time
 #import cgi
 #import urllib
+#import re
 
 #include $os.path.join($autosub.PATH, "interface/templates/header.tmpl")
 
@@ -35,31 +36,29 @@
 
 #include $os.path.join($autosub.PATH, "interface/templates/menu.tmpl")
 
-
 <br>
-<h1>Wanted Subtitles</h1>
 
 #if $len($autosub.WANTEDQUEUE) >= 1
 <form>
-<table id="historyTable" class="queueTable" cellspacing="0">
-<thead>
-<tr>
-	<th>Show name</th>
-	<th>Season</th>
-	<th>Episode</th>
-	<th>Quality</th>
-	<th>Source</th>
-	<th>Language</th>
-	<th>Procent Done</th>
-	<th>Expected</th>
-	<th>Skip Show</th>
-</tr>
-</thead>
-      <tfoot>
-        <tr>
-          <th rowspan="1" colspan="9"></th>
-        </tr>
-      </tfoot>
+<div class="box">
+							<div class="header">
+								<h1>Wanted</h1><span></span>
+							</div>
+							<div class="content no-padding">
+								<table class="table">
+									<thead>
+										<tr>
+											<th scope="col">Showname</th>
+											<th scope="col">Season</th>
+											<th scope="col">Episode</th>
+											<th scope="col">Quality</th>
+											<th scope="col">Source</th>
+											<th width="35">Language</th>
+											<th scope="col">Completion</th>
+											<th scope="col">Expected</th>
+											<th scope="col">Skip Show</th>
+										</tr>
+									</thead>
       <tbody>
 #set $counter = 1
 #for $var in $autosub.WANTEDQUEUE
@@ -68,21 +67,21 @@
 #set $buttonseason = "skipshowbuttonseason-" + str($counter)
 #set $buttonall = "skipshowbuttonall-" + str($counter)
 #set $counter = $counter + 1
-<tr class="alt">
+<tr>
 <td align="center"><b>$var['title']<b></td>
 <td align="center">$var['season']</td>
 <td align="center">$var['episode']</td>
 
 #if 'quality' in $var.keys()
-	<td align="center">$var['quality']</td>
+	<td align="center">$var['quality'].upper()</td>
 #else
-	<td align="center">?</td>
+	<td align="center">Unknown</td>
 #end if
 
 #if 'source' in $var.keys()
-	<td align="center">$var['source']</td>
+	<td align="center">$var['source'].upper()</td>
 #else
-	<td align="center">?</td>
+	<td align="center">Unknown</td>
 #end if
 
 <td align="center">
@@ -97,73 +96,75 @@
 </td>
 
 #if 'WIPProc' in $var.keys()
-<td align="center">$var['WIPProc']</td>
+<td>
+<div class="headway" title="$var['WIPProc']"><div class="advance" style="width:$var['WIPProc'];"></div></div>
+
+</td>
 #else
-<td align="center">?</td>
+<td align="center">Unknown</td>
 #end if
 
 #if 'WIPDate' in $var.keys()
 <td align="center">$var['WIPDate']</td>
 #else
-<td align="center">?</td>
+<td align="center">Unknown</td>
 #end if
 
 
-<td align="center">
-<input type="button" value="Skip Show" id="$buttonname"></td>
+<td>
+<center><button type="button" name="" value="Skip Show" class="css3button" id="$buttonname">Skip Show</button></center>
+</td>
 </tr>
 
-<tr ID="$divname">
 
-	<td align="right" colspan="9">
-		<input id="$buttonseason" type=button value='Skip Season $var['season']'>
-		<input id="$buttonall" type=button value='Skip Complete Show'>
-	</td>
-</tr>
 
 </tr>
 #end for
 </table>
+</div>
+						</div>
 #end if
 <p>
 #if $len($autosub.LASTESTDOWNLOAD) >= 1
-    <br/><h1>Latest download subtitles</h1>
-<table id="historyTable" class="queueTable" cellspacing="0">
-<thead>
+    
+						<div class="box">
+							<div class="header">
+								<h1>Latest downloaded subtitles</h1><span></span>
+							</div>
+							<div class="content no-padding">
+								<table class="table">
+									<thead>
 <tr>
-	<th>Show name</th>
-	<th>Season</th>
-	<th>Episode</th>
-	<th>Quality</th>
-	<th>Source</th>
-	<th>Language</th>
+	<th scope="col">Show name</th>
+	<th scope="col">Season</th>
+	<th scope="col">Episode</th>
+	<th scope="col">Quality</th>
+	<th scope="col">Source</th>
+	<th width="35">Language</th>
 </tr>
 </thead>
- <tfoot>
-        <tr>
-          <th rowspan="1" colspan="9"></th>
-        </tr>
-      </tfoot>
+ 
 #for $var in $autosub.LASTESTDOWNLOAD
-<tr class="alt">
+<tr>
 <td align="center"><b>$var['title']</b></td>
 <td align="center">$var['season']</td>
 <td align="center">$var['episode']</td>
 <td align="center">$var['quality']</td>
 
 #if 'source' in $var.keys()
-	<td align="center">$var['source']</td>
+	<td align="center">$var['source'].upper()</td>
 #else
-	<td align="center">?</td>
+	<td align="center">Unknown</td>
 #end if
 
 <td align="center"><img src="../media/images/#if $var['downlang'] is "nl" then "nl.png\" alt=\"Y\"" else "en.png\" alt=\"N\""# /></td>
 </tr>
-</form>
+
 #end for
 </table>
+</div>
+</div>
 #end if
-<p>
 <br>
 <table>
 <tr>
@@ -215,5 +216,10 @@
 	</td>
 </tr>
 </table>
+
+	<div id="progress-bar blue"></div>
+
+
+
 
 #include $os.path.join($autosub.PATH, "interface/templates/footer.tmpl")
