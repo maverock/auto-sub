@@ -39,8 +39,8 @@ case "$1" in
 	;;
 	restart|force-reload)
 		echo "Restarting $NAME"
-		autosub_start
 		autosub_stop
+		autosub_start
 	;;
 	*)
 		echo "Usage: $0 {start|stop|restart|force-reload}" >&2
