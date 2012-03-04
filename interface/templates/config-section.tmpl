@@ -1,0 +1,33 @@
+#import autosub
+
+Path: <input type="text" size="40" name="path" value="$autosub.PATH" /> Required, it should point to the location where the auto-sub files are located.<br />
+Rootpath: <input type="text" size="40" name="rootpath" value="$autosub.ROOTPATH" /> Required, it should point the root folder where the series are located<br />
+Logfile: <input type="text" name="logfile" value="$autosub.LOGFILE" /> Required, point to to the location and to the name of the logfile. When not set, AutoSubService.log will be used.<br />
+Fallbacktoeng: <select name="fallbacktoeng">
+#if $autosub.FALLBACKTOENG
+  <option value="True" selected="selected">Enabled</option>
+  <option value="False">Disabled</option>
+#else
+  <option value="True">Enabled</option>
+  <option value="False" selected="selected">Disabled</option>
+#end if
+</select> When Enabled English subtitles are downloaded when there are no Dutch subtitle available. Default is True.<br />
+Downloadeng: <select name="downloadeng"> <!--value="$autosub.DOWNLOADENG" />-->
+#if $autosub.DOWNLOADENG
+  <option value="True" selected="selected">Enabled</option>
+  <option value="False">Disabled</option>
+#else
+  <option value="True">Enabled</option>
+  <option value="False" selected="selected">Disabled</option>
+#end if
+</select> When enabled English subtitles are always downloaded default is False<br />
+Subeng: <input type="text" name="subeng" value="$autosub.SUBENG" /> When FallbacktoEng is enabled, English subtitles are download as: filename.subeng.srt default is 'en' (filename.en.srt)<br />
+Subnl: <input type="text" name="subnl" value="$autosub.SUBNL" /> When downloading dutch subtitle files are renamed to: filename.subnl.srt<br />
+Postprocesscmd: <input type="text" size="40" name="postprocesscmd" value="$autosub.POSTPROCESSCMD" /> AutoSub will run this command after downloading a subtitle. Check: http://code.google.com/p/auto-sub/wiki/ExamplePostProcessScript for more info<br />
+Minmatchscore: <input type="text" name="minmatchscore" value="$autosub.MINMATCHSCORE" /><br />
+Minmatchscorerss: <input type="text" name="minmatchscorerss" value="$autosub.MINMATCHSCORERSS" /><br />
+Scandisk: <input type="text" name="scandisk" value="$autosub.SCHEDULERSCANDISK" /><br />
+Checksub: <input type="text" name="checksub" value="$autosub.SCHEDULERCHECKSUB" /><br />
+Checkrss: <input type="text" name="checkrss" value="$autosub.SCHEDULERCHECKRSS" /><br />
+Downloadsubs: <input type="text" name="downloadsubs" value="$autosub.SCHEDULERDOWNLOADSUBS" /><br />
+
