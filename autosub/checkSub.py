@@ -8,7 +8,7 @@ import os
 
 # Autosub specific modules
 import autosub.Bierdopje
-
+import autosub.Helpers as Helpers
 # Settings
 log = logging.getLogger('thelogger')
 
@@ -21,14 +21,18 @@ class checkSub():
     def run(self):
         log.debug("checkSub: Starting round of checkSub")
         toDelete_wantedQueue = []
-
+        
+        if not autosub.Helpers.checkAPICalls():
+            log.warning("checkSub: out of api calls")
+            return True
+        
         if autosub.TODOWNLOADQUEUELOCK or autosub.WANTEDQUEUELOCK:
             log.debug("checkSub: Exiting, another threat is using the queues")
             return False
         else:
             autosub.TODOWNLOADQUEUELOCK = True
             autosub.WANTEDQUEUELOCK = True
-
+        
         for index, wantedItem in enumerate(autosub.WANTEDQUEUE):
             title = wantedItem['title']
             season = wantedItem['season']
@@ -42,22 +46,14 @@ class checkSub():
                 srtfile = os.path.join(originalfile[:-4] + ".srt")
 
             engsrtfile = os.path.join(originalfile[:-4] + "." + autosub.SUBENG + ".srt")
-
-            if title in autosub.SHOWID_CACHE.keys():
-                showid = autosub.SHOWID_CACHE[title]
-
-            if not title in autosub.SHOWID_CACHE.keys():
-                showid = autosub.Helpers.nameMapping(title)
-                if not showid:
-                    log.debug("checkSub: no NameMapping found for %s, trying the Bierdopje API" % title)
-                    showid = autosub.Bierdopje.getShowid(title)
-                    if not showid:
-                        log.error("checkSub: Could not find a show ID for %s" % title)
-                        autosub.SHOWID_CACHE[title] = -1
-                        continue
-                log.debug("checkSub: Got the following showid: %s" % showid)
-                autosub.SHOWID_CACHE[title] = showid
-
+            
+            #lets try to find a showid
+            showid = Helpers.getShowid(title)
+            
+            #no showid? skip this item
+            if not showid:
+                continue
+            
             langtmp = languages[:]
             for lang in langtmp:
                 log.debug("checkSub: trying to get a downloadlink for %s, language is %s" % (originalfile, lang))

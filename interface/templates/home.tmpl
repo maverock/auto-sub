@@ -4,6 +4,8 @@
 #import urllib
 #import re
 
+#from autosub.Db import lastDown
+
 #include $os.path.join($autosub.PATH, "interface/templates/header.tmpl")
 
 <script language="JavaScript">
@@ -132,7 +134,9 @@
 						</div>
 #end if
 <p>
-#if $len($autosub.LASTESTDOWNLOAD) >= 1
+#set $lastdownload = lastDown().getlastDown()
+
+#if $len($lastdownload) >= 1
     
 						<div class="box">
 							<div class="header">
@@ -150,10 +154,10 @@
 	<th width="35">Language</th>
 </tr>
 </thead>
- 
-#for $var in $autosub.LASTESTDOWNLOAD
+
+#for $var in $lastdownload
 <tr>
-<td align="center"><b>$var['title']</b></td>
+<td align="center"><b>$var['show_name']</b></td>
 <td align="center">$var['season']</td>
 <td align="center">$var['episode']</td>
 <td align="center">$var['quality']</td>
@@ -164,7 +168,10 @@
 	<td align="center">Unknown</td>
 #end if
 
-<td align="center"><img src="../media/images/#if $var['downlang'] is "nl" then "nl.png\" alt=\"Y\"" else "en.png\" alt=\"N\""# /></td>
+<td align="center">
+	#set $imageurl = "/media/images/" + $var['language'] + ".png"
+	<img src="$imageurl" alt=\"N\""# />
+</td>
 </tr>
 
 #end for

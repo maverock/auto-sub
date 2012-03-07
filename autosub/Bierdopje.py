@@ -6,7 +6,6 @@
 import urllib
 import urllib2
 import logging
-import socket
 
 from xml.dom import minidom
 from operator import itemgetter
@@ -16,10 +15,7 @@ import autosub.Helpers
 # Settings
 log = logging.getLogger('thelogger')
 
-import socket
-socket.setdefaulttimeout(autosub.TIMEOUT)
-
-def getShowid(showName):
+def getShowidApi(showName):
     """
     Search for the showid by using the Bierdopje API and the name of the show.
     Using showid for future searches reduces the load on the Bierdopje servers.
@@ -31,9 +27,12 @@ def getShowid(showName):
 
     getShowIdUrl = "%sGetShowByName/%s" % (api, urllib.quote(showName))
     try:
-        req = urllib2.urlopen(getShowIdUrl)
-        dom = minidom.parse(req)
-        req.close()
+        req = urllib2.Request(getShowIdUrl)
+        req.add_header("User-agent", autosub.USERAGENT) 
+        resp = urllib2.urlopen(req,None,autosub.TIMEOUT)
+        autosub.Helpers.checkAPICalls(use=True)
+        dom = minidom.parse(resp)
+        resp.close()
     except:
         log.error("getShowid: The server returned an error for request %s" % getShowIdUrl)
         return None
@@ -68,9 +67,12 @@ def getSubLink(showid, lang, releaseDetails):
     getSubLinkUrl = "%sGetAllSubsFor/%s/%s/%s/%s" % (api, showid, season, episode, lang)
 
     try:
-        req = urllib2.urlopen(getSubLinkUrl)
-        dom = minidom.parse(req)
-        req.close()
+        req = urllib2.Request(getSubLinkUrl)
+        req.add_header("User-agent", autosub.USERAGENT) 
+        resp = urllib2.urlopen(req,None,autosub.TIMEOUT)
+        autosub.Helpers.checkAPICalls(use=True)
+        dom = minidom.parse(resp)
+        resp.close()
     except:
         log.error("getSubLink: The server returned an error for request %s" % getSubLinkUrl)
         return None

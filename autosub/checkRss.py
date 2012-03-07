@@ -6,16 +6,12 @@
 import logging
 import urllib2
 import os
-import socket
 
 from library.beautifulsoup import BeautifulStoneSoup
 
 #from operator import itemgetter
 
 import autosub.Helpers
-import autosub.Bierdopje
-
-socket.setdefaulttimeout(autosub.TIMEOUT)
 
 log = logging.getLogger('thelogger')
 
@@ -53,8 +49,13 @@ class checkRss():
                 log.debug("checkRSS: Now using the Dutch RSS feed")
             
             try:
-                req = urllib2.urlopen(RSSURL)
+                req = urllib2.Request(RSSURL)
+                req.add_header("User-agent", autosub.USERAGENT) 
+                response = urllib2.urlopen(req,None,autosub.TIMEOUT)
                 log.debug("checkRss: Succussfully connected to %s" %RSSURL)
+                
+                soup = BeautifulStoneSoup(response)
+                response.close()
             except:
                 log.error("checkRss: The server returned an error for request %s" % RSSURL)
                 autosub.TODOWNLOADQUEUELOCK = False
@@ -65,8 +66,7 @@ class checkRss():
             # The information that is parsed is: title, link and show_id
             # The show_id is later used to match with the wanted items
             # The title is used the determine the quality / source / releasegrp
-            soup = BeautifulStoneSoup(req)
-            req.close()
+            
             rssItemList = []
             items = soup.findAll('item')
             
@@ -121,22 +121,14 @@ class checkRss():
                 if 'quality' in wantedItem.keys(): wantedItemquality = wantedItem['quality']
                 if 'releasegrp' in wantedItem.keys(): wantedItemreleasegrp = wantedItem['releasegrp']
                 if 'source' in wantedItem.keys(): wantedItemsource = wantedItem['source']
-
-                if wantedItemtitle in autosub.SHOWID_CACHE.keys():
-                    showid = autosub.SHOWID_CACHE[wantedItemtitle]
-                elif not wantedItemtitle in autosub.SHOWID_CACHE.keys():
-                    showid = autosub.Helpers.nameMapping(wantedItemtitle)
-                    if not showid:
-                        log.debug("checkRSS: no NameMapping found for %s, trying the Bierdopje API" % wantedItemtitle)
-                        showid = autosub.Bierdopje.getShowid(wantedItemtitle)
-                        if not showid:
-                            log.error("checkRSS: Could not find a show ID for %s" % wantedItemtitle)
-                            autosub.SHOWID_CACHE[wantedItemtitle] = -1
-                            continue
-                    log.debug("checkRSS: Got the following showid: %s" % showid)
-                    autosub.SHOWID_CACHE[wantedItemtitle] = showid
-                else:
-                    showid = autosub.SHOWID_CACHE[wantedItemtitle]
+                
+                #lets try to find a showid
+                showid = autosub.Helpers.getShowid(wantedItemtitle)
+            
+                #no showid? skip this item
+                if not showid:
+                    continue
+                
 
                 for normalizedRssTitle in normalizedRssTitleList:
                     toDownloadItem = None

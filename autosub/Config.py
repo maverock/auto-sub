@@ -23,13 +23,16 @@ log = logging.getLogger('thelogger')
 #/Settings -----------------------------------------------------------------------------------------------------------------------------------------
 
 # TODO: Webserver config, basic are done. CherryPy logging still needs a file only
+# TODO: Auto restart if needed after saving config
+# TODO: Make the config page pretty again
+# TODO: Make user re-enter password and compare 'em to rule out typing errors
+# TODO: Code cleanup?
 
 
 def ReadConfig(configfile):
     """
     Read the config file and set all the variables.
     """
-    edited = False
 
     # Read config file
     cfg = SafeConfigParser()
@@ -75,7 +78,7 @@ def ReadConfig(configfile):
                 print "Config WARNING: checksub variable is lower then 21600! This is not allowed, this is to prevent our API-key from being banned."
                 autosub.SCHEDULERCHECKSUB = 21600  # Run every 6 hours
         else:
-            autosub.SCHEDULERCHECKSUB = 28800  # Run every 8 hours
+            autosub.SCHEDULERCHECKSUB = 86400  # Run every 8 hours
 
         if cfg.has_option('config', 'checkrss'):
             autosub.SCHEDULERCHECKRSS = int(cfg.get('config', 'checkrss'))
@@ -91,24 +94,24 @@ def ReadConfig(configfile):
         else:
             autosub.SCHEDULERDOWNLOADSUBS = 1  # Run every second
 
-        if cfg.has_option("config", "ROOTPATH"):
-            autosub.ROOTPATH = cfg.get("config", "ROOTPATH")
+        if cfg.has_option("config", "rootpath"):
+            autosub.ROOTPATH = cfg.get("config", "rootpath")
         else:
             print "Config ERROR: Variable ROOTPATH is missing. This is required! Using current working directory instead."
             autosub.ROOTPATH = os.getcwd()
 
-        if cfg.has_option("config", "FALLBACKTOENG"):
-            autosub.FALLBACKTOENG = cfg.getboolean("config", "FALLBACKTOENG")
+        if cfg.has_option("config", "fallbacktoeng"):
+            autosub.FALLBACKTOENG = cfg.getboolean("config", "fallbacktoeng")
         else:
             autosub.FALLBACKTOENG = True
 
-        if cfg.has_option("config", "SUBENG"):
-            autosub.SUBENG = cfg.get("config", "SUBENG")
+        if cfg.has_option("config", "subeng"):
+            autosub.SUBENG = cfg.get("config", "subeng")
         else:
             autosub.SUBENG = 'en'
 
-        if cfg.has_option("config", "SUBNL"):
-            autosub.SUBNL = cfg.get("config", "SUBNL")
+        if cfg.has_option("config", "subnl"):
+            autosub.SUBNL = cfg.get("config", "subnl")
         else:
             autosub.SUBNL = ""
 
@@ -116,14 +119,14 @@ def ReadConfig(configfile):
             autosub.PATH = cfg.get("config", "workdir")
             print "Config WARNING: Workdir is an old variable. Replace it with 'path'."
 
-        if cfg.has_option("config", "LOGFILE"):
-            autosub.LOGFILE = cfg.get("config", "LOGFILE")
+        if cfg.has_option("config", "logfile"):
+            autosub.LOGFILE = cfg.get("config", "logfile")
         else:
             print "Config ERROR: Variable LOGFILE is missing. This is required! Using 'AutoSubService.log' instead."
             autosub.LOGFILE = "AutoSubService.log"
 
-        if cfg.has_option("config", "POSTPROCESSCMD"):
-            autosub.POSTPROCESSCMD = cfg.get("config", "POSTPROCESSCMD")
+        if cfg.has_option("config", "postprocesscmd"):
+            autosub.POSTPROCESSCMD = cfg.get("config", "postprocesscmd")
         else:
             autosub.POSTPROCESSCMD = False
 
@@ -149,8 +152,8 @@ def ReadConfig(configfile):
         autosub.POSTPROCESSCMD = False
 
     if cfg.has_section('logfile'):
-        if cfg.has_option("logfile", "LOGLEVEL"):
-            autosub.LOGLEVEL = cfg.get("logfile", "LOGLEVEL")
+        if cfg.has_option("logfile", "loglevel"):
+            autosub.LOGLEVEL = cfg.get("logfile", "loglevel")
             if autosub.LOGLEVEL.lower() == 'error':
                 autosub.LOGLEVEL = logging.ERROR
             elif autosub.LOGLEVEL.lower() == "warning":
@@ -179,13 +182,13 @@ def ReadConfig(configfile):
         else:
             autosub.LOGLEVELCONSOLE = logging.ERROR
 
-        if cfg.has_option("logfile", "LOGSIZE"):
-            autosub.LOGSIZE = int(cfg.get("logfile", "LOGSIZE"))
+        if cfg.has_option("logfile", "logsize"):
+            autosub.LOGSIZE = int(cfg.get("logfile", "logsize"))
         else:
             autosub.LOGSIZE = 1000000
 
-        if cfg.has_option("logfile", "LOGNUM"):
-            autosub.LOGNUM = int(cfg.get("logfile", "LOGNUM"))
+        if cfg.has_option("logfile", "lognum"):
+            autosub.LOGNUM = int(cfg.get("logfile", "lognum"))
         else:
             autosub.LOGNUM = 3
 
@@ -236,12 +239,7 @@ def ReadConfig(configfile):
 
     if cfg.has_section('dev'):
         if cfg.has_option('dev', 'apikey'):
-            autosub.APIKEY = cfg.get('dev', 'APIKEY')
-
-    # If an option or section wasn't in the config file we add it
-    if edited:
-        with open(configfile, 'wb') as file:
-            cfg.write(file)
+            autosub.APIKEY = cfg.get('dev', 'apikey')
 
     # Settings
     autosub.SHOWID_CACHE = {}
@@ -341,7 +339,287 @@ def applyskipShow():
 
 def applyAllSettings():
     """
-    Add namemapping and skipshow to the config file
+    Read namemapping and skipshow from the config file.
     """
     applynameMapping()
     applyskipShow()
+
+
+def displaySkipshow():
+    """
+    Return a string containing all info from skipshow.
+    After each shows skip info an '\n' is added to create multiple rows
+    in a textarea.
+    """
+    s = ""
+    for x in autosub.SKIPSHOW:
+        s += x + " = " + str(autosub.SKIPSHOW[x]) + "\n"
+    return s
+
+
+def displayNamemapping():
+    """
+    Return a string containing all info from user namemapping.
+    After each shows namemapping an '\n' is added to create multiple rows
+    in a textarea.
+    """
+    s = ""
+    for x in autosub.USERNAMEMAPPING:
+        s += x + " = " + str(autosub.USERNAMEMAPPING[x]) + "\n"
+    return s
+
+
+def stringToDict(items=None):
+    """
+    Return a correct dict from a string
+    """
+    items = items.split('\r\n')
+    returnitems = []
+
+    for item in items:
+        if item:
+            showinfo = []
+            for x in item.split('='):
+                if x[-1:] == ' ':
+                    x = x[:-1]
+                elif x[:1] == ' ':
+                    x = x[1:]
+                showinfo.append(x)
+            showinfo = tuple(showinfo)
+            returnitems.append(showinfo)
+    returnitems = dict(returnitems)
+    return returnitems
+
+
+def saveConfigSection():
+    """
+    Save stuff
+    """
+    section = 'config'
+
+    cfg = SafeConfigParser()
+    cfg.read(autosub.CONFIGFILE)
+
+    if not cfg.has_section(section):
+        cfg.add_section(section)
+
+    cfg.set(section, "path", autosub.PATH)
+    cfg.set(section, "downloadeng", autosub.DOWNLOADENG)
+    cfg.set(section, "minmatchscore", str(autosub.MINMATCHSCORE))
+    cfg.set(section, "minmatchscorerss", str(autosub.MINMATCHSCORERSS))
+    cfg.set(section, "scandisk", str(autosub.SCHEDULERSCANDISK))
+    cfg.set(section, "checksub", str(autosub.SCHEDULERCHECKSUB))
+    cfg.set(section, "checkrss", str(autosub.SCHEDULERCHECKRSS))
+    cfg.set(section, "downloadsubs", str(autosub.SCHEDULERDOWNLOADSUBS))
+    cfg.set(section, "rootpath", autosub.ROOTPATH)
+    cfg.set(section, "fallbacktoeng", autosub.FALLBACKTOENG)
+    cfg.set(section, "subeng", autosub.SUBENG)
+    cfg.set(section, "subnl", autosub.SUBNL)
+    cfg.set(section, "logfile", autosub.LOGFILE)
+    cfg.set(section, "postprocesscmd", autosub.POSTPROCESSCMD)
+
+    with open(autosub.CONFIGFILE, 'wb') as file:
+        cfg.write(file)
+
+
+def saveLogfileSection():
+    """
+    Save stuff
+    """
+    section = 'logfile'
+
+    cfg = SafeConfigParser()
+    cfg.read(autosub.CONFIGFILE)
+
+    if not cfg.has_section(section):
+        cfg.add_section(section)
+
+    cfg.set(section, "loglevel", logging.getLevelName(int(autosub.LOGLEVEL)).lower())
+    cfg.set(section, "loglevelconsole", logging.getLevelName(int(autosub.LOGLEVELCONSOLE)).lower())
+    cfg.set(section, "logsize", str(autosub.LOGSIZE))
+    cfg.set(section, "lognum", str(autosub.LOGNUM))
+
+    with open(autosub.CONFIGFILE, 'wb') as file:
+        cfg.write(file)
+
+
+def saveWebserverSection():
+    """
+    Save stuff
+    """
+    section = 'webserver'
+
+    cfg = SafeConfigParser()
+    cfg.read(autosub.CONFIGFILE)
+
+    if not cfg.has_section(section):
+        cfg.add_section(section)
+
+    cfg.set(section, "webserverip", str(autosub.WEBSERVERIP))
+    cfg.set(section, 'webserverport', str(autosub.WEBSERVERPORT))
+    cfg.set(section, "username", autosub.USERNAME)
+    cfg.set(section, "password", autosub.PASSWORD)
+
+    with open(autosub.CONFIGFILE, 'wb') as file:
+        cfg.write(file)
+
+
+def saveSkipshowSection():
+    """
+    Save stuff
+    """
+    section = 'skipshow'
+
+    cfg = SafeConfigParser()
+    cfg.read(autosub.CONFIGFILE)
+
+    if not cfg.has_section(section):
+        cfg.add_section(section)
+
+    for x in autosub.SKIPSHOW:
+        SaveToConfig('skipshow', x, autosub.SKIPSHOW[x])
+
+    # Set all skipshow stuff correct
+    applyskipShow()
+
+
+def saveUsernamemappingSection():
+    """
+    Save stuff
+    """
+    section = 'namemapping'
+
+    cfg = SafeConfigParser()
+    cfg.read(autosub.CONFIGFILE)
+
+    if not cfg.has_section(section):
+        cfg.add_section(section)
+
+    for x in autosub.USERNAMEMAPPING:
+        SaveToConfig('namemapping', x, autosub.USERNAMEMAPPING[x])
+
+    # Set all namemapping stuff correct
+    applynameMapping()
+
+
+def checkForRestart():
+    """
+    Check if internal variables are different from the config file.
+    Only check the variables the require a restart to take effect
+    """
+    cfg = SafeConfigParser()
+    cfg.read(autosub.CONFIGFILE)
+
+    # Set the default values
+    schedulerscandisk = 3600
+    schedulerchecksub = 28800
+    schedulercheckrss = 900
+    schedulerdownloadsubs = 1
+    loglevel = logging.INFO
+    loglevelconsole = logging.ERROR
+    logsize = 1000000
+    lognum = 1
+    webserverip = '127.0.0.1'
+    webserverport = 8080
+    username = ''
+    password = ''
+
+    # Check if an option excists in the config file, if so replace the default value
+    if cfg.has_section('config'):
+        if cfg.has_option('config', 'scandisk'):
+            schedulerscandisk = int(cfg.get('config', 'scandisk'))
+
+        if cfg.has_option('config', 'checksub'):
+            schedulerchecksub = int(cfg.get('config', 'checksub'))
+
+        if cfg.has_option('config', 'checkrss'):
+            schedulercheckrss = int(cfg.get('config', 'checkrss'))
+
+        if cfg.has_option('config', 'downloadsubs'):
+            schedulerdownloadsubs = int(cfg.get('config', 'downloadsubs'))
+
+    if cfg.has_option("config", "logfile"):
+        logfile = cfg.get("config", "logfile")
+
+    if cfg.has_section('logfile'):
+        if cfg.has_option("logfile", "loglevel"):
+            loglevel = cfg.get("logfile", "loglevel")
+            if loglevel.lower() == 'error':
+                loglevel = logging.ERROR
+            elif loglevel.lower() == "warning":
+                loglevel = logging.WARNING
+            elif loglevel.lower() == "debug":
+                loglevel = logging.DEBUG
+            elif loglevel.lower() == "info":
+                loglevel = logging.INFO
+            elif loglevel.lower() == "critical":
+                loglevel = logging.CRITICAL
+
+        if cfg.has_option("logfile", "loglevelconsole"):
+            loglevelconsole = cfg.get("logfile", "loglevelconsole")
+            if loglevelconsole.lower() == 'error':
+                loglevelconsole = logging.ERROR
+            elif loglevelconsole.lower() == "warning":
+                loglevelconsole = logging.WARNING
+            elif loglevelconsole.lower() == "debug":
+                loglevelconsole = logging.DEBUG
+            elif loglevelconsole.lower() == "info":
+                loglevelconsole = logging.INFO
+            elif loglevelconsole.lower() == "critical":
+                loglevelconsole = logging.CRITICAL
+
+        if cfg.has_option("logfile", "logsize"):
+            logsize = int(cfg.get("logfile", "logsize"))
+
+        if cfg.has_option("logfile", "lognum"):
+            lognum = int(cfg.get("logfile", "lognum"))
+
+    if cfg.has_section('webserver'):
+        if cfg.has_option('webserver', 'webserverip') and cfg.has_option('webserver', 'webserverport'):
+            webserverip = cfg.get('webserver', 'webserverip')
+            webserverport = int(cfg.get('webserver', 'webserverport'))
+        if cfg.has_option('webserver', 'username') and cfg.has_option('webserver', 'password'):
+            username = cfg.get('webserver', 'username')
+            password = cfg.get('webserver', 'password')
+
+    # Now compare the values, if one differs a restart is required.
+    if schedulerscandisk != autosub.SCHEDULERSCANDISK or schedulerchecksub != autosub.SCHEDULERCHECKSUB or schedulercheckrss != autosub.SCHEDULERCHECKRSS or schedulerdownloadsubs != autosub.SCHEDULERDOWNLOADSUBS or loglevel != autosub.LOGLEVEL or loglevelconsole != autosub.LOGLEVELCONSOLE or logsize != autosub.LOGSIZE or lognum != autosub.LOGNUM or webserverip != autosub.WEBSERVERIP or webserverport != autosub.WEBSERVERPORT or username != autosub.USERNAME or password != autosub.PASSWORD:
+        return True
+    else:
+        return False
+
+
+def WriteConfig():
+    """
+    Save all settings to the config file.
+    Return message about the write.
+    """
+    # Read config file
+    cfg = SafeConfigParser()
+    try:
+        # A config file is set so we use this to add the settings
+        cfg.read(autosub.CONFIGFILE)
+    except:
+        # No config file so we create one in autosub.PATH
+        autosub.CONFIGFILE = "config.properties"
+        cfg.read(autosub.CONFIGFILE)
+
+    # Before we save everything to the config file we need to test if
+    # the app needs to be restarted for all changes to take effect, like
+    # logfile and webserver sections
+    restart = checkForRestart()
+    
+    saveConfigSection()
+    saveLogfileSection()
+    saveWebserverSection()
+    saveSkipshowSection()
+    saveUsernamemappingSection()
+
+    if restart:
+        # This needs to be replaced by a restart thingy, until then, just re-read the config and tell the users to do a manual restart
+        ReadConfig(autosub.CONFIGFILE)
+        return "Config saved. A manual restart is needed for all changes to take effect. Auto restart will be implemented soon!<br><a href='/config'>Return</a>"
+    else:
+        # For some reason the needs to be read again, otherwise all pages get an error
+        ReadConfig(autosub.CONFIGFILE)
+        return "Config saved.<br><a href='/config'>Return</a>"

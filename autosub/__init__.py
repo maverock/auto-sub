@@ -1,5 +1,6 @@
 import Config
 import logging.handlers
+import time
 
 ROOTPATH=None
 FALLBACKTOENG=None
@@ -35,6 +36,10 @@ ENRSSURL=None
 WIPURL=None
 APIKEY=None
 API=None
+APICALLS=None
+APICALLSLASTRESET=None
+APICALLSRESETINT=None
+APICALLSMAX=None
 APIRSS=None
 TIMEOUT=None
 
@@ -57,25 +62,39 @@ PASSWORD=None
 
 DAEMON=None
 
+DBFILE=None
+
+VERSION=None
+USERAGENT=None
+
 def Initialize():
     global ROOTPATH, FALLBACKTOENG, SUBENG, LOGFILE, SUBNL, LOGLEVEL, \
     SUBNL, LOGLEVEL, LOGLEVELCONSOLE, LOGSIZE, LOGNUM, SKIPSHOW, SKIPSHOWUPPER, \
     USERNAMEMAPPING, USERNAMEMAPPINGUPPER, NAMEMAPPING, NAMEMAPPINGUPPER, \
     SHOWID_CACHE, POSTPROCESSCMD, CONFIGFILE, WORKDIR, \
     TODOWNLOADQUEUE, WANTEDQUEUE, \
-    NLRSSURL, ENRSSURL, APIKEY, API, APIRSS, WIPURL, TIMEOUT, \
+    NLRSSURL, ENRSSURL, APIKEY, API, APIRSS, WIPURL, TIMEOUT, APICALLS, \
+    APICALLSLASTRESET, APICALLSRESETINT, APICALLSMAX, \
     SCHEDULERSCANDISK, SCHEDULERCHECKSUB, SCHEDULERCHECKRSS, SCHEDULERDOWNLOADSUBS, \
     SCHEDULERWIPSTATUS, \
-    DAEMON
+    DAEMON, \
+    DBFILE, \
+    VERSION, USERAGENT
+    
+    DBFILE = 'database.db'
+    
+    VERSION = 'Alpha 0.5'
+    USERAGENT = 'Auto-Sub ' + VERSION
     
     TODOWNLOADQUEUE = []
     WANTEDQUEUE = []
 
     NLRSSURL = "http://www.bierdopje.com/rss/subs/nl"
     ENRSSURL = "http://www.bierdopje.com/rss/subs/en"
-    APIKEY = "39C48749FC7C341C"
+    APIKEY = "BB442E7744E9B541"
     WIPURL = "http://www.bierdopje.com/wip/overview"
     TIMEOUT = 30
+    
     #There is no need to change WIPSTATUS, because it is runned after every scandisk
     SCHEDULERWIPSTATUS=86400 #run wipstatus every day
     
@@ -85,6 +104,13 @@ def Initialize():
     Config.ReadConfig(CONFIGFILE)
     API = "http://api.bierdopje.com/%s/" %APIKEY
     APIRSS = "/apikey/%s/" %APIKEY
+    
+    
+    APICALLSLASTRESET = time.time()
+    APICALLSRESETINT = 86400
+    APICALLSMAX = 300
+    APICALLS = APICALLSMAX
+    
 def initLogging(logfile):
     global LOGLEVEL, LOGSIZE, LOGNUM, LOGLEVELCONSOLE, \
     DAEMON

@@ -7,9 +7,11 @@ import logging
 import re
 import subprocess
 from string import capwords
+import time
 
 import autosub
 
+from autosub.Db import idCache
 # Settings
 log = logging.getLogger('thelogger')
 
@@ -200,3 +202,53 @@ def SkipShow(showName, season, episode):
             elif int(seasontmp) == int(season):
                 log.debug("SkipShow: Season matches variable of %s, skipping season" % showName)
                 return True
+
+
+def getShowid(show_name):
+    show_id = nameMapping(show_name)
+    if show_id:
+        log.debug('getShowid: showid from namemapping %s' %show_id)
+        return show_id
+    
+    show_id = idCache().getId(show_name)
+    if show_id:
+        log.debug('getShowid: showid from cache %s' %show_id)
+        return show_id
+    
+    #do we have enough api calls?
+    if checkAPICalls(use=False):
+        show_id = autosub.Bierdopje.getShowidApi(show_name)
+    else:
+        log.warning("getShowid: Out of API calls")
+        return None
+    
+    if show_id:
+        log.debug('getShowid: showid from api %s' %show_id)
+        idCache().setId(show_id, show_name)
+        log.info('getShowid: %s added to cache with %s' %(show_name, show_id))
+        return show_id
+    
+    log.error('getShowid: showid not found for %s' %show_name)
+    idCache().setId(None, show_name)
+
+
+def checkAPICalls(use=False):
+    """
+    Checks if there are still API calls left
+    Set true if a API call is being made.
+    """
+    currentime = time.time()
+    lastrun = autosub.APICALLSLASTRESET
+    interval = autosub.APICALLSRESETINT
+    
+    if currentime - lastrun > interval:
+        autosub.APICALLS = autosub.APICALLSMAX
+        autosub.APIMAXLASTRESET = time.time()
+    
+    if autosub.APICALLS > 0:
+        if use==True:
+            autosub.APICALLS-=1
+        return True
+    else:
+        return False
+

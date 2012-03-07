@@ -8,6 +8,9 @@ import urllib2
 
 import autosub
 import socket
+
+from autosub.Db import lastDown
+
 log = logging.getLogger('thelogger')
 
 socket.setdefaulttimeout(autosub.TIMEOUT)
@@ -18,6 +21,10 @@ class downloadSubs():
     """
     def run(self):
         if len(autosub.TODOWNLOADQUEUE) > 0:
+            if not autosub.Helpers.checkAPICalls():
+                log.warning("downloadSubs: out of api calls")
+                return True
+            
             toDelete_toDownloadQueue = []
             log.debug("downloadSubs: Something in downloadqueue, Starting downloadSubs")
             if autosub.TODOWNLOADQUEUELOCK or autosub.WANTEDQUEUELOCK:
@@ -32,25 +39,24 @@ class downloadSubs():
                     downloadLink = downloadItem['downloadLink']
 
                     try:
-                        response = urllib2.urlopen(downloadLink)
+                        req = urllib2.Request(downloadLink)
+                        req.add_header("User-agent", autosub.USERAGENT) 
+                        response = urllib2.urlopen(req,None,autosub.TIMEOUT)
                     except:
                         log.error("downloadSubs: The server returned an error for request %s" % downloadLink)
                         continue
 
                     try:
                         open(destsrt, 'w').write(response.read())
+                        response.close()
                     except:
                         log.error("downloadSubs: Error while writing subtitle file. Destination: %s" % destsrt)
                         continue
 
                     log.info("downloadSubs: DOWNLOADED: %s" % destsrt)
                     toDelete_toDownloadQueue.append(index)
-
-                    if len(autosub.LASTESTDOWNLOAD) >= 10:
-                        autosub.LASTESTDOWNLOAD.pop(0)
-                        autosub.LASTESTDOWNLOAD.append(autosub.TODOWNLOADQUEUE[index])
-                    else:
-                        autosub.LASTESTDOWNLOAD.append(autosub.TODOWNLOADQUEUE[index])
+                    
+                    lastDown().setlastDown(dict = autosub.TODOWNLOADQUEUE[index])
 
                     if autosub.POSTPROCESSCMD:
                         postprocesscmdconstructed = autosub.POSTPROCESSCMD + ' "' + downloadItem["destinationFileLocationOnDisk"] + '" "' + downloadItem["originalFileLocationOnDisk"] + '"'

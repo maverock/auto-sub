@@ -19,7 +19,11 @@ class wipStatus():
     """
     def run(self):
         try:
-            response = urllib2.urlopen(autosub.WIPURL)   
+            req = urllib2.Request(autosub.WIPURL)
+            req.add_header("User-agent", autosub.USERAGENT) 
+            response = urllib2.urlopen(req,None,autosub.TIMEOUT)
+            soup = BeautifulSoup(response.read())
+            response.close()  
         except:
             return False
         simpleregex = re.compile("^((?P<title>.+?)[. _-]+)?s(?P<season>\d+)[x. _-]*e(?P<episode>\d+)",re.IGNORECASE)
@@ -28,8 +32,6 @@ class wipStatus():
         
         getdate = re.compile('(\d+/\d+/\d+)')
         getprocent = re.compile('\d+%')
-        
-        soup = BeautifulSoup(response.read())
         
         dates = {}
         proc = {}

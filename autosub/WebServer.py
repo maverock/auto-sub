@@ -5,12 +5,14 @@ except:
     print "ERROR!!! Cheetah is not installed yet. Download it from: http://pypi.python.org/pypi/Cheetah/2.4.4"
 
 import threading
+import time
 import autosub.Config
-
+from autosub.Db import idCache, lastDown
 # TODO: Create webdesign
 class PageTemplate (Template):
     #Placeholder for future, this object can be used to add stuff to the template
     pass
+
 
 class Config:
     @cherrypy.expose
@@ -46,6 +48,58 @@ class Config:
         tmpl = PageTemplate(file="interface/templates/message.tmpl")
         tmpl.message = "Settings read & applied<br><a href='/config'>Return</a>"
         return str(tmpl)
+
+    @cherrypy.expose
+    def saveConfig(self, subeng, checksub, scandisk, minmatchscore, checkrss, subnl, minmatchscorerss, postprocesscmd, downloadsubs, path, logfile, rootpath, fallbacktoeng, downloadeng, username, password, skipshow, lognum, loglevelconsole, logsize, loglevel, webserverip, webserverport, usernamemapping):
+        # Set all internal variables
+        autosub.PATH = path
+        autosub.ROOTPATH = rootpath
+        autosub.LOGFILE = logfile
+        autosub.FALLBACKTOENG = fallbacktoeng
+        autosub.DOWNLOADENG = downloadeng
+        autosub.SUBENG = subeng
+        autosub.SUBNL = subnl
+        autosub.POSTPROCESSCMD = postprocesscmd
+        autosub.MINMATCHSCORE = int(minmatchscore)
+        autosub.MINMATCHSCORERSS = int(minmatchscorerss)
+        autosub.SCHEDULERSCANDISK = int(scandisk)
+        autosub.SCHEDULERCHECKSUB = int(checksub)
+        autosub.SCHEDULERCHECKRSS = int(checkrss)
+        autosub.SCHEDULERDOWNLOADSUBS = int(downloadsubs)
+        autosub.LOGLEVEL = int(loglevel)
+        autosub.LOGNUM = int(lognum)
+        autosub.LOGSIZE = int(logsize)
+        autosub.LOGLEVELCONSOLE = int(loglevelconsole)
+        autosub.WEBSERVERIP = webserverip
+        autosub.WEBSERVERPORT = int(webserverport)
+        autosub.USERNAME = username
+        autosub.PASSWORD = password
+        autosub.SKIPSHOW = autosub.Config.stringToDict(skipshow)
+        autosub.USERNAMEMAPPING = autosub.Config.stringToDict(usernamemapping)
+
+        # Now save to the configfile
+        message = autosub.Config.WriteConfig()
+
+        tmpl = PageTemplate(file="interface/templates/message.tmpl")
+        tmpl.message = message
+        return str(tmpl)
+
+    @cherrypy.expose
+    def flushCache(self):
+        idCache().flushCache()
+        message = 'Id Cache flushed'
+        tmpl = PageTemplate(file="interface/templates/message.tmpl")
+        tmpl.message = message
+        return str(tmpl)
+    
+    @cherrypy.expose
+    def flushLastdown(self):
+        lastDown().flushLastdown()
+        message = 'Last downloaded subtitle database flushed'
+        tmpl = PageTemplate(file="interface/templates/message.tmpl")
+        tmpl.message = message
+        return str(tmpl)
+    
 class Home:
     @cherrypy.expose
     def index(self):
@@ -70,6 +124,15 @@ class Home:
         tmpl = PageTemplate(file="interface/templates/message.tmpl")
         tmpl.message = "WipStatus updating <br> <a href='/home'>Return</a>"
         return str(tmpl)
+    
+    @cherrypy.expose
+    def resetAPICalls(self):
+        autosub.APICALLS = autosub.APICALLSMAX
+        autosub.APICALLSLASTRESET = time.time()
+        
+        tmpl = PageTemplate(file="interface/templates/message.tmpl")
+        tmpl.message = "API Calls reseted"
+
     
     @cherrypy.expose
     def shutdown(self):

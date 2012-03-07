@@ -1,4 +1,4 @@
-import autosub.AutoSub
+
 
 import sys
 import getopt
@@ -6,7 +6,6 @@ import os
 import signal
 import time
 
-signal.signal(signal.SIGINT, autosub.AutoSub.signal_handler)
 #signal.signal(signal.SIGTERM, autosub.AutoSub.signal_handler)
 
 help_message = '''
@@ -30,6 +29,8 @@ class Usage(Exception):
         self.msg = msg
 
 def main(argv=None):
+    
+    import autosub
     
     if argv is None:
         argv = sys.argv
@@ -63,8 +64,18 @@ def main(argv=None):
     print "AutoSub: Initializing variables and loading config"
     autosub.Initialize()
     
+    import autosub.AutoSub
+    
+    signal.signal(signal.SIGINT, autosub.AutoSub.signal_handler)
+    
     if autosub.DAEMON==True:
         autosub.AutoSub.daemon()
+    
+    import autosub.Db
+    
+    #make sure that sqlite database is loaded after you demonize 
+    if autosub.Db.initDatabase():
+        print "AutoSub: Database created"
     
     #change to the new work directory
     if os.path.exists(autosub.PATH):
