@@ -1,0 +1,14 @@
+#import autosub
+
+</div>
+<center>APICalls left since last call: $autosub.APICALLS, reset in: 
+#if ($autosub.APICALLSRESETINT - ($time.time() - $autosub.APICALLSLASTRESET)) < 0
+resets at next API call
+#else
+$time.strftime('%H:%M:%S', $time.gmtime(($autosub.APICALLSRESETINT - ($time.time() - $autosub.APICALLSLASTRESET) )))
+#end if
+<p>
+<a href="/home/resetAPICalls">Reset APICalls</a>
+</center>
+</body>
+</html>

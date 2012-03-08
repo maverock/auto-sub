@@ -1,0 +1,239 @@
+#import autosub
+#import time
+#import cgi
+#import urllib
+#import re
+
+#from autosub.Db import lastDown
+
+#include $os.path.join($autosub.PATH, "interface/templates/header.tmpl")
+
+<script language="JavaScript">
+
+\$(document).ready(function() {
+#set $counter = 1
+#for $var in $autosub.WANTEDQUEUE
+	#set $divname = "skipshow-" + str($counter)
+	#set $buttonname = "skipshowbutton-" + str($counter)
+	#set $buttonseason = "skipshowbuttonseason-" + str($counter)
+	#set $buttonall = "skipshowbuttonall-" + str($counter)
+	#set $url = "/config/skipShow/" + $urllib.quote($var['title'])
+  	\$("#$divname").hide();
+    \$("#$buttonname").click(function () {
+    	\$("#$divname").show();
+    });
+    \$("#$buttonall").click(function () {
+    	document.location.href="$url/0";
+    });
+    \$("#$buttonseason").click(function () {
+    	document.location.href="$url/$var['season']";
+    });
+    #set $counter = $counter + 1 
+#end for
+    
+   });
+</script>
+
+<script language="javascript">
+\$(document).ready(function() {
+	\$('ul.sf-menu').superfish();
+});
+</script>
+
+
+<body>
+
+#include $os.path.join($autosub.PATH, "interface/templates/menu.tmpl")
+
+<br>
+
+#if $len($autosub.WANTEDQUEUE) >= 1
+<form>
+<div class="box">
+							<div class="header">
+								<h1>Wanted</h1><span></span>
+							</div>
+							<div class="content no-padding">
+								<table class="table">
+									<thead>
+										<tr>
+											<th scope="col">Showname</th>
+											<th scope="col">Season</th>
+											<th scope="col">Episode</th>
+											<th scope="col">Quality</th>
+											<th scope="col">Source</th>
+											<th width="35">Language</th>
+											<th scope="col">Completion</th>
+											<th scope="col">Expected</th>
+											<th scope="col">Skip Show</th>
+										</tr>
+									</thead>
+      <tbody>
+#set $counter = 1
+#for $var in $autosub.WANTEDQUEUE
+#set $divname = "skipshow-" + str($counter)
+#set $buttonname = "skipshowbutton-" + str($counter)
+#set $buttonseason = "skipshowbuttonseason-" + str($counter)
+#set $buttonall = "skipshowbuttonall-" + str($counter)
+#set $counter = $counter + 1
+<tr>
+<td align="center"><b>$var['title']<b></td>
+<td align="center">$var['season']</td>
+<td align="center">$var['episode']</td>
+
+#if 'quality' in $var.keys()
+	<td align="center">$var['quality'].upper()</td>
+#else
+	<td align="center">Unknown</td>
+#end if
+
+#if 'source' in $var.keys()
+	<td align="center">$var['source'].upper()</td>
+#else
+	<td align="center">Unknown</td>
+#end if
+
+<td align="center">
+#for lang in $var['lang']
+#if lang == "nl"
+	<img src="/media/images/nl.png">
+#end if
+#if lang == "en"
+	<img src="/media/images/en.png">
+#end if
+#end for
+</td>
+
+#if 'WIPProc' in $var.keys()
+<td>
+<div class="headway" title="$var['WIPProc']"><div class="advance" style="width:$var['WIPProc'];"></div></div>
+
+</td>
+#else
+<td align="center">Unknown</td>
+#end if
+
+#if 'WIPDate' in $var.keys()
+<td align="center">$var['WIPDate']</td>
+#else
+<td align="center">Unknown</td>
+#end if
+
+
+<td>
+<center><button type="button" name="" value="Skip Show" class="css3button" id="$buttonname">Skip Show</button></center>
+</td>
+</tr>
+
+
+
+</tr>
+#end for
+</table>
+</div>
+						</div>
+#end if
+<p>
+#set $lastdownload = lastDown().getlastDown()
+
+#if $len($lastdownload) >= 1
+    
+						<div class="box">
+							<div class="header">
+								<h1>Latest downloaded subtitles</h1><span></span>
+							</div>
+							<div class="content no-padding">
+								<table class="table">
+									<thead>
+<tr>
+	<th scope="col">Show name</th>
+	<th scope="col">Season</th>
+	<th scope="col">Episode</th>
+	<th scope="col">Quality</th>
+	<th scope="col">Source</th>
+	<th width="35">Language</th>
+</tr>
+</thead>
+
+#for $var in $lastdownload
+<tr>
+<td align="center"><b>$var['show_name']</b></td>
+<td align="center">$var['season']</td>
+<td align="center">$var['episode']</td>
+<td align="center">$var['quality']</td>
+
+#if $var['source']
+	<td align="center">$var['source'].upper()</td>
+#else
+	<td align="center">Unknown</td>
+#end if
+
+<td align="center">
+	#set $imageurl = "/media/images/" + $var['language'] + ".png"
+	<img src="$imageurl" alt=\"N\""# />
+</td>
+</tr>
+
+#end for
+</table>
+</div>
+</div>
+#end if
+<br>
+<table>
+<tr>
+	<td>
+		Next RSSCheck in:
+	</td> 
+	<td>
+		#try
+		  $time.strftime('%H:%M:%S', $time.gmtime(($autosub.CHECKRSS.interval - ($time.time() - $autosub.CHECKRSS.lastrun) ))) <br>
+		#except
+		  Please wait... <br>
+		#end try
+	</td>
+</tr>
+<tr>
+	<td>
+		Next ScanDisk in: 
+	</td>
+	<td>
+		#try
+		  $time.strftime('%H:%M:%S', $time.gmtime(($autosub.SCANDISK.interval - ($time.time() - $autosub.SCANDISK.lastrun) ))) <br>
+		#except
+		  Please wait... <br>
+		#end try
+	</td>
+</tr>
+<tr>
+	<td>
+		Next CheckSub in: 
+	</td>
+	<td>
+		#try
+		  $time.strftime('%H:%M:%S', $time.gmtime(($autosub.CHECKSUB.interval - ($time.time() - $autosub.CHECKSUB.lastrun) ))) <br>
+		#except
+		  Please wait... <br>
+		#end try
+	</td>
+</tr>
+<tr>
+	<td>
+		Next WipStatus in:
+	</td>
+	<td>
+		#try
+		  $time.strftime('%H:%M:%S', $time.gmtime(($autosub.WIPSTATUS.interval - ($time.time() - $autosub.WIPSTATUS.lastrun) )))
+		#except
+		  Please wait... <br>
+		#end try
+	</td>
+</tr>
+</table>
+
+	<div id="progress-bar blue"></div>
+
+
+
+
+#include $os.path.join($autosub.PATH, "interface/templates/footer.tmpl")
