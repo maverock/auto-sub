@@ -10,12 +10,15 @@ import time
 
 help_message = '''
 Usage:
-    -h (--help)    Prints this message
-    -c (--config=) Forces AutoSub.py to use a configfile other than ./config.properties
-    -d (--daemon)  Run AutoSub in the background
+    -h (--help)     Prints this message
+    -c (--config=)  Forces AutoSub.py to use a configfile other than ./config.properties
+    -d (--daemon)   Run AutoSub in the background
+    -l (--nolaunch) Stop AutoSub from launching a webbrowser
+    
 Example:
     python AutoSub.py
     python AutoSub.py -d
+    python AutoSub.py -d -l
     python AutoSub.py -c/home/user/config.properties
     python AutoSub.py --config=/home/user/config.properties
     python AutoSub.py --config=/home/user/config.properties --daemon
@@ -36,7 +39,7 @@ def main(argv=None):
         argv = sys.argv
     try:
         try:
-            opts, args= getopt.getopt(argv[1:], "hc:d", ["help","config=","daemon"])
+            opts, args= getopt.getopt(argv[1:], "hc:dl", ["help","config=","daemon","nolaunch"])
         except getopt.error, msg:
             raise Usage(msg)
     
@@ -46,6 +49,8 @@ def main(argv=None):
                 raise Usage(help_message)
             if option in ("-c", "--config"):
                 autosub.CONFIGFILE = value
+            if option in ("-l", "--nolaunch"):
+                autosub.LAUNCHBROWSER = False
             if option in ("-d", "--daemon"):
                 if sys.platform == "win32":
                     print "ERROR: No support for daemon mode in Windows"
@@ -89,6 +94,9 @@ def main(argv=None):
     
     log.info("AutoSub: Starting threads")
     autosub.AutoSub.start()
+    
+    if autosub.LAUNCHBROWSER:
+        autosub.AutoSub.launchBrowser()
     
     log.info("AutoSub: threads started, going into a loop to keep the main thread going")
     

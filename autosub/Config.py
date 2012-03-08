@@ -128,7 +128,7 @@ def ReadConfig(configfile):
         if cfg.has_option("config", "postprocesscmd"):
             autosub.POSTPROCESSCMD = cfg.get("config", "postprocesscmd")
         else:
-            autosub.POSTPROCESSCMD = False
+            autosub.POSTPROCESSCMD = None
 
     else:
         # config section is missing
@@ -206,7 +206,7 @@ def ReadConfig(configfile):
         else:
             print "Config ERROR: Webserver IP and port are required! Now setting the default values (127.0.0.1:8080)."
             autosub.WEBSERVERIP = "127.0.0.1"
-            autosub.WEBSERVERPORT = 8080
+            autosub.WEBSERVERPORT = 8083
         if cfg.has_option('webserver', 'username') and cfg.has_option('webserver', 'password'):
             autosub.USERNAME = cfg.get('webserver', 'username')
             autosub.PASSWORD = cfg.get('webserver', 'password')
@@ -216,7 +216,7 @@ def ReadConfig(configfile):
         print "Config ERROR: The webserver section is required! Now setting the default values (127.0.0.1:8080)."
         print "Config WARNING: The webserver is started without authentication!"
         autosub.WEBSERVERIP = '127.0.0.1'
-        autosub.WEBSERVERPORT = 8080
+        autosub.WEBSERVERPORT = 8083
 
     if cfg.has_section('skipshow'):
         # Try to read skipshow section in the config
@@ -227,6 +227,7 @@ def ReadConfig(configfile):
             autosub.SKIPSHOWUPPER[x.upper()] = autosub.SKIPSHOW[x].split(',')
     else:
         autosub.SKIPSHOW = {}
+        autosub.SKIPSHOWUPPER = {}
 
     if cfg.has_section('namemapping'):
         autosub.USERNAMEMAPPING = dict(cfg.items('namemapping'))
@@ -319,7 +320,10 @@ def applynameMapping():
     cfg = SafeConfigParser()
     cfg.read(autosub.CONFIGFILE)
     autosub.SHOWID_CACHE = {}
-    autosub.USERNAMEMAPPING = dict(cfg.items('namemapping'))
+    if cfg.has_section("namemapping"):
+        autosub.USERNAMEMAPPING = dict(cfg.items('namemapping'))
+    else:
+        autosub.USERNAMEMAPPING = {}
     autosub.USERNAMEMAPPINGUPPER = {}
     for x in autosub.USERNAMEMAPPING.keys():
         autosub.USERNAMEMAPPINGUPPER[x.upper()] = autosub.USERNAMEMAPPING[x]
@@ -331,7 +335,10 @@ def applyskipShow():
     """
     cfg = SafeConfigParser()
     cfg.read(autosub.CONFIGFILE)
-    autosub.SKIPSHOW = dict(cfg.items('skipshow'))
+    if cfg.has_section('skipshow'):
+        autosub.SKIPSHOW = dict(cfg.items('skipshow'))
+    else:
+        autosub.SKIPSHOW = {}
     autosub.SKIPSHOWUPPER = {}
     for x in autosub.SKIPSHOW:
         autosub.SKIPSHOWUPPER[x.upper()] = autosub.SKIPSHOW[x].split(',')
