@@ -14,7 +14,7 @@
 NAME=AutoSub
 INIT_DIR=/etc/init.d
 DAEMON=/usr/bin/python
-DAEMON_OPTS=" /home/user/auto-sub/AutoSub.py -c/home/user/auto-sub/config.properties -d"
+DAEMON_OPTS=" /home/user/auto-sub/AutoSub.py -c/home/user/auto-sub/config.properties -d -l"
 
 ## STOP EDIT ##
 

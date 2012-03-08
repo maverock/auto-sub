@@ -11,6 +11,8 @@ import os
 import cherrypy
 import sys
 import time
+import webbrowser
+
 # Settings
 log = logging.getLogger('thelogger')
 
@@ -134,6 +136,20 @@ def stop():
 
     os._exit(0)
 
+def launchBrowser():
+    host = autosub.WEBSERVERIP
+    port = autosub.WEBSERVERPORT
+    if host == '0.0.0.0':
+        host = 'localhost'
+
+    url = 'http://%s:%d' % (host, int(port))
+    try:
+        webbrowser.open(url, 2, 1)
+    except:
+        try:
+            webbrowser.open(url, 1, 1)
+        except:
+            log.error('launchBrowser: Failed')
 
 def signal_handler(signum, frame):
     log.debug("AutoSub: got signal. Shutting down")
