@@ -80,7 +80,7 @@ def Initialize():
     
     DBFILE = 'database.db'
     
-    VERSION = 'Alpha 0.5'
+    VERSION = 'Alpha 0.5.1'
     USERAGENT = 'Auto-Sub ' + VERSION
     
     TODOWNLOADQUEUE = []
