@@ -213,6 +213,9 @@ def getShowid(show_name):
     show_id = idCache().getId(show_name)
     if show_id:
         log.debug('getShowid: showid from cache %s' %show_id)
+        if show_id == -1:
+            log.error('getShowid: showid not found for %s' %show_name)
+            return
         return show_id
     
     #do we have enough api calls?
@@ -229,7 +232,7 @@ def getShowid(show_name):
         return show_id
     
     log.error('getShowid: showid not found for %s' %show_name)
-    idCache().setId(None, show_name)
+    idCache().setId(-1, show_name)
 
 
 def checkAPICalls(use=False):

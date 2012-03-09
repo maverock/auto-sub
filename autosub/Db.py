@@ -30,10 +30,11 @@ class idCache():
         bierdopje_id = None
         
         for row in cursor:
-            bierdopje_id = int(row[0])
+            bierdopje_id = row[0]
         
         connection.close()
-        return bierdopje_id
+        if bierdopje_id:
+            return int(bierdopje_id)
     
     def setId(self, bierdopje_id, show_name):
         connection=sqlite3.connect(autosub.DBFILE)
