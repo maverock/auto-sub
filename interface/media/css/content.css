@@ -47,22 +47,8 @@ html, body {
 	background: #fff;
 }
 
-.box .content.with-actions {
-	border-radius: 0;
-	border-bottom: 0;
-}
-
-.box .content.no-header {
-	border-radius: 3px;
-	border: 1px solid #C8C8C8;
-}
-
 .box .content.no-padding {
 	padding: 0;
-}
-
-.border-radius-bottom {
-	border-radius: 0 0 3px 3px;
 }
 
 .headway {

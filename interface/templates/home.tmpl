@@ -8,42 +8,26 @@
 
 #include $os.path.join($autosub.PATH, "interface/templates/header.tmpl")
 
-<script language="JavaScript">
-
-\$(document).ready(function() {
-#set $counter = 1
-#for $var in $autosub.WANTEDQUEUE
-	#set $divname = "skipshow-" + str($counter)
-	#set $buttonname = "skipshowbutton-" + str($counter)
-	#set $buttonseason = "skipshowbuttonseason-" + str($counter)
-	#set $buttonall = "skipshowbuttonall-" + str($counter)
-	#set $url = "/config/skipShow/" + $urllib.quote($var['title'])
-  	\$("#$divname").hide();
-    \$("#$buttonname").click(function () {
-    	\$("#$divname").show();
-    });
-    \$("#$buttonall").click(function () {
-    	document.location.href="$url/0";
-    });
-    \$("#$buttonseason").click(function () {
-    	document.location.href="$url/$var['season']";
-    });
-    #set $counter = $counter + 1 
-#end for
-    
-   });
-</script>
-
 <script language="javascript">
 \$(document).ready(function() {
 	\$('ul.sf-menu').superfish();
 });
 </script>
 
-
-<body>
-
 #include $os.path.join($autosub.PATH, "interface/templates/menu.tmpl")
+
+<script type="text/javascript"> 	
+\$(document).ready(function(){ 		
+	\$("#simpleCallback").powerContext({menu : 'simpleCallbackMenu', onSelect : function(e) { 			
+		alert("You clicked on a menu item!\n\nThe item's action is: " + e.action + "\nThe item's id is: " + e.id); 		
+	}}); 		
+	\$("#menuClasses").powerContext({menu : 'menuClassesMenu', onSelect : function(e) { 			
+		alert("This shouldn't happen for the first menu!"); 		
+	}}); 		
+	\$("#imageMenuArea").powerContext({menu : "imageMenu", isMenu : false}); 	
+	}); 	
+</script>
+
 
 <br>
 
@@ -77,7 +61,7 @@
 #set $buttonall = "skipshowbuttonall-" + str($counter)
 #set $counter = $counter + 1
 <tr>
-<td align="center"><b>$var['title']<b></td>
+<td align="center"><div id="simpleCallback">$var['title']</div></td>
 <td align="center">$var['season']</td>
 <td align="center">$var['episode']</td>
 
@@ -162,7 +146,7 @@
 <td align="center">$var['episode']</td>
 <td align="center">$var['quality']</td>
 
-#if $var['source']
+#if 'source' in $var.keys()
 	<td align="center">$var['source'].upper()</td>
 #else
 	<td align="center">Unknown</td>
@@ -231,9 +215,12 @@
 </tr>
 </table>
 
-	<div id="progress-bar blue"></div>
 
-
-
+<div id="simpleCallbackMenu"> 			
+<ul> 				
+	<li id="MenuItem1"><a href="#Item1">Skip episode $var['episode'] from $var['title']</a></li> 				
+	<li id="MenuItem2"><a href="#Item2">Skip season $var['season'] from $var['title']</a></li> 			
+</ul>     	
+</div>
 
 #include $os.path.join($autosub.PATH, "interface/templates/footer.tmpl")
