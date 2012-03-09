@@ -48,7 +48,11 @@ def main(argv=None):
             if option in ("-h", "--help"):
                 raise Usage(help_message)
             if option in ("-c", "--config"):
-                autosub.CONFIGFILE = value
+                if os.path.exists(value):
+                    autosub.CONFIGFILE = value
+                else:
+                    print "ERROR: Configfile does not exists."
+                    os._exit(0)
             if option in ("-l", "--nolaunch"):
                 autosub.LAUNCHBROWSER = False
             if option in ("-d", "--daemon"):

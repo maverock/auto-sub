@@ -127,8 +127,6 @@ def ReadConfig(configfile):
 
         if cfg.has_option("config", "postprocesscmd"):
             autosub.POSTPROCESSCMD = cfg.get("config", "postprocesscmd")
-        else:
-            autosub.POSTPROCESSCMD = None
 
     else:
         # config section is missing
@@ -149,7 +147,6 @@ def ReadConfig(configfile):
         autosub.SUBNL = ""
         print "Config ERROR: Variable LOGFILE is missing. This is required! Using 'AutoSubService.log' instead."
         autosub.LOGFILE = "AutoSubService.log"
-        autosub.POSTPROCESSCMD = False
 
     if cfg.has_section('logfile'):
         if cfg.has_option("logfile", "loglevel"):
@@ -204,8 +201,8 @@ def ReadConfig(configfile):
             autosub.WEBSERVERIP = cfg.get('webserver', 'webserverip')
             autosub.WEBSERVERPORT = int(cfg.get('webserver', 'webserverport'))
         else:
-            print "Config ERROR: Webserver IP and port are required! Now setting the default values (127.0.0.1:8080)."
-            autosub.WEBSERVERIP = "127.0.0.1"
+            print "Config ERROR: Webserver IP and port are required! Now setting the default values (0.0.0.0:8083)."
+            autosub.WEBSERVERIP = "0.0.0.0"
             autosub.WEBSERVERPORT = 8083
         if cfg.has_option('webserver', 'username') and cfg.has_option('webserver', 'password'):
             autosub.USERNAME = cfg.get('webserver', 'username')
@@ -213,9 +210,9 @@ def ReadConfig(configfile):
         elif cfg.has_option('webserver', 'username') or cfg.has_option('webserver', 'password'):
             print "Config ERROR: Both username and password are required! Now starting without authentication!"
     else:
-        print "Config ERROR: The webserver section is required! Now setting the default values (127.0.0.1:8080)."
+        print "Config ERROR: The webserver section is required! Now setting the default values (0.0.0.0:8083)."
         print "Config WARNING: The webserver is started without authentication!"
-        autosub.WEBSERVERIP = '127.0.0.1'
+        autosub.WEBSERVERIP = '0.0.0.0'
         autosub.WEBSERVERPORT = 8083
 
     if cfg.has_section('skipshow'):
@@ -423,7 +420,8 @@ def saveConfigSection():
     cfg.set(section, "subeng", autosub.SUBENG)
     cfg.set(section, "subnl", autosub.SUBNL)
     cfg.set(section, "logfile", autosub.LOGFILE)
-    cfg.set(section, "postprocesscmd", autosub.POSTPROCESSCMD)
+    if autosub.POSTPROCESSCMD:
+        cfg.set(section, "postprocesscmd", autosub.POSTPROCESSCMD)
 
     with open(autosub.CONFIGFILE, 'wb') as file:
         cfg.write(file)

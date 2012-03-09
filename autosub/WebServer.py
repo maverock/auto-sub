@@ -20,27 +20,32 @@ class Config:
         tmpl = PageTemplate(file="interface/templates/config.tmpl")
         return str(tmpl)
     @cherrypy.expose
-    def skipShow(self, title, season):
-        tmpl = PageTemplate(file="interface/templates/message.tmpl")
-        if not title:
-            raise cherrypy.HTTPError(400, "No show supplied")
-        if title.upper() in autosub.SKIPSHOWUPPER:
-            for x in autosub.SKIPSHOWUPPER[title.upper()]:
-                if x == season or x == '0':
-                    tmpl.message = "Already skipped <br> <a href='/home'>Return home</a>"
-                    return str(tmpl)
-            if season == '00':
-                season = season + ',' + ','.join(autosub.SKIPSHOWUPPER[title.upper()])
-            else:
-                season = str(int(season)) + ',' + ','.join(autosub.SKIPSHOWUPPER[title.upper()])
+    def skipShow(self, title, season=None):
+        if not season:
+            tmpl = PageTemplate(file="interface/templates/config-skipshow.tmpl")
+            tmpl.title = title
+            return str(tmpl)
         else:
-            if not season == '00':
-                season = str(int(season))
-        autosub.Config.SaveToConfig('skipshow',title,season)
-        autosub.Config.applyskipShow()
-        
-        tmpl.message = "Add %s and season %s to the skipshow and applied it. <br> Remember, WantedQueue will be refresh at the next run of scanDisk <br> <a href='/home'>Return home</a>" % (title, season)
-        return str(tmpl)
+            tmpl = PageTemplate(file="interface/templates/message.tmpl")
+            if not title:
+                raise cherrypy.HTTPError(400, "No show supplied")
+            if title.upper() in autosub.SKIPSHOWUPPER:
+                for x in autosub.SKIPSHOWUPPER[title.upper()]:
+                    if x == season or x == '0':
+                        tmpl.message = "Already skipped <br> <a href='/home'>Return home</a>"
+                        return str(tmpl)
+                if season == '00':
+                    season = season + ',' + ','.join(autosub.SKIPSHOWUPPER[title.upper()])
+                else:
+                    season = str(int(season)) + ',' + ','.join(autosub.SKIPSHOWUPPER[title.upper()])
+            else:
+                if not season == '00':
+                    season = str(int(season))
+            autosub.Config.SaveToConfig('skipshow',title,season)
+            autosub.Config.applyskipShow()
+            
+            tmpl.message = "Add %s and season %s to the skipshow and applied it. <br> Remember, WantedQueue will be refresh at the next run of scanDisk <br> <a href='/home'>Return home</a>" % (title, season)
+            return str(tmpl)
     
     @cherrypy.expose
     def applyConfig(self):
@@ -112,17 +117,9 @@ class Home:
         autosub.CHECKRSS.runnow = True
         autosub.CHECKSUB.runnow = True
         autosub.DOWNLOADSUBS.runnow = True
-        autosub.WIPSTATUS.runnow = True
         
         tmpl = PageTemplate(file="interface/templates/message.tmpl")
         tmpl.message = "Running everything! <br> <a href='/home'>Return</a>"
-        return str(tmpl)
-    
-    @cherrypy.expose
-    def runwipStatusNow(self):
-        autosub.WIPSTATUS.runnow = True
-        tmpl = PageTemplate(file="interface/templates/message.tmpl")
-        tmpl.message = "WipStatus updating <br> <a href='/home'>Return</a>"
         return str(tmpl)
     
     @cherrypy.expose

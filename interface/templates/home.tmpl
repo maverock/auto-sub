@@ -8,44 +8,10 @@
 
 #include $os.path.join($autosub.PATH, "interface/templates/header.tmpl")
 
-<script language="JavaScript">
-
-\$(document).ready(function() {
-#set $counter = 1
-#for $var in $autosub.WANTEDQUEUE
-	#set $divname = "skipshow-" + str($counter)
-	#set $buttonname = "skipshowbutton-" + str($counter)
-	#set $buttonseason = "skipshowbuttonseason-" + str($counter)
-	#set $buttonall = "skipshowbuttonall-" + str($counter)
-	#set $url = "/config/skipShow/" + $urllib.quote($var['title'])
-  	\$("#$divname").hide();
-    \$("#$buttonname").click(function () {
-    	\$("#$divname").show();
-    });
-    \$("#$buttonall").click(function () {
-    	document.location.href="$url/0";
-    });
-    \$("#$buttonseason").click(function () {
-    	document.location.href="$url/$var['season']";
-    });
-    #set $counter = $counter + 1 
-#end for
-    
-   });
-</script>
-
-<script language="javascript">
-\$(document).ready(function() {
-	\$('ul.sf-menu').superfish();
-});
-</script>
-
-
-<body>
-
 #include $os.path.join($autosub.PATH, "interface/templates/menu.tmpl")
 
 <br>
+
 
 #if $len($autosub.WANTEDQUEUE) >= 1
 <form>
@@ -63,9 +29,6 @@
 											<th scope="col">Quality</th>
 											<th scope="col">Source</th>
 											<th width="35">Language</th>
-											<th scope="col">Completion</th>
-											<th scope="col">Expected</th>
-											<th scope="col">Skip Show</th>
 										</tr>
 									</thead>
       <tbody>
@@ -76,8 +39,11 @@
 #set $buttonseason = "skipshowbuttonseason-" + str($counter)
 #set $buttonall = "skipshowbuttonall-" + str($counter)
 #set $counter = $counter + 1
+
+
+
 <tr>
-<td align="center"><b>$var['title']<b></td>
+<td align="center"><a href='/config/skipShow/$var['title']'>$var['title']</a></td>
 <td align="center">$var['season']</td>
 <td align="center">$var['episode']</td>
 
@@ -104,25 +70,6 @@
 #end for
 </td>
 
-#if 'WIPProc' in $var.keys()
-<td>
-<div class="headway" title="$var['WIPProc']"><div class="advance" style="width:$var['WIPProc'];"></div></div>
-
-</td>
-#else
-<td align="center">Unknown</td>
-#end if
-
-#if 'WIPDate' in $var.keys()
-<td align="center">$var['WIPDate']</td>
-#else
-<td align="center">Unknown</td>
-#end if
-
-
-<td>
-<center><button type="button" name="" value="Skip Show" class="css3button" id="$buttonname">Skip Show</button></center>
-</td>
 </tr>
 
 
@@ -130,8 +77,10 @@
 </tr>
 #end for
 </table>
+
 </div>
 						</div>
+<i>Click showname in wanted list to skip it</i>
 #end if
 <p>
 #set $lastdownload = lastDown().getlastDown()
@@ -162,7 +111,7 @@
 <td align="center">$var['episode']</td>
 <td align="center">$var['quality']</td>
 
-#if $var['source']
+#if 'source' in $var.keys()
 	<td align="center">$var['source'].upper()</td>
 #else
 	<td align="center">Unknown</td>
@@ -217,23 +166,6 @@
 		#end try
 	</td>
 </tr>
-<tr>
-	<td>
-		Next WipStatus in:
-	</td>
-	<td>
-		#try
-		  $time.strftime('%H:%M:%S', $time.gmtime(($autosub.WIPSTATUS.interval - ($time.time() - $autosub.WIPSTATUS.lastrun) )))
-		#except
-		  Please wait... <br>
-		#end try
-	</td>
-</tr>
 </table>
-
-	<div id="progress-bar blue"></div>
-
-
-
 
 #include $os.path.join($autosub.PATH, "interface/templates/footer.tmpl")

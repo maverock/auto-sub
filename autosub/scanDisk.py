@@ -94,5 +94,4 @@ class scanDisk():
                     
         log.debug("scanDir: Finished round of local disk checking")
         autosub.WANTEDQUEUELOCK = False
-        autosub.WIPSTATUS.runnow = True
         return True
