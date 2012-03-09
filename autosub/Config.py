@@ -420,8 +420,7 @@ def saveConfigSection():
     cfg.set(section, "subeng", autosub.SUBENG)
     cfg.set(section, "subnl", autosub.SUBNL)
     cfg.set(section, "logfile", autosub.LOGFILE)
-    if autosub.POSTPROCESSCMD:
-        cfg.set(section, "postprocesscmd", autosub.POSTPROCESSCMD)
+    cfg.set(section, "postprocesscmd", autosub.POSTPROCESSCMD)
 
     with open(autosub.CONFIGFILE, 'wb') as file:
         cfg.write(file)
