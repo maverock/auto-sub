@@ -275,7 +275,9 @@ def ReadConfig(configfile):
             "Are You There Chelsea": "15259",
             "Touch": "15761",
             "Ncis Los Angeles": "12994",
-            "Mike and Molly": "14258"
+            "Mike and Molly": "14258",
+            "The River" : "15203",
+            "Once Upon A Time" : "15202"
     }
 
     autosub.NAMEMAPPINGUPPER = {}
@@ -392,6 +394,7 @@ def stringToDict(items=None):
             showinfo = tuple(showinfo)
             returnitems.append(showinfo)
     returnitems = dict(returnitems)
+    print returnitems
     return returnitems
 
 

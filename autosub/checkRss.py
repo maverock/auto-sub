@@ -80,7 +80,7 @@ class checkRss():
                 soupx = BeautifulStoneSoup(str(x))
                 title = soupx.find('title').string
                 show_id = soupx.find('show_id').string
-                link = soupx.find('link').string
+                link = soupx.find('enclosure')['url']
                 item = {}
                 item['title'] = title
                 item['link'] = link
