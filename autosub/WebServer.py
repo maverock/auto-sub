@@ -105,6 +105,21 @@ class Config:
         tmpl.message = message
         return str(tmpl)
     
+    @cherrypy.expose
+    def checkVersion(self):
+        checkversion = autosub.Helpers.CheckVersion()
+        
+        if checkversion==True:
+            message = 'There is a new version available! Visit: <a href=http://code.google.com/p/auto-sub/downloads/list>Google-Project</a>'
+        elif checkversion == False:
+            message = 'You are running the latest version!'
+        elif checkversion == None:
+            message = 'Something is wrong. Either we could not reach google-project. Or you are trying to compare different releases (Alpha with Beta).'
+        
+        tmpl = PageTemplate(file="interface/templates/message.tmpl")
+        tmpl.message = message
+        return str(tmpl)
+    
 class Home:
     @cherrypy.expose
     def index(self):

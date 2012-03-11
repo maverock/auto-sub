@@ -394,7 +394,6 @@ def stringToDict(items=None):
             showinfo = tuple(showinfo)
             returnitems.append(showinfo)
     returnitems = dict(returnitems)
-    print returnitems
     return returnitems
 
 
@@ -479,16 +478,18 @@ def saveSkipshowSection():
 
     cfg = SafeConfigParser()
     cfg.read(autosub.CONFIGFILE)
-
-    if not cfg.has_section(section):
+    
+    if cfg.has_section(section):
+        cfg.remove_section(section)
         cfg.add_section(section)
+        with open(autosub.CONFIGFILE, 'wb') as file:
+            cfg.write(file)
 
     for x in autosub.SKIPSHOW:
         SaveToConfig('skipshow', x, autosub.SKIPSHOW[x])
 
     # Set all skipshow stuff correct
     applyskipShow()
-
 
 def saveUsernamemappingSection():
     """
@@ -499,8 +500,11 @@ def saveUsernamemappingSection():
     cfg = SafeConfigParser()
     cfg.read(autosub.CONFIGFILE)
 
-    if not cfg.has_section(section):
+    if cfg.has_section(section):
+        cfg.remove_section(section)
         cfg.add_section(section)
+        with open(autosub.CONFIGFILE, 'wb') as file:
+            cfg.write(file)
 
     for x in autosub.USERNAMEMAPPING:
         SaveToConfig('namemapping', x, autosub.USERNAMEMAPPING[x])
@@ -514,20 +518,21 @@ def checkForRestart():
     Check if internal variables are different from the config file.
     Only check the variables the require a restart to take effect
     """
+    #TODO: This function is very ugly and should be rewritten comletely. This is not a way to check it!
     cfg = SafeConfigParser()
     cfg.read(autosub.CONFIGFILE)
 
     # Set the default values
     schedulerscandisk = 3600
-    schedulerchecksub = 28800
+    schedulerchecksub = 86400
     schedulercheckrss = 900
     schedulerdownloadsubs = 1
     loglevel = logging.INFO
     loglevelconsole = logging.ERROR
     logsize = 1000000
     lognum = 1
-    webserverip = '127.0.0.1'
-    webserverport = 8080
+    webserverip = '0.0.0.0'
+    webserverport = 8083
     username = ''
     password = ''
 

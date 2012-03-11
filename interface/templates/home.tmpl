@@ -40,10 +40,10 @@
 #set $buttonall = "skipshowbuttonall-" + str($counter)
 #set $counter = $counter + 1
 
-
+#set $title_escaped = $cgi.escape($var['title'], True)
 
 <tr>
-<td align="center"><a href='/config/skipShow/$var['title']'>$var['title']</a></td>
+<td align="center"><a href="/config/skipShow/$title_escaped">$var['title']</a></td>
 <td align="center">$var['season']</td>
 <td align="center">$var['episode']</td>
 

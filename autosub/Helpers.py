@@ -8,6 +8,9 @@ import re
 import subprocess
 from string import capwords
 import time
+import urllib2
+import re
+from distutils import version
 
 import autosub
 
@@ -34,6 +37,35 @@ def RunCmd(cmd):
     process.wait()
     return shell, shellerr
 
+def CheckVersion():
+    try:
+        req = urllib2.Request(autosub.VERSIONURL)
+        req.add_header("User-agent", autosub.USERAGENT) 
+        resp = urllib2.urlopen(req,None,autosub.TIMEOUT)
+        respone = resp.read()
+        resp.close()
+    except:
+        log.error("getShowid: The server returned an error for request %s" % autosub.VERSIONURL)
+        return None
+    try:
+        match = re.search('(Alpha|Beta|Stable) (\d+)\.(\d+)\.(\d+)', respone)
+        version_online = match.group(0)
+    except:
+        return None
+    
+    release = version_online.split(' ')[0]
+    versionnumber = version.StrictVersion(version_online.split(' ')[1])
+    
+    running_release = autosub.VERSION.split(' ')[0]
+    running_versionnumber = version.StrictVersion(autosub.VERSION.split(' ')[1])
+    
+    if release == running_release:
+        if versionnumber > running_versionnumber:
+            return True
+        else:
+            return False
+    else:
+        return None
 
 def CleanSerieName(series_name):
     """Clean up series name by removing any . and _

@@ -1,6 +1,7 @@
 import Config
 import logging.handlers
 import time
+from autosub.version import autosubversion
 
 ROOTPATH=None
 FALLBACKTOENG=None
@@ -63,6 +64,7 @@ DAEMON=None
 DBFILE=None
 
 VERSION=None
+VERSIONURL=None
 USERAGENT=None
 
 def Initialize():
@@ -76,11 +78,12 @@ def Initialize():
     SCHEDULERSCANDISK, SCHEDULERCHECKSUB, SCHEDULERCHECKRSS, SCHEDULERDOWNLOADSUBS, \
     DAEMON, \
     DBFILE, \
-    VERSION, USERAGENT
+    VERSION, USERAGENT, VERSIONURL
     
     DBFILE = 'database.db'
     
-    VERSION = 'Alpha 0.5.1'
+    VERSION = autosubversion
+    VERSIONURL = 'http://auto-sub.googlecode.com/hg/autosub/version.py'
     USERAGENT = 'Auto-Sub ' + VERSION
     
     TODOWNLOADQUEUE = []
