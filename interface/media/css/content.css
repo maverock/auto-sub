@@ -45,6 +45,8 @@ html, body {
 	border-radius: 0 0 3px 3px;
 	border-top: 1px solid #2B5177;
 	background: #fff;
+       text-decoration: none;
+
 }
 
 .box .content.no-padding {

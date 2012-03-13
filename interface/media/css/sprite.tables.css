@@ -2,6 +2,8 @@
 	clear: both;
 	width: 100%;
 	margin: 0 auto;
+	text-decoration: none;
+
 }
 
 .table thead {
@@ -39,10 +41,14 @@
 	vertical-align: top;
 	padding: 7px;
 	border-left: 1px dotted #bebebe;
+       text-decoration: none;
+
 }
 
 .table tbody td {
 	background: #f8f8f8;
+	text-decoration: none;
+
 }
 
 .table tbody th:first-child, .table tbody .th:first-child, .table tbody td:first-child, .table tfoot th:first-child, .table tfoot td:first-child {
