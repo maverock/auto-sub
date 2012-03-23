@@ -204,13 +204,13 @@ def scoreMatch(release, quality, releasegrp, source):
     score = 0
     log.debug("scoreMatch: Giving a matchscore for: %s. Try to match it with Q: %s GRP: %s S: %s" % (release, quality, releasegrp, source))
     if releasegrp:
-        if (re.search(releasegrp, release, re.IGNORECASE)):
+        if (re.search(re.escape(releasegrp), release, re.IGNORECASE)):
             score += 1
     if source:
-        if (re.search(source, release, re.IGNORECASE)):
+        if (re.search(re.escape(source), release, re.IGNORECASE)):
             score += 4
     if quality:
-        if (matchQuality(quality, release)):
+        if (matchQuality(re.escape(quality), release)):
             score += 2
     log.debug("scoreMatch: MatchScore is %s" % str(score))
     return score
