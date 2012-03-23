@@ -1,0 +1,182 @@
+#import autosub
+
+Path: <input type="text" size="40" name="path" value="$autosub.PATH" /> Required, it should point to the location where the auto-sub files are located.<br />
+Rootpath: <input type="text" size="40" name="rootpath" value="$autosub.ROOTPATH" /> Required, it should point the root folder where the series are located<br />
+Logfile: <input type="text" name="logfile" value="$autosub.LOGFILE" /> Required, point to to the location and to the name of the logfile. When not set, AutoSubService.log will be used.<br />
+Fallbacktoeng: <select name="fallbacktoeng">
+#if $autosub.FALLBACKTOENG
+  <option value="True" selected="selected">Enabled</option>
+  <option value="False">Disabled</option>
+#else
+  <option value="True">Enabled</option>
+  <option value="False" selected="selected">Disabled</option>
+#end if
+</select> When Enabled English subtitles are downloaded when there are no Dutch subtitle available. Default is True.<br />
+Downloadeng: <select name="downloadeng"> <!--value="$autosub.DOWNLOADENG" />-->
+#if $autosub.DOWNLOADENG
+  <option value="True" selected="selected">Enabled</option>
+  <option value="False">Disabled</option>
+#else
+  <option value="True">Enabled</option>
+  <option value="False" selected="selected">Disabled</option>
+#end if
+</select> When enabled English subtitles are always downloaded default is False<br />
+Subeng: <input type="text" name="subeng" value="$autosub.SUBENG" /> When FallbacktoEng is enabled, English subtitles are download as: filename.subeng.srt default is 'en' (filename.en.srt)<br />
+Subnl: <input type="text" name="subnl" value="$autosub.SUBNL" /> When downloading dutch subtitle files are renamed to: filename.subnl.srt<br />
+Postprocesscmd: <input type="text" size="40" name="postprocesscmd" value="$autosub.POSTPROCESSCMD" /> AutoSub will run this command after downloading a subtitle. Check: http://code.google.com/p/auto-sub/wiki/ExamplePostProcessScript for more info<br />
+Minmatchscore:<select name="minmatchscore">
+#if $autosub.MINMATCHSCORE == 0
+  <option value=0 selected="selected">0.Best match</option>
+  <option value=1>1.Releasegroup</option>
+  <option value=2>2.Quality</option>
+  <option value=3>3.Releasegroup & Quality</option>
+  <option value=4>4.Source</option>
+  <option value=5>5.Source & Releasegroup</option>
+  <option value=6>6.Source & Quality</option>
+  <option value=7>7.Source, Releasegroup & Quality</option>
+#elif $autosub.MINMATCHSCORE == 1
+  <option value=0>0.Best match</option>
+  <option value=1 selected="selected">1.Releasegroup</option>
+  <option value=2>2.Quality</option>
+  <option value=3>3.Releasegroup & Quality</option>
+  <option value=4>4.Source</option>
+  <option value=5>5.Source & Releasegroup</option>
+  <option value=6>6.Source & Quality</option>
+  <option value=7>7.Source, Releasegroup & Quality</option>
+#elif $autosub.MINMATCHSCORE == 2
+  <option value=0>0.Best match</option>
+  <option value=1>1.Releasegroup</option>
+  <option value=2 selected="selected">2.Quality</option>
+  <option value=3>3.Releasegroup & Quality</option>
+  <option value=4>4.Source</option>
+  <option value=5>5.Source & Releasegroup</option>
+  <option value=6>6.Source & Quality</option>
+  <option value=7>7.Source, Releasegroup & Quality</option>
+#elif $autosub.MINMATCHSCORE == 3
+  <option value=0>0.Best match</option>
+  <option value=1>1.Releasegroup</option>
+  <option value=2>2.Quality</option>
+  <option value=3 selected="selected">3.Releasegroup & Quality</option>
+  <option value=4>4.Source</option>
+  <option value=5>5.Source & Releasegroup</option>
+  <option value=6>6.Source & Quality</option>
+  <option value=7>7.Source, Releasegroup & Quality</option>
+#elif $autosub.MINMATCHSCORE == 4
+  <option value=0>0.Best match</option>
+  <option value=1>1.Releasegroup</option>
+  <option value=2>2.Quality</option>
+  <option value=3>3.Releasegroup & Quality</option>
+  <option value=4 selected="selected">4.Source</option>
+  <option value=5>5.Source & Releasegroup</option>
+  <option value=6>6.Source & Quality</option>
+  <option value=7>7.Source, Releasegroup & Quality</option>
+#elif $autosub.MINMATCHSCORE == 5
+  <option value=0>0.Best match</option>
+  <option value=1>1.Releasegroup</option>
+  <option value=2>2.Quality</option>
+  <option value=3>3.Releasegroup & Quality</option>
+  <option value=4>4.Source</option>
+  <option value=5 selected="selected">5.Source & Releasegroup</option>
+  <option value=6>6.Source & Quality</option>
+  <option value=7>7.Source, Releasegroup & Quality</option>
+#elif $autosub.MINMATCHSCORE == 6
+  <option value=0>0.Best match</option>
+  <option value=1>1.Releasegroup</option>
+  <option value=2>2.Quality</option>
+  <option value=3>3.Releasegroup & Quality</option>
+  <option value=4>4.Source</option>
+  <option value=5>5.Source & Releasegroup</option>
+  <option value=6 selected="selected">6.Source & Quality</option>
+  <option value=7>7.Source, Releasegroup & Quality</option>
+#elif $autosub.MINMATCHSCORE == 7
+  <option value=0>0.Best match</option>
+  <option value=1>1.Releasegroup</option>
+  <option value=2>2.Quality</option>
+  <option value=3>3.Releasegroup & Quality</option>
+  <option value=4>4.Source</option>
+  <option value=5>5.Source & Releasegroup</option>
+  <option value=6>6.Source & Quality</option>
+  <option value=7 selected="selected">7.Source, Releasegroup & Quality</option>
+#end if
+</select> What items should match when a subtitle is downloaded.<br />
+<!--Minmatchscorerss: <input type="text" name="minmatchscorerss" value="$autosub.MINMATCHSCORERSS" /><br />-->
+Minmatchscorerss:<select name="minmatchscorerss">
+#if $autosub.MINMATCHSCORERSS == 0
+  <option value=0 selected="selected">0.Best match</option>
+  <option value=1>1.Releasegroup</option>
+  <option value=2>2.Quality</option>
+  <option value=3>3.Releasegroup & Quality</option>
+  <option value=4>4.Source</option>
+  <option value=5>5.Source & Releasegroup</option>
+  <option value=6>6.Source & Quality</option>
+  <option value=7>7.Source, Releasegroup & Quality</option>
+#elif $autosub.MINMATCHSCORERSS == 1
+  <option value=0>0.Best match</option>
+  <option value=1 selected="selected">1.Releasegroup</option>
+  <option value=2>2.Quality</option>
+  <option value=3>3.Releasegroup & Quality</option>
+  <option value=4>4.Source</option>
+  <option value=5>5.Source & Releasegroup</option>
+  <option value=6>6.Source & Quality</option>
+  <option value=7>7.Source, Releasegroup & Quality</option>
+#elif $autosub.MINMATCHSCORERSS == 2
+  <option value=0>0.Best match</option>
+  <option value=1>1.Releasegroup</option>
+  <option value=2 selected="selected">2.Quality</option>
+  <option value=3>3.Releasegroup & Quality</option>
+  <option value=4>4.Source</option>
+  <option value=5>5.Source & Releasegroup</option>
+  <option value=6>6.Source & Quality</option>
+  <option value=7>7.Source, Releasegroup & Quality</option>
+#elif $autosub.MINMATCHSCORERSS == 3
+  <option value=0>0.Best match</option>
+  <option value=1>1.Releasegroup</option>
+  <option value=2>2.Quality</option>
+  <option value=3 selected="selected">3.Releasegroup & Quality</option>
+  <option value=4>4.Source</option>
+  <option value=5>5.Source & Releasegroup</option>
+  <option value=6>6.Source & Quality</option>
+  <option value=7>7.Source, Releasegroup & Quality</option>
+#elif $autosub.MINMATCHSCORERSS == 4
+  <option value=0>0.Best match</option>
+  <option value=1>1.Releasegroup</option>
+  <option value=2>2.Quality</option>
+  <option value=3>3.Releasegroup & Quality</option>
+  <option value=4 selected="selected">4.Source</option>
+  <option value=5>5.Source & Releasegroup</option>
+  <option value=6>6.Source & Quality</option>
+  <option value=7>7.Source, Releasegroup & Quality</option>
+#elif $autosub.MINMATCHSCORERSS == 5
+  <option value=0>0.Best match</option>
+  <option value=1>1.Releasegroup</option>
+  <option value=2>2.Quality</option>
+  <option value=3>3.Releasegroup & Quality</option>
+  <option value=4>4.Source</option>
+  <option value=5 selected="selected">5.Source & Releasegroup</option>
+  <option value=6>6.Source & Quality</option>
+  <option value=7>7.Source, Releasegroup & Quality</option>
+#elif $autosub.MINMATCHSCORERSS == 6
+  <option value=0>0.Best match</option>
+  <option value=1>1.Releasegroup</option>
+  <option value=2>2.Quality</option>
+  <option value=3>3.Releasegroup & Quality</option>
+  <option value=4>4.Source</option>
+  <option value=5>5.Source & Releasegroup</option>
+  <option value=6 selected="selected">6.Source & Quality</option>
+  <option value=7>7.Source, Releasegroup & Quality</option>
+#elif $autosub.MINMATCHSCORERSS == 7
+  <option value=0>0.Best match</option>
+  <option value=1>1.Releasegroup</option>
+  <option value=2>2.Quality</option>
+  <option value=3>3.Releasegroup & Quality</option>
+  <option value=4>4.Source</option>
+  <option value=5>5.Source & Releasegroup</option>
+  <option value=6>6.Source & Quality</option>
+  <option value=7 selected="selected">7.Source, Releasegroup & Quality</option>
+#end if
+</select>  What items should match when a subtitle is downloaded.<br />
+Scandisk: <input type="text" name="scandisk" value="$autosub.SCHEDULERSCANDISK" /> Change the interval of the ScanDisk thread, it scans the disk for missing subtitle files. Time is in seconds, default is 3600 seconds.<br />
+Checksub: <input type="text" name="checksub" value="$autosub.SCHEDULERCHECKSUB" /> Change the interval of the CheckSub thread, it checks if there is a match on the bierdopje API. Cannot not be set lower then 21600. Time is in seconds, default is 28800 seconds.<br />
+Checkrss: <input type="text" name="checkrss" value="$autosub.SCHEDULERCHECKRSS" /> Change the interval of the CheckRSS thread, it checks if there is a match on the bierdopje RSS feed. Cannot be et lower then 60. Time is in seconds, default is 900 seconds.<br />
+Downloadsubs: <input type="text" name="downloadsubs" value="$autosub.SCHEDULERDOWNLOADSUBS" /> Change the interval of the DownloadSubs thread, it checks if there is a new match found by either checksub or checkrss and downloads it. Time is in seconds, default is 1 second.<br />
+
