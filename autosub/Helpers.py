@@ -279,7 +279,7 @@ def checkAPICalls(use=False):
     
     if currentime - lastrun > interval:
         autosub.APICALLS = autosub.APICALLSMAX
-        autosub.APIMAXLASTRESET = time.time()
+        autosub.APICALLSLASTRESET = time.time()
     
     if autosub.APICALLS > 0:
         if use==True:

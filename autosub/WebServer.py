@@ -147,7 +147,7 @@ class Home:
         
         tmpl = PageTemplate(file="interface/templates/message.tmpl")
         tmpl.message = "API Calls reseted"
-
+        return str(tmpl)
     
     @cherrypy.expose
     def shutdown(self):
