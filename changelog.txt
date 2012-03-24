@@ -9,3 +9,5 @@ Bug fix release, with some features!
  - matchScore escapes regex sensitive chars
  - API timer is now reset correctly
  - AutoSub now download subtitle with the correct linefeed on Windows platform
+ - ExamplePostProcess.py now works for Windows
+ - ExamplePostProcess.py doesn't require password & username anymore

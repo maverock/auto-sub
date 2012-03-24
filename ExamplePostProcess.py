@@ -1,6 +1,7 @@
 #This Script is an example of what is possible with the
 #PostProcess feature of Auto-Sub
 import sys
+import os
 import library.pythontwitter as twitter
 import library.oauth2 as oauth
 import socket
@@ -38,6 +39,8 @@ token_secret = ''
 #/Twitter options
 
 #Mail Options:
+#If you don't need a password and username, set them to (leave them blank): ''
+#Currently, only TLS is supported for encryption. If you don't need encryption, leave it blank.
 #WARNING! YOUR PASSWORD IS STORED IN PLAIN TEXT MAKE SURE THE FILE IS NOT
 #READABLE BY EVERYONE.
 #!USE AT OWN RISK!
@@ -47,6 +50,7 @@ toaddrs = 'example@gmail.com'
 username = 'example@gmail.com'
 password = 'mysecretpassword'
 subject = 'Subs info'
+encryption = 'TLS'
 #/Mail Options
 
 
@@ -67,8 +71,10 @@ def send_mail(message):
 
     try:
         server = smtplib.SMTP(srv)
-        server.starttls()
-        server.login(username, password)
+        if encryption == 'TLS':
+            server.starttls()
+        if username != '' and password != '':
+            server.login(username, password)
         server.sendmail(fromaddr, toaddrs, msg)
         server.quit()
         print "Email notification send"
@@ -183,9 +189,8 @@ if what == "twitter":
     else:
         if (sys.argv[1] and sys.argv[2] and token_key != ""):
             var = sys.argv[1]
-
-            var = var.split('/')
-            tweet = "AutoSub Downloaded: " + var[-1]
+            var = os.path.basename(var)
+            tweet = "AutoSub Downloaded: " + var
             print "Sending the following tweet %s" % tweet[:140]
             send_tweet(tweet[:140])
         elif (sys.argv[1] and sys.argv[2]):
@@ -196,14 +201,14 @@ if what == "growl":
         register_growl()
     elif (sys.argv[1] and sys.argv[2] and growl_host != ""):
         var = sys.argv[1]
-        var = var.split('/')
-        create_growl(var[-1])
+        var = os.path.basename(var)
+        create_growl(var)
 
 if what == "mail":
     if (sys.argv[1] and sys.argv[2] and srv != "" and fromaddr != "" and toaddrs != ""):
         var = sys.argv[1]
-        var = var.split('/')
-        send_mail(var[-1])
+        var = os.path.basename(var)
+        send_mail(var)
     elif (sys.argv[1] and sys.argv[2]):
         print "ERROR: Minimum mail settings aren't set."
     else:
