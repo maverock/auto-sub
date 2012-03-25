@@ -24,7 +24,7 @@ class idCache():
         self.query_flush = 'delete from id_cache'
         
     def getId(self, show_name):
-        show_name = unicode(show_name)
+        show_name = show_name.decode('utf8')
         
         connection=sqlite3.connect(autosub.DBFILE)
         cursor=connection.cursor()
@@ -39,7 +39,7 @@ class idCache():
             return int(bierdopje_id)
     
     def setId(self, bierdopje_id, show_name):
-        show_name = unicode(show_name)
+        show_name = show_name.decode('utf8')
         
         connection=sqlite3.connect(autosub.DBFILE)
         cursor=connection.cursor()
@@ -80,7 +80,7 @@ class lastDown():
             Ldict['source'] = None
         
         cursor.execute(self.query_set,[ 
-                       unicode(Ldict['title']),
+                       Ldict['title'].decode('utf8'),
                        Ldict['season'],
                        Ldict['episode'],
                        Ldict['quality'],

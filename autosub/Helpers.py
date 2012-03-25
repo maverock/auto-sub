@@ -262,7 +262,7 @@ def getShowid(show_name):
     if show_id:
         log.debug('getShowid: showid from api %s' %show_id)
         idCache().setId(show_id, show_name)
-        log.info('getShowid: %s added to cache with %s' %(show_name, show_id))
+        log.info('getShowid: %r added to cache with %s' %(show_name, show_id))
         return show_id
     
     log.error('getShowid: showid not found for %s' %show_name)
