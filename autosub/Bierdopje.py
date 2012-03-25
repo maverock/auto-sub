@@ -25,7 +25,7 @@ def getShowidApi(showName):
     """
     api = autosub.API
 
-    getShowIdUrl = "%sGetShowByName/%s" % (api, urllib.quote(showName))
+    getShowIdUrl = "%sGetShowByName/%s" % (api, urllib.quote(showName.encode('utf8')))
     try:
         req = urllib2.Request(getShowIdUrl)
         req.add_header("User-agent", autosub.USERAGENT) 
