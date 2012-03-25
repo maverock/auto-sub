@@ -300,11 +300,11 @@ def SaveToConfig(section=None, variable=None, value=None):
     cfg.read(autosub.CONFIGFILE)
 
     if cfg.has_section(section):
-        cfg.set(section, variable, value)
+        cfg.set(section, variable.encode('utf8'), value.encode('utf8'))
         edited = True
     else:
         cfg.add_section(section)
-        cfg.set(section, variable, value)
+        cfg.set(section, variable.encode('utf8'), value.encode('utf8'))
         edited = True
 
     if edited:
