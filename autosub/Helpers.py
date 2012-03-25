@@ -46,7 +46,7 @@ def CheckVersion():
         respone = resp.read()
         resp.close()
     except:
-        log.error("getShowid: The server returned an error for request %s" % autosub.VERSIONURL)
+        log.error("checkVersion: The server returned an error for request %s" % autosub.VERSIONURL)
         return None
     try:
         match = re.search('(Alpha|Beta|Stable) (\d+)\.(\d+)\.(\d+)', respone)
@@ -238,6 +238,7 @@ def SkipShow(showName, season, episode):
 
 
 def getShowid(show_name):
+    log.debug('getShowid: trying to get showid for %s' %show_name)
     show_id = nameMapping(show_name)
     if show_id:
         log.debug('getShowid: showid from namemapping %s' %show_id)
