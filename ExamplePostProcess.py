@@ -181,7 +181,7 @@ def send_tweet(message):
 #Notify My Android source:
 def notify_my_android(subtitle):
     nma_instance = pynma.PyNMA(nma_apikey)
-    message = "Auto-Sub just downloaded the following subtitle %s" %subtitle
+    message = "Auto-Sub just downloaded the following subtitle \n %s" %subtitle
     
     resp = nma_instance.push('Auto-Sub','Downloaded a Subtitle',message)
     if not resp[nma_apikey][u'code'] == u'200':
