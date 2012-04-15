@@ -40,7 +40,7 @@ class API:
     def connect(self):
         import socket
         socket.setdefaulttimeout(autosub.TIMEOUT)
-        self.resp = urllib2.urlopen(self.req,None,autosub.TIMEOUT)
+        self.resp = urllib2.urlopen(self.req)
         
     def close(self):
         self.resp.close()
