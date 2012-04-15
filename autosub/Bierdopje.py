@@ -26,13 +26,11 @@ class API:
     def __init__(self,url,RSS=False):
         if RSS:
             self.req = None
-            self.resp = None
             self.req = urllib2.Request(url)
             self.req.add_header("User-agent", autosub.USERAGENT)
             self.connect()
         elif autosub.Helpers.checkAPICalls(use=True):
             self.req = None
-            self.resp = None
             self.req = urllib2.Request(url)
             self.req.add_header("User-agent", autosub.USERAGENT)
             self.connect()

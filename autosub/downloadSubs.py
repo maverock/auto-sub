@@ -20,7 +20,7 @@ class downloadSubs():
     def run(self):
         if len(autosub.TODOWNLOADQUEUE) > 0:
             if not autosub.Helpers.checkAPICalls():
-                log.warning("downloadSubs: out of api calls")
+                log.error("downloadSubs: out of api calls")
                 return True
             
             toDelete_toDownloadQueue = []
@@ -54,7 +54,8 @@ class downloadSubs():
                         continue
                     
                     try:
-                        open(destsrt, 'wb').write(bierdopjeapi.resp.read())
+                        if bierdopjeapi.resp:
+                            open(destsrt, 'wb').write(bierdopjeapi.resp.read())
                         bierdopjeapi.close()
                     except:
                         log.error("downloadSubs: Error while writing subtitle file. Check if the destination is writeable! Destination: %s" % destsrt)
