@@ -4,6 +4,7 @@ import sys
 import os
 import library.pythontwitter as twitter
 import library.oauth2 as oauth
+import library.pynma as pynma
 import socket
 import email.utils
 import smtplib
@@ -24,6 +25,7 @@ except:
 # growl - send notification to a growl server
 # echo - echo's the arguments given to the script
 # mail - send an email when a subtitle is downloaded
+# nma - Notify Your Android
 
 what = "echo"
 
@@ -53,6 +55,9 @@ subject = 'Subs info'
 encryption = 'TLS'
 #/Mail Options
 
+#Notify My Android options:
+nma_apikey = '' 
+#/Notify My Android options:
 
 #/OPTIONS STOP EDITING BELOW THIS LINE
 #MAIL APPLICATION SOURCE
@@ -173,6 +178,16 @@ def send_tweet(message):
     except:
         print "ERROR: Could not send tweet, make sure token_key & token_secret are correct."
 
+#Notify My Android source:
+def notify_my_android(subtitle):
+    nma_instance = pynma.PyNMA(nma_apikey)
+    message = "Auto-Sub just downloaded the following subtitle %s" %subtitle
+    
+    resp = nma_instance.push('Auto-Sub','Downloaded a Subtitle',message)
+    if not resp[nma_apikey][u'code'] == u'200':
+        print "ERROR: Something went wrong!"
+    else:
+        print "Android notified!"
 
 #MAIN FUNCTION
 if what == "echo":
@@ -213,3 +228,13 @@ if what == "mail":
         print "ERROR: Minimum mail settings aren't set."
     else:
         print "ERROR: Mail settings not set"
+
+if what == "nma":
+    if (sys.argv[1] and sys.argv[2] and nma_apikey):
+        var = sys.argv[1]
+        var = os.path.basename(var)          
+        notify_my_android(var)
+    elif (sys.argv[1] and sys.argv[2]):
+        print "ERROR: No APIKey set!"
+    else:
+        print "ERROR: Something went wrong!"
