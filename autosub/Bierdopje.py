@@ -15,6 +15,39 @@ import autosub.Helpers
 # Settings
 log = logging.getLogger('thelogger')
 
+class API:
+    """
+    One place to rule them all, a function that handels all the request to the server
+
+    Keyword arguments:
+    url - the URL that is requested
+    
+    """
+    def __init__(self,url,RSS=False):
+        if RSS:
+            self.req = None
+            self.resp = None
+            self.req = urllib2.Request(url)
+            self.req.add_header("User-agent", autosub.USERAGENT)
+            self.connect()
+        elif autosub.Helpers.checkAPICalls(use=True):
+            self.req = None
+            self.resp = None
+            self.req = urllib2.Request(url)
+            self.req.add_header("User-agent", autosub.USERAGENT)
+            self.connect()
+        else:
+            log.error("API: out of api calls")
+             
+    def connect(self):
+        import socket
+        socket.setdefaulttimeout(autosub.TIMEOUT)
+        self.resp = urllib2.urlopen(self.req,None,autosub.TIMEOUT)
+        
+    def close(self):
+        self.resp.close()
+        
+
 def getShowidApi(showName):
     """
     Search for the showid by using the Bierdopje API and the name of the show.
@@ -27,12 +60,9 @@ def getShowidApi(showName):
 
     getShowIdUrl = "%sGetShowByName/%s" % (api, urllib.quote(showName.encode('utf8')))
     try:
-        req = urllib2.Request(getShowIdUrl)
-        req.add_header("User-agent", autosub.USERAGENT) 
-        resp = urllib2.urlopen(req,None,autosub.TIMEOUT)
-        autosub.Helpers.checkAPICalls(use=True)
-        dom = minidom.parse(resp)
-        resp.close()
+        bierdopjeapi = API(getShowIdUrl)
+        dom = minidom.parse(bierdopjeapi.resp)
+        bierdopjeapi.resp.close()
     except:
         log.error("getShowid: The server returned an error for request %s" % getShowIdUrl)
         return None
@@ -67,12 +97,9 @@ def getSubLink(showid, lang, releaseDetails):
     getSubLinkUrl = "%sGetAllSubsFor/%s/%s/%s/%s" % (api, showid, season, episode, lang)
 
     try:
-        req = urllib2.Request(getSubLinkUrl)
-        req.add_header("User-agent", autosub.USERAGENT) 
-        resp = urllib2.urlopen(req,None,autosub.TIMEOUT)
-        autosub.Helpers.checkAPICalls(use=True)
-        dom = minidom.parse(resp)
-        resp.close()
+        bierdopjeapi = API(getSubLinkUrl)
+        dom = minidom.parse(bierdopjeapi.resp)
+        bierdopjeapi.resp.close()
     except:
         log.error("getSubLink: The server returned an error for request %s" % getSubLinkUrl)
         return None

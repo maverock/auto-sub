@@ -12,6 +12,7 @@ from library.beautifulsoup import BeautifulStoneSoup
 #from operator import itemgetter
 
 import autosub.Helpers
+from autosub.Bierdopje import API
 
 log = logging.getLogger('thelogger')
 
@@ -49,13 +50,10 @@ class checkRss():
                 log.debug("checkRSS: Now using the Dutch RSS feed")
             
             try:
-                req = urllib2.Request(RSSURL)
-                req.add_header("User-agent", autosub.USERAGENT) 
-                response = urllib2.urlopen(req,None,autosub.TIMEOUT)
+                bierdopjeapi = API(RSSURL,RSS=True)
+                soup = BeautifulStoneSoup(bierdopjeapi.resp.read())
                 log.debug("checkRss: Succussfully connected to %s" %RSSURL)
-                
-                soup = BeautifulStoneSoup(response)
-                response.close()
+                bierdopjeapi.close()
             except:
                 log.error("checkRss: The server returned an error for request %s" % RSSURL)
                 autosub.TODOWNLOADQUEUELOCK = False

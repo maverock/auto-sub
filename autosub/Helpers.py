@@ -275,7 +275,7 @@ def checkAPICalls(use=False):
     Set true if a API call is being made.
     """
     currentime = time.time()
-    lastrun = autosub.APICALLSLASTRESET
+    lastrun  = autosub.APICALLSLASTRESET
     interval = autosub.APICALLSRESETINT
     
     if currentime - lastrun > interval:

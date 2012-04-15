@@ -4,12 +4,12 @@
 #
 
 import logging
-import urllib2
 
 import autosub
 import os
 
 from autosub.Db import lastDown
+from autosub.Bierdopje import API
 
 log = logging.getLogger('thelogger')
 
@@ -37,11 +37,8 @@ class downloadSubs():
                     downloadLink = downloadItem['downloadLink']
 
                     try:
-                        req = urllib2.Request(downloadLink)
-                        req.add_header("User-agent", autosub.USERAGENT) 
+                        bierdopjeapi = API(downloadLink)
                         log.debug("downloadSubs: Trying to download the following subtitle %s" %downloadLink)
-                        response = urllib2.urlopen(req,None,autosub.TIMEOUT)
-                        autosub.Helpers.checkAPICalls(use=True)
                     except:
                         log.error("downloadSubs: The server returned an error for request %s" % downloadLink)
                         continue
@@ -57,8 +54,8 @@ class downloadSubs():
                         continue
                     
                     try:
-                        open(destsrt, 'wb').write(response.read())
-                        response.close()
+                        open(destsrt, 'wb').write(bierdopjeapi.resp.read())
+                        bierdopjeapi.close()
                     except:
                         log.error("downloadSubs: Error while writing subtitle file. Check if the destination is writeable! Destination: %s" % destsrt)
                         toDelete_toDownloadQueue.append(index)
