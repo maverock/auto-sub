@@ -33,7 +33,7 @@
 		</tr>
 	</thead>
 <tbody>
-#set $counter = 1
+#set $counter = 0
 #for $var in $autosub.WANTEDQUEUE
 #set $divname = "skipshow-" + str($counter)
 #set $buttonname = "skipshowbutton-" + str($counter)
@@ -63,26 +63,31 @@
 <td width="50px" align="center">
 #for lang in $var['lang']
 #if lang == "nl"
-	<img src="/media/images/nl.png">
+	<img src="/media/images/nl.png" alt="nl">
 #end if
 #if lang == "en"
-	<img src="/media/images/en.png">
+	<img src="/media/images/en.png" alt="en">
 #end if
 #end for
 </td>
 
 </tr>
 
+
+
+</tr>
+#end for
+</table>
+#set $counter = 0
+#for $var in $autosub.WANTEDQUEUE
+#set $counter = $counter + 1
 <div id="dropdown-$counter" class="dropdown-menu has-tip">
     <ul>
         <li><a href="/config/skipShow/$var['title']/$var['season']">Skip season $var['season']</a></li>
         <li><a href="/config/skipShow/$var['title']/0">Skip show</a></li>
     </ul>
 </div>
-
-</tr>
 #end for
-</table>
 
 </div>
 						</div>
