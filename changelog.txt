@@ -1,5 +1,12 @@
 #This is the new change log, containing up-to-date info since version 0.5.3
 
+Version 0.5.4
+Bug fixes and features!
+ - Python 2.5 is supported now
+ - ExamplePostProcess supports Notify My Android
+ - New namemappings
+ - Matching scores works beter for web-dl (critical bug fix)
+
 Version 0.5.3
 Bug fix release, with some features!
  - New Skipshow menu

@@ -107,6 +107,13 @@ def ReturnUpper(text):
 
 
 def ProcessFileName(filename, extension):
+    """
+    Process the file names, gather all the show information
+    Input should be a filename
+    
+    Output is a dictionary with the following keys: 
+    title, season, episode, source, quality, releasegrp
+    """
     processedFilenameResults = {}
     title = None       # The Show Name
     season = None      # Season number
@@ -203,15 +210,39 @@ def scoreMatch(release, quality, releasegrp, source):
     """
     score = 0
     log.debug("scoreMatch: Giving a matchscore for: %s. Try to match it with Q: %s GRP: %s S: %s" % (release, quality, releasegrp, source))
-    if releasegrp:
-        if (re.search(re.escape(releasegrp), release, re.IGNORECASE)):
+    
+    releasedict = ProcessFileName(release, None)
+    releasesource = None
+    releasequality = None
+    releasereleasegrp = None
+    
+    if 'source' in releasedict.keys(): releasesource = releasedict['source']
+    if 'quality' in releasedict.keys(): releasequality = releasedict['quality']
+    if 'releasegrp' in releasedict.keys(): releasereleasegrp = releasedict['releasegrp']
+    
+    if releasegrp and releasereleasegrp:
+        if releasereleasegrp == releasegrp:
             score += 1
-    if source:
-        if (re.search(re.escape(source), release, re.IGNORECASE)):
+    if source and releasesource:
+        if releasesource == source:
             score += 4
-    if quality:
-        if (matchQuality(re.escape(quality), release)):
+    if quality and releasequality:
+        if (matchQuality(quality, releasequality)):
             score += 2
+    
+    if not releasedict:
+        log.warning("scoreMatch: Something went wrong, ProcessFileName could not process the file, %s, please report this!" %release)
+        log.info("scoreMatch: Falling back to old matching system, to make sure you get your subtitle!")
+        if releasegrp:
+            if (re.search(re.escape(releasegrp), release, re.IGNORECASE)):
+                score += 1
+        if source:
+            if (re.search(re.escape(source), release, re.IGNORECASE)):
+                score += 4
+        if quality:
+            if (matchQuality(re.escape(quality), release)):
+                score += 2
+         
     log.debug("scoreMatch: MatchScore is %s" % str(score))
     return score
 

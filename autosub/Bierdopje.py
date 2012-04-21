@@ -112,7 +112,7 @@ def getSubLink(showid, lang, releaseDetails):
     scoredict = {}
 
     for sub in dom.getElementsByTagName('result'):
-        release = sub.getElementsByTagName('filename')[0].firstChild.data
+        release = unicode(sub.getElementsByTagName('filename')[0].firstChild.data)
         release = release.lower()
         # Remove the .srt extension some of the uploaders leave on the file
         if release.endswith(".srt"):
