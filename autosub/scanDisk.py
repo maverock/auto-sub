@@ -32,7 +32,7 @@ class scanDisk():
             log.error("Root path does %s not exists, aborting..." % autosub.ROOTPATH)
             exit()
 
-        for dirname, dirnames, filenames in os.walk(unicode(os.path.join(autosub.ROOTPATH), autosub.SYSENCODING)):
+        for dirname, dirnames, filenames in os.walk(unicode(os.path.join(autosub.ROOTPATH), autosub.SYSENCODING, errors='replace')):
             if re.search('_unpack_', dirname, re.IGNORECASE): 
                 log.debug("scanDisk: found a unpack directory, skipping")
                 continue

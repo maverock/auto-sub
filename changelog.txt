@@ -6,6 +6,7 @@ Bug fixes and features!
  - ExamplePostProcess supports Notify My Android
  - New namemappings
  - Matching scores works beter for web-dl (critical bug fix)
+ - Beter unicode support
 
 Version 0.5.3
 Bug fix release, with some features!
