@@ -3,6 +3,7 @@ import getopt
 import os
 import signal
 import time
+import locale
 
 #signal.signal(signal.SIGTERM, autosub.AutoSub.signal_handler)
 
@@ -32,6 +33,17 @@ class Usage(Exception):
 def main(argv=None):
     
     import autosub
+    
+    #From Sickbeard / Headphones
+    try:
+        locale.setlocale(locale.LC_ALL, "")
+        autosub.SYSENCODING = locale.getpreferredencoding()
+    except (locale.Error, IOError):
+        pass
+
+    # for OSes that are poorly configured, like synology & slackware
+    if not autosub.SYSENCODING or autosub.SYSENCODING in ('ANSI_X3.4-1968', 'US-ASCII', 'ASCII'):
+        autosub.SYSENCODING = 'UTF-8'
     
     if argv is None:
         argv = sys.argv
@@ -93,6 +105,7 @@ def main(argv=None):
     
     print "AutoSub: Changing output to log. Bye!"
     log = autosub.initLogging(autosub.LOGFILE)
+    log.debug("AutoSub: Systemencoding is: %s" %autosub.SYSENCODING)
     
     log.info("AutoSub: Starting threads")
     autosub.AutoSub.start()
