@@ -6,9 +6,9 @@
 
 #from autosub.Db import lastDown
 
-#include $os.path.join($autosub.PATH, "interface/templates/header.tmpl")
+#include $os.path.join($autosub.PATH.encode(), "interface/templates/header.tmpl")
 
-#include $os.path.join($autosub.PATH, "interface/templates/menu.tmpl")
+#include $os.path.join($autosub.PATH.encode(), "interface/templates/menu.tmpl")
 
 <br>
 
@@ -181,4 +181,4 @@
 </tr>
 </table>
 
-#include $os.path.join($autosub.PATH, "interface/templates/footer.tmpl")
+#include $os.path.join($autosub.PATH.encode(), "interface/templates/footer.tmpl")

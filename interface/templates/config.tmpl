@@ -1,6 +1,6 @@
 #import autosub
 
-#include $os.path.join($autosub.PATH, "interface/templates/header.tmpl")
+#include $os.path.join($autosub.PATH.encode(), "interface/templates/header.tmpl")
 <link href="/media/css/tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="/media/scripts/jquery-ui-1.8.17.min.js"></script>
 <script language="JavaScript">
@@ -11,7 +11,7 @@
 
 <body>
 <div>
-#include $os.path.join($autosub.PATH, "interface/templates/menu.tmpl")
+#include $os.path.join($autosub.PATH.encode(), "interface/templates/menu.tmpl")
 
 <form method="post" action="/config/saveConfig">
   <div id="tabs">
@@ -23,22 +23,22 @@
         <li><a href="#fragment-5"><span>NameMapping</span></a></li>
     </ul>
     <div id="fragment-1">
-      #include $os.path.join($autosub.PATH, "interface/templates/config-section.tmpl")
+      #include $os.path.join($autosub.PATH.encode(), "interface/templates/config-section.tmpl")
     </div>
     <div id="fragment-2">
-      #include $os.path.join($autosub.PATH, "interface/templates/logfile-section.tmpl")
+      #include $os.path.join($autosub.PATH.encode(), "interface/templates/logfile-section.tmpl")
     </div>
     <div id="fragment-3">
-      #include $os.path.join($autosub.PATH, "interface/templates/webserver-section.tmpl")
+      #include $os.path.join($autosub.PATH.encode(), "interface/templates/webserver-section.tmpl")
     </div>
     <div id="fragment-4">
-      #include $os.path.join($autosub.PATH, "interface/templates/skipshow-section.tmpl")
+      #include $os.path.join($autosub.PATH.encode(), "interface/templates/skipshow-section.tmpl")
     </div>
     <div id="fragment-5">
-      #include $os.path.join($autosub.PATH, "interface/templates/namemapping-section.tmpl")
+      #include $os.path.join($autosub.PATH.encode(), "interface/templates/namemapping-section.tmpl")
     </div>
   </div>
   <input type="submit" value="Save" />
 </form>
 
-#include $os.path.join($autosub.PATH, "interface/templates/footer.tmpl")
+#include $os.path.join($autosub.PATH.encode(), "interface/templates/footer.tmpl")

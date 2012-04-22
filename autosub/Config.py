@@ -8,6 +8,7 @@ from __future__ import with_statement
 
 import os
 import logging
+import codecs
 
 from ConfigParser import SafeConfigParser
 
@@ -37,7 +38,8 @@ def ReadConfig(configfile):
     # Read config file
     cfg = SafeConfigParser()
     try:
-        cfg.read(configfile)
+        with codecs.open(autosub.CONFIGFILE, 'r', autosub.SYSENCODING) as f:
+            cfg.readfp(f)
     except:
         print "***************************************************************************"
         print "Config ERROR: Not a valid configuration file! Using default values instead!"
@@ -334,8 +336,14 @@ def SaveToConfig(section=None, variable=None, value=None):
     variable -- Option that will be added to the config file
     value -- Value of the variable that will be added
     """
+
     cfg = SafeConfigParser()
-    cfg.read(autosub.CONFIGFILE)
+    try:
+        with codecs.open(autosub.CONFIGFILE, 'r', autosub.SYSENCODING) as f:
+            cfg.readfp(f)
+    except:
+        #no config yet
+        pass
 
     if cfg.has_section(section):
         cfg.set(section, variable.encode('utf8'), value.encode('utf8'))
@@ -355,7 +363,13 @@ def applynameMapping():
     Read namemapping in the config file.
     """
     cfg = SafeConfigParser()
-    cfg.read(autosub.CONFIGFILE)
+    try:
+        with codecs.open(autosub.CONFIGFILE, 'r', autosub.SYSENCODING) as f:
+            cfg.readfp(f)
+    except:
+        #no config yet
+        pass
+    
     autosub.SHOWID_CACHE = {}
     if cfg.has_section("namemapping"):
         autosub.USERNAMEMAPPING = dict(cfg.items('namemapping'))
@@ -371,7 +385,13 @@ def applyskipShow():
     Read skipshow in the config file.
     """
     cfg = SafeConfigParser()
-    cfg.read(autosub.CONFIGFILE)
+    try:
+        with codecs.open(autosub.CONFIGFILE, 'r', autosub.SYSENCODING) as f:
+            cfg.readfp(f)
+    except:
+        #no config yet
+        pass
+    
     if cfg.has_section('skipshow'):
         autosub.SKIPSHOW = dict(cfg.items('skipshow'))
     else:
@@ -442,7 +462,12 @@ def saveConfigSection():
     section = 'config'
 
     cfg = SafeConfigParser()
-    cfg.read(autosub.CONFIGFILE)
+    try:
+        with codecs.open(autosub.CONFIGFILE, 'r', autosub.SYSENCODING) as f:
+            cfg.readfp(f)
+    except:
+        #no config yet
+        pass
 
     if not cfg.has_section(section):
         cfg.add_section(section)
@@ -462,7 +487,7 @@ def saveConfigSection():
     cfg.set(section, "logfile", autosub.LOGFILE)
     cfg.set(section, "postprocesscmd", autosub.POSTPROCESSCMD)
 
-    with open(autosub.CONFIGFILE, 'wb') as file:
+    with codecs.open(autosub.CONFIGFILE, 'wb', encoding=autosub.SYSENCODING) as file:
         cfg.write(file)
 
 
@@ -473,7 +498,12 @@ def saveLogfileSection():
     section = 'logfile'
 
     cfg = SafeConfigParser()
-    cfg.read(autosub.CONFIGFILE)
+    try:
+        with codecs.open(autosub.CONFIGFILE, 'r', autosub.SYSENCODING) as f:
+            cfg.readfp(f)
+    except:
+        #no config yet
+        pass
 
     if not cfg.has_section(section):
         cfg.add_section(section)
@@ -494,7 +524,12 @@ def saveWebserverSection():
     section = 'webserver'
 
     cfg = SafeConfigParser()
-    cfg.read(autosub.CONFIGFILE)
+    try:
+        with codecs.open(autosub.CONFIGFILE, 'r', autosub.SYSENCODING) as f:
+            cfg.readfp(f)
+    except:
+        #no config yet
+        pass
 
     if not cfg.has_section(section):
         cfg.add_section(section)
@@ -515,7 +550,12 @@ def saveSkipshowSection():
     section = 'skipshow'
 
     cfg = SafeConfigParser()
-    cfg.read(autosub.CONFIGFILE)
+    try:
+        with codecs.open(autosub.CONFIGFILE, 'r', autosub.SYSENCODING) as f:
+            cfg.readfp(f)
+    except:
+        #no config yet
+        pass
     
     if cfg.has_section(section):
         cfg.remove_section(section)
@@ -536,7 +576,12 @@ def saveUsernamemappingSection():
     section = 'namemapping'
 
     cfg = SafeConfigParser()
-    cfg.read(autosub.CONFIGFILE)
+    try:
+        with codecs.open(autosub.CONFIGFILE, 'r', autosub.SYSENCODING) as f:
+            cfg.readfp(f)
+    except:
+        #no config yet
+        pass
 
     if cfg.has_section(section):
         cfg.remove_section(section)
@@ -558,7 +603,12 @@ def checkForRestart():
     """
     #TODO: This function is very ugly and should be rewritten comletely. This is not a way to check it!
     cfg = SafeConfigParser()
-    cfg.read(autosub.CONFIGFILE)
+    try:
+        with codecs.open(autosub.CONFIGFILE, 'r', autosub.SYSENCODING) as f:
+            cfg.readfp(f)
+    except:
+        #no config yet
+        pass
 
     # Set the default values
     schedulerscandisk = 3600
@@ -646,13 +696,19 @@ def WriteConfig():
     """
     # Read config file
     cfg = SafeConfigParser()
+    
     try:
         # A config file is set so we use this to add the settings
-        cfg.read(autosub.CONFIGFILE)
+        with codecs.open(autosub.CONFIGFILE, 'r', autosub.SYSENCODING) as f:
+            cfg.readfp(f)
     except:
         # No config file so we create one in autosub.PATH
-        autosub.CONFIGFILE = "config.properties"
-        cfg.read(autosub.CONFIGFILE)
+        
+        if not autosub.CONFIGFILE:
+            autosub.CONFIGFILE = "config.properties"
+        open(autosub.CONFIGFILE, 'w').close() 
+        with codecs.open(autosub.CONFIGFILE, 'r', autosub.SYSENCODING) as f:
+            cfg.readfp(f)
 
     # Before we save everything to the config file we need to test if
     # the app needs to be restarted for all changes to take effect, like
