@@ -44,6 +44,7 @@ def ReadConfig(configfile):
         print "***************************************************************************"
         print "Config ERROR: Not a valid configuration file! Using default values instead!"
         print "***************************************************************************"
+        cfg = SafeConfigParser()
 
     if cfg.has_section('config'):
         if cfg.has_option('config', 'path'):
@@ -467,6 +468,7 @@ def saveConfigSection():
             cfg.readfp(f)
     except:
         #no config yet
+        cfg = SafeConfigParser()
         pass
 
     if not cfg.has_section(section):
@@ -503,6 +505,7 @@ def saveLogfileSection():
             cfg.readfp(f)
     except:
         #no config yet
+        cfg = SafeConfigParser()
         pass
 
     if not cfg.has_section(section):
@@ -529,6 +532,7 @@ def saveWebserverSection():
             cfg.readfp(f)
     except:
         #no config yet
+        cfg = SafeConfigParser()
         pass
 
     if not cfg.has_section(section):
@@ -555,6 +559,7 @@ def saveSkipshowSection():
             cfg.readfp(f)
     except:
         #no config yet
+        cfg = SafeConfigParser()
         pass
     
     if cfg.has_section(section):
@@ -581,6 +586,7 @@ def saveUsernamemappingSection():
             cfg.readfp(f)
     except:
         #no config yet
+        cfg = SafeConfigParser()
         pass
 
     if cfg.has_section(section):
@@ -608,6 +614,7 @@ def checkForRestart():
             cfg.readfp(f)
     except:
         #no config yet
+        cfg = SafeConfigParser()
         pass
 
     # Set the default values
@@ -703,7 +710,6 @@ def WriteConfig():
             cfg.readfp(f)
     except:
         # No config file so we create one in autosub.PATH
-        
         if not autosub.CONFIGFILE:
             autosub.CONFIGFILE = "config.properties"
         open(autosub.CONFIGFILE, 'w').close() 
