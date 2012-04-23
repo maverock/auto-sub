@@ -51,7 +51,7 @@ class checkRss():
             
             try:
                 bierdopjeapi = API(RSSURL,RSS=True)
-                soup = BeautifulStoneSoup(unicode(bierdopjeapi.resp.read(), autosub.SYSENCODING))
+                soup = BeautifulStoneSoup(bierdopjeapi.resp.read())
                 log.debug("checkRss: Succussfully connected to %s" %RSSURL)
                 bierdopjeapi.close()
             except:
@@ -94,7 +94,7 @@ class checkRss():
                 link = item['link']
                 show_id = item['show_id']
                 log.debug("checkRSS: Normalizing the following entry in the RSS results: %s" % title)
-                normalizedRssTitle = autosub.Helpers.ProcessFileName(str(title),'')
+                normalizedRssTitle = autosub.Helpers.ProcessFileName(title,'')
                 normalizedRssTitle['rssfile'] = title
                 normalizedRssTitle['link'] = link
                 normalizedRssTitle['show_id'] = str(show_id)
@@ -127,7 +127,6 @@ class checkRss():
                 if not showid:
                     continue
                 
-
                 for normalizedRssTitle in normalizedRssTitleList:
                     toDownloadItem = None
                     downloadLink = None
@@ -138,13 +137,13 @@ class checkRss():
                     normalizedRssTitleseason = normalizedRssTitle['season']
                     normalizedRssTitleepisode = normalizedRssTitle['episode']
                     normalizedRssTitlerssfile = normalizedRssTitle['rssfile']
-                    normalizedRssTitleshowid = normalizedRssTitle['show_id']
+                    normalizedRssTitleshowid = int(normalizedRssTitle['show_id'])
                     normalizedRssTitlelink = normalizedRssTitle['link']
                     
                     if 'quality' in normalizedRssTitle.keys(): normalizedRssTitlequality = normalizedRssTitle['quality']
                     if 'releasegrp' in normalizedRssTitle.keys(): normalizedRssTitlereleasegrp = normalizedRssTitle['releasegrp']
                     if 'source' in normalizedRssTitle.keys(): normalizedRssTitlesource = normalizedRssTitle['source']
-
+                    log.debug("checkRSS: Trying to match ID:%r S:%r E:%r (wantedlist) with ID:%r S:%r E:%r (rss)" %(showid, wantedItemseason, wantedItemepisode, normalizedRssTitleshowid, normalizedRssTitleseason, normalizedRssTitleepisode))
                     if showid == normalizedRssTitleshowid and wantedItemseason == normalizedRssTitleseason and wantedItemepisode == normalizedRssTitleepisode:
                         log.debug("checkRSS:  The episode %s - Season %s Episode %s was found in the RSS list, attempting to match a proper match" % (wantedItemtitle, wantedItemseason, wantedItemepisode))
 

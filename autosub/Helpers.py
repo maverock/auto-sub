@@ -24,8 +24,8 @@ REGEXES = [
         re.compile("^((?P<title>.+?)[\[. _-]+)?(?P<season>\d+)x(?P<episode>\d+)(([. _-]*x|-)(?P<extra_ep_num>(?!(1080|720)[pi])\d+))*[. _-]*((?P<quality>(1080|720|SD))*[pi]*[. _-]*(?P<source>(hdtv|dvdrip|bdrip|blu[e]*ray|web[. _-]*dl))*[. _]*(?P<extra_info>.+?)((?<![. _-])-(?P<releasegrp>[^-]+))?)?$", re.IGNORECASE),
         re.compile("^(?P<title>.+?)[. _-]+(?P<season>\d{1,2})(?P<episode>\d{2})([. _-]*(?P<quality>(1080|720|SD))*[pi]*[. _-]*(?P<source>(hdtv|dvdrip|bdrip|blu[e]*ray|web[. _-]*dl))*[. _]*(?P<extra_info>.+?)((?<![. _-])-(?P<releasegrp>[^-]+))?)?$", re.IGNORECASE)
         ]
-QUALITY_PARSER = re.compile("(hdtv|tv|dvdrip|dvd|bdrip|blu[e]*ray|web[. _-]*dl)", re.IGNORECASE)
-
+SOURCE_PARSER = re.compile("(hdtv|tv|dvdrip|dvd|bdrip|blu[e]*ray|web[. _-]*dl)", re.IGNORECASE)
+QUALITY_PARSER = re.compile("(1080|720|HD|SD)" , re.IGNORECASE)
 
 def RunCmd(cmd):
     process = subprocess.Popen(cmd,
@@ -143,31 +143,47 @@ def ProcessFileName(filename, extension):
             source = re.sub("[. _-]", "-", source)
     if 'releasegrp' in matchdic.keys(): releasegrp = matchdic["releasegrp"]
     if 'quality' in matchdic.keys(): quality = ReturnUpper(matchdic["quality"])  # Quality should be upper case, in case the quality is SD
-
-    # Fallback for the quality and source mkv files and mp4 are most likely HD quality
+    if 'extra_info' in matchdic.keys(): extra_info = matchdic["extra_info"]
+    
+    # Fallback for the quality and source mkv files are most likely HD quality
     # Other files are more likely sd quality
     # Will search the file for a couple of possible sources, also parse out dots and dashes and replace with a dash
-    if source == None:
-        results = re.search(QUALITY_PARSER, filename)
+    if source == None and extra_info:
+        # If we have extra info, lets try to find the source
+        results = re.search(SOURCE_PARSER, extra_info)
         try:
             source = results.group(0)
             source = re.sub("[. _-]", "-", source)
             # The following four rules are there to support the file naming SickBeard used (like: Serie.Name.S01E02.SD.TV.avi
-            if source == 'tv':
-                source = 'hdtv'
-            if source == 'dvd':
-                source = 'dvdrip'
+            if source == u'tv':
+                source = u'hdtv'
+            if source == u'dvd':
+                source = u'dvdrip'
             log.debug("ProcessFileName: Fallback hit for source, source is %s" % source)
         except:
             pass
 
     if quality == None:
-        if extension == ".mkv":
-            quality = '720'
-            log.debug("ProcessFileName: Fallback, file seems to be mkv or mp4 so best guess for quality would be 720")
+        if extra_info:
+            # If we have extra info, lets try to find the quality
+            results = re.search(QUALITY_PARSER, extra_info)
+            try:
+                quality = results.group(0)
+                # Sickbeard renames files to HD if they are 720... So if HD is found as q, q should be 720.
+                if quality == u'hd':
+                    quality = u'720'
+                quality = quality.upper() #in case quality is SD
+                log.debug("ProcessFileName: Fallback hit for quality, quality is %s" % quality)
+            except:
+                pass
         else:
-            quality = 'SD'
-            log.debug("ProcessFileName: Fallback, can't determine the quality so guess SD")
+            log.debug("ProcessFileName: No extra information. Last fallback...")
+            if extension == ".mkv":
+                quality = u'720'
+                log.debug("ProcessFileName: Fallback, file seems to be mkv so best guess for quality would be 720")
+            else:
+                quality = u'SD'
+                log.debug("ProcessFileName: Fallback, can't determine the quality so guess SD")
 
     if title: processedFilenameResults['title'] = title
     if season: processedFilenameResults['season'] = season
@@ -181,7 +197,7 @@ def ProcessFileName(filename, extension):
 
 
 def matchQuality(quality, item):
-    if quality == "SD":
+    if quality == u"SD":
         if re.search('720', item):
             log.debug("matchQuality: Quality SD did not match to %s" % item)
             return None
@@ -191,10 +207,10 @@ def matchQuality(quality, item):
         else:
             log.debug("matchQuality: Quality matched SD to %s" % item)
             return 1
-    elif quality == "1080" and re.search('1080', item):
+    elif quality == u"1080" and re.search('1080', item):
         log.debug("matchQuality: Quality is 1080 matched to %s" % item)
         return 1
-    elif quality == "720" and re.search('720', item):
+    elif quality == u"720" and re.search('720', item):
         log.debug("matchQuality: Quality is 720 matched to %s" % item)
         return 1
 
