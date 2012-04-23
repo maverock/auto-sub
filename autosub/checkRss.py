@@ -51,7 +51,7 @@ class checkRss():
             
             try:
                 bierdopjeapi = API(RSSURL,RSS=True)
-                soup = BeautifulStoneSoup(bierdopjeapi.resp.read())
+                soup = BeautifulStoneSoup(unicode(bierdopjeapi.resp.read(), autosub.SYSENCODING))
                 log.debug("checkRss: Succussfully connected to %s" %RSSURL)
                 bierdopjeapi.close()
             except:
