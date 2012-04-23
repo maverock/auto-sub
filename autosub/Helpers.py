@@ -121,6 +121,7 @@ def ProcessFileName(filename, extension):
     quality = None     # quality, can either be 1080, 720 or SD
     releasegrp = None  # The Release group
     source = None      # The source, can either be hdtv, dvdrip, bdrip, blueray or web-dl
+    extra_info = None  # All the information that couldn't be parsed
     matchdic = {}
 
     filename = filename.lower()
