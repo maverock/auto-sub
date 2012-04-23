@@ -148,9 +148,24 @@ def ProcessFileName(filename, extension):
     # Fallback for the quality and source mkv files are most likely HD quality
     # Other files are more likely sd quality
     # Will search the file for a couple of possible sources, also parse out dots and dashes and replace with a dash
-    if source == None and extra_info:
-        # If we have extra info, lets try to find the source
-        results = re.search(SOURCE_PARSER, extra_info)
+    if source == None:
+        if extra_info:
+            # If we have extra info, lets try to find the source
+            results = re.search(SOURCE_PARSER, extra_info)
+            try:
+                source = results.group(0)
+                source = re.sub("[. _-]", "-", source)
+                # The following four rules are there to support the file naming SickBeard used (like: Serie.Name.S01E02.SD.TV.avi
+                if source == u'tv':
+                    source = u'hdtv'
+                if source == u'dvd':
+                    source = u'dvdrip'
+                log.debug("ProcessFileName: Fallback hit for source, source is %s" % source)
+            except:
+                pass
+        
+    if source == None:
+        results = re.search(SOURCE_PARSER, filename)
         try:
             source = results.group(0)
             source = re.sub("[. _-]", "-", source)
@@ -176,14 +191,28 @@ def ProcessFileName(filename, extension):
                 log.debug("ProcessFileName: Fallback hit for quality, quality is %s" % quality)
             except:
                 pass
-        else:
-            log.debug("ProcessFileName: No extra information. Last fallback...")
-            if extension == ".mkv":
+            
+    if quality == None:
+        log.debug("ProcessFileName: No extra information. Falling back...")
+        results = re.search(QUALITY_PARSER, filename)
+        try:
+            quality = results.group(0)
+            # Sickbeard renames files to HD if they are 720... So if HD is found as q, q should be 720.
+            if quality == u'hd':
                 quality = u'720'
-                log.debug("ProcessFileName: Fallback, file seems to be mkv so best guess for quality would be 720")
-            else:
-                quality = u'SD'
-                log.debug("ProcessFileName: Fallback, can't determine the quality so guess SD")
+            quality = quality.upper() #in case quality is SD
+            log.debug("ProcessFileName: Fallback hit for quality, quality is %s" % quality)
+        except:
+            pass
+            
+    if quality == None:
+        log.debug("ProcessFileName: Still not? -_-' Ok ok, last fallback... Trying to guess it by looking at the file extension")
+        if extension == ".mkv":
+            quality = u'720'
+            log.debug("ProcessFileName: File seems to be mkv so best guess for quality would be 720")
+        else:
+            quality = u'SD'
+            log.debug("ProcessFileName: I give up! Can't determine the quality so guess SD")
 
     if title: processedFilenameResults['title'] = title
     if season: processedFilenameResults['season'] = season
