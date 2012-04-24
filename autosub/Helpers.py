@@ -186,10 +186,13 @@ def ProcessFileName(filename, extension):
             try:
                 quality = results.group(0)
                 # Sickbeard renames files to HD if they are 720... So if HD is found as q, q should be 720.
-                if quality == u'hd':
+                if quality == u'hd' and source != u'hdtv':
                     quality = u'720'
-                quality = quality.upper() #in case quality is SD
-                log.debug("ProcessFileName: Fallback hit for quality, quality is %s" % quality)
+                else:
+                    quality = None
+                if quality:
+                    quality = quality.upper() #in case quality is SD
+                    log.debug("ProcessFileName: Fallback hit for quality, quality is %s" % quality)
             except:
                 pass
             
@@ -199,10 +202,13 @@ def ProcessFileName(filename, extension):
         try:
             quality = results.group(0)
             # Sickbeard renames files to HD if they are 720... So if HD is found as q, q should be 720.
-            if quality == u'hd':
-                quality = u'720'
-            quality = quality.upper() #in case quality is SD
-            log.debug("ProcessFileName: Fallback hit for quality, quality is %s" % quality)
+            if quality == u'hd' and source != u'hdtv':
+                    quality = u'720'
+            else:
+                quality = None
+            if quality:
+                quality = quality.upper() #in case quality is SD
+                log.debug("ProcessFileName: Fallback hit for quality, quality is %s" % quality)
         except:
             pass
             
@@ -319,7 +325,7 @@ def getShowid(show_name):
     show_id = nameMapping(show_name)
     if show_id:
         log.debug('getShowid: showid from namemapping %s' %show_id)
-        return show_id
+        return int(show_id)
     
     show_id = idCache().getId(show_name)
     if show_id:
@@ -327,7 +333,7 @@ def getShowid(show_name):
         if show_id == -1:
             log.error('getShowid: showid not found for %s' %show_name)
             return
-        return show_id
+        return int(show_id)
     
     #do we have enough api calls?
     if checkAPICalls(use=False):
@@ -340,7 +346,7 @@ def getShowid(show_name):
         log.debug('getShowid: showid from api %s' %show_id)
         idCache().setId(show_id, show_name)
         log.info('getShowid: %r added to cache with %s' %(show_name, show_id))
-        return show_id
+        return int(show_id)
     
     log.error('getShowid: showid not found for %s' %show_name)
     idCache().setId(-1, show_name)
