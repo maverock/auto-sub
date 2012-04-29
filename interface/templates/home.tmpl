@@ -18,7 +18,7 @@
 <form>
 <div class="box">
 <div class="header">
-<h1>Wanted</h1><span></span>
+	<h1>Wanted</h1><span></span>
 </div>
 <div class="content no-padding">
 <table class="table">
@@ -44,9 +44,9 @@
 #set $title_escaped = $cgi.escape($var['title'], True)
 
 <tr>
-<td width="500px"><b><a href='#'data-dropdown="#dropdown-$counter">$var['title']</a></b></td>
-<td width="100px" align="center">$var['season']</td>
-<td width="100px" align="center">$var['episode']</td>
+	<td width="500px"><b><a href='#'data-dropdown="#dropdown-$counter">$var['title']</a></b></td>
+	<td width="100px" align="center">$var['season']</td>
+	<td width="100px" align="center">$var['episode']</td>
 
 #if 'quality' in $var.keys()
 	<td width="100px" align="center">$var['quality'].upper()</td>
@@ -60,7 +60,7 @@
 	<td width="100px" align="center">Unknown</td>
 #end if
 
-<td width="50px" align="center">
+	<td width="50px" align="center">
 #for lang in $var['lang']
 #if lang == "nl"
 	<img src="/media/images/nl.png" alt="nl">
@@ -69,7 +69,7 @@
 	<img src="/media/images/en.png" alt="en">
 #end if
 #end for
-</td>
+	</td>
 
 </tr>
 
@@ -89,7 +89,7 @@
 #end for
 
 </div>
-						</div>
+</div>
 <i>Click showname in wanted list to skip it</i>
 #end if
 <p>
@@ -99,13 +99,13 @@
 
 #if $len($lastdownload) >= 1
     
-						<div class="box">
-							<div class="header">
-								<h1>Latest downloaded subtitles</h1><span></span>
-							</div>
-							<div class="content no-padding">
-								<table class="table">
-									<thead>
+<div class="box">
+<div class="header">
+	<h1>Latest downloaded subtitles</h1><span></span>
+</div>
+<div class="content no-padding">
+<table class="table">
+<thead>
 <tr>
 	<th>Show name</th>
 	<th>Season</th>
@@ -118,10 +118,10 @@
 
 #for $var in $lastdownload
 <tr>
-<td width="500px"><b>$var['show_name']</b></td>
-<td width="100px" align="center">$var['season']</td>
-<td width="100px" align="center">$var['episode']</td>
-<td width="100px" align="center">$var['quality']</td>
+	<td width="500px"><b>$var['show_name']</b></td>
+	<td width="100px" align="center">$var['season']</td>
+	<td width="100px" align="center">$var['episode']</td>
+	<td width="100px" align="center">$var['quality']</td>
 
 #if $var['source']
 	<td width="100px" align="center">$var['source'].upper()</td>
@@ -139,6 +139,7 @@
 </table>
 </div>
 </div>
+
 #end if
 <br>
 <table>
