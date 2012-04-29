@@ -1,9 +1,27 @@
 #import autosub
 
-Path: <input type="text" size="40" name="path" value="$autosub.PATH" /> Required, it should point to the location where the auto-sub files are located.<br />
-Rootpath: <input type="text" size="40" name="rootpath" value="$autosub.ROOTPATH" /> Required, it should point the root folder where the series are located<br />
-Logfile: <input type="text" name="logfile" value="$autosub.LOGFILE" /> Required, point to to the location and to the name of the logfile. When not set, AutoSubService.log will be used.<br />
-Fallbacktoeng: <select name="fallbacktoeng">
+<table>
+	<tr>
+		<td width="120px">Path</td>
+		<td><input type="text" size="50" name="path" value="$autosub.PATH" /></td>
+		<td width="25px" align="right"><a href='#' data-dropdown="#informationPath"><img src="/media/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationPath" class="dropdown-menu has-tip" align="left"><ul><li>Required, it should point to the location where the auto-sub files are located</li></ul></td>
+	</tr>
+
+	<tr>
+		<td width="120px">Rootpath</td>
+		<td><input type="text" size="50" name="rootpath" value="$autosub.ROOTPATH" /></td>
+		<td width="25px" align="right"><a href='#' data-dropdown="#informationRootpath"><img src="/media/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationRootpath" class="dropdown-menu has-tip" align="left"><ul><li>Required, it should point the root folder where the series are located</li></ul></td>
+	</tr>
+
+	<tr>
+		<td width="120px">Logfile</td>
+		<td><input type="text" size="50" name="logfile" value="$autosub.LOGFILE" /></td>
+		<td width="25px" align="right"><a href='#' data-dropdown="#informationLogfile"><img src="/media/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationLogfile" class="dropdown-menu has-tip" align="left"><ul><li>Required, point to to the location and to the name of the logfile. When not set, AutoSubService.log will be used</li></ul></td>
+	</tr>
+
+	<tr>
+		<td width="120px">Fallbacktoeng</td>
+		<td><select name="fallbacktoeng">
 #if $autosub.FALLBACKTOENG
   <option value="True" selected="selected">Enabled</option>
   <option value="False">Disabled</option>
@@ -11,8 +29,13 @@ Fallbacktoeng: <select name="fallbacktoeng">
   <option value="True">Enabled</option>
   <option value="False" selected="selected">Disabled</option>
 #end if
-</select> When Enabled English subtitles are downloaded when there are no Dutch subtitle available. Default is True.<br />
-Downloadeng: <select name="downloadeng"> <!--value="$autosub.DOWNLOADENG" />-->
+</select></td>
+		<td width="25px" align="right"><a href='#' data-dropdown="#informationFallbacktoeng"><img src="/media/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationFallbacktoeng" class="dropdown-menu has-tip" align="left"><ul><li>When Enabled English subtitles are downloaded when there are no Dutch subtitle available. Default is True</li></ul></td>
+	</tr>
+
+	<tr>
+		<td width="120px">Downloadeng</td>
+		<td><select name="downloadeng"> <!--value="$autosub.DOWNLOADENG" />-->
 #if $autosub.DOWNLOADENG
   <option value="True" selected="selected">Enabled</option>
   <option value="False">Disabled</option>
@@ -20,11 +43,31 @@ Downloadeng: <select name="downloadeng"> <!--value="$autosub.DOWNLOADENG" />-->
   <option value="True">Enabled</option>
   <option value="False" selected="selected">Disabled</option>
 #end if
-</select> When enabled English subtitles are always downloaded default is False<br />
-Subeng: <input type="text" name="subeng" value="$autosub.SUBENG" /> When FallbacktoEng is enabled, English subtitles are download as: filename.subeng.srt default is 'en' (filename.en.srt)<br />
-Subnl: <input type="text" name="subnl" value="$autosub.SUBNL" /> When downloading dutch subtitle files are renamed to: filename.subnl.srt<br />
-Postprocesscmd: <input type="text" size="40" name="postprocesscmd" value="$autosub.POSTPROCESSCMD" /> AutoSub will run this command after downloading a subtitle. Check: http://code.google.com/p/auto-sub/wiki/ExamplePostProcessScript for more info<br />
-Minmatchscore:<select name="minmatchscore">
+</select></td>
+		<td width="25px" align="right"><a href='#' data-dropdown="#informationDownloadeng"><img src="/media/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationDownloadeng" class="dropdown-menu has-tip" align="left"><ul><li>When enabled English subtitles are always downloaded default is False</li></ul></td>
+	</tr>
+
+	<tr>
+		<td width="120px">Subeng</td>
+		<td><input type="text" size="50" name="subeng" value="$autosub.SUBENG" /></td>
+		<td width="25px" align="right"><a href='#' data-dropdown="#informationSubeng"><img src="/media/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationSubeng" class="dropdown-menu has-tip" align="left"><ul><li>When FallbacktoEng is enabled, English subtitles are download as: filename.subeng.srt default is 'en' (filename.en.srt)</li></ul></td>
+	</tr>
+
+	<tr>
+		<td width="120px">Subnl</td>
+		<td><input type="text" size="50" name="subnl" value="$autosub.SUBNL" /></td>
+		<td width="25px" align="right"><a href='#' data-dropdown="#informationSubnl"><img src="/media/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationSubnl" class="dropdown-menu has-tip" align="left"><ul><li>When downloading dutch subtitle files are renamed to: filename.subnl.srt</li></ul></td>
+	</tr>
+
+	<tr>
+		<td width="120px">Postprocesscmd</td>
+		<td><input type="text" size="50" name="postprocesscmd" value="$autosub.POSTPROCESSCMD" /></td>
+		<td width="25px" align="right"><a href='#' data-dropdown="#informationPostprocesscmd"><img src="/media/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationPostprocesscmd" class="dropdown-menu has-tip" align="left"><ul><li>AutoSub will run this command after downloading a subtitle. Check: http://code.google.com/p/auto-sub/wiki/ExamplePostProcessScript for more info</li></ul></td>
+	</tr>
+
+	<tr>
+		<td width="120px">Minmatchscore</td>
+		<td><select name="minmatchscore">
 #if $autosub.MINMATCHSCORE == 0
   <option value=0 selected="selected">0.Best match</option>
   <option value=1>1.Releasegroup</option>
@@ -98,9 +141,13 @@ Minmatchscore:<select name="minmatchscore">
   <option value=6>6.Source & Quality</option>
   <option value=7 selected="selected">7.Source, Releasegroup & Quality</option>
 #end if
-</select> What items should match when a subtitle is downloaded.<br />
-<!--Minmatchscorerss: <input type="text" name="minmatchscorerss" value="$autosub.MINMATCHSCORERSS" /><br />-->
-Minmatchscorerss:<select name="minmatchscorerss">
+</select></td>
+		<td width="25px" align="right"><a href='#' data-dropdown="#informationMinmatchscore"><img src="/media/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationMinmatchscore" class="dropdown-menu has-tip" align="left"><ul><li>What items should match when a subtitle is downloaded</li></ul></td>
+	</tr>
+
+	<tr>
+		<td width="120px">Minmatchscorerss</td>
+		<td><select name="minmatchscorerss">
 #if $autosub.MINMATCHSCORERSS == 0
   <option value=0 selected="selected">0.Best match</option>
   <option value=1>1.Releasegroup</option>
@@ -174,9 +221,32 @@ Minmatchscorerss:<select name="minmatchscorerss">
   <option value=6>6.Source & Quality</option>
   <option value=7 selected="selected">7.Source, Releasegroup & Quality</option>
 #end if
-</select>  What items should match when a subtitle is downloaded.<br />
-Scandisk: <input type="text" name="scandisk" value="$autosub.SCHEDULERSCANDISK" /> Change the interval of the ScanDisk thread, it scans the disk for missing subtitle files. Time is in seconds, default is 3600 seconds.<br />
-Checksub: <input type="text" name="checksub" value="$autosub.SCHEDULERCHECKSUB" /> Change the interval of the CheckSub thread, it checks if there is a match on the bierdopje API. Cannot not be set lower then 21600. Time is in seconds, default is 28800 seconds.<br />
-Checkrss: <input type="text" name="checkrss" value="$autosub.SCHEDULERCHECKRSS" /> Change the interval of the CheckRSS thread, it checks if there is a match on the bierdopje RSS feed. Cannot be et lower then 60. Time is in seconds, default is 900 seconds.<br />
-Downloadsubs: <input type="text" name="downloadsubs" value="$autosub.SCHEDULERDOWNLOADSUBS" /> Change the interval of the DownloadSubs thread, it checks if there is a new match found by either checksub or checkrss and downloads it. Time is in seconds, default is 1 second.<br />
+</select></td>
+		<td width="25px" align="right"><a href='#' data-dropdown="#informationMinmatchscorerss"><img src="/media/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationMinmatchscorerss" class="dropdown-menu has-tip" align="left"><ul><li>What items should match when a subtitle is downloaded</li></ul></td>
+	</tr>
+
+	<tr>
+		<td width="120px">Scandisk</td>
+		<td><input type="text" size="50" name="scandisk" value="$autosub.SCHEDULERSCANDISK" /></td>
+		<td width="25px" align="right"><a href='#' data-dropdown="#informationScandisk"><img src="/media/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationScandisk" class="dropdown-menu has-tip" align="left"><ul><li>Change the interval of the ScanDisk thread, it scans the disk for missing subtitle files. Time is in seconds, default is 3600 seconds</li></ul></td>
+	</tr>
+
+	<tr>
+		<td width="120px">Checksub</td>
+		<td><input type="text" size="50" name="checksub" value="$autosub.SCHEDULERCHECKSUB" /></td>
+		<td width="25px" align="right"><a href='#' data-dropdown="#informationChecksub"><img src="/media/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationChecksub" class="dropdown-menu has-tip" align="left"><ul><li>Change the interval of the CheckSub thread, it checks if there is a match on the bierdopje API. Cannot not be set lower then 21600. Time is in seconds, default is 28800 seconds</li></ul></td>
+	</tr>
+
+	<tr>
+		<td width="120px">Checkrss</td>
+		<td><input type="text" size="50" name="checkrss" value="$autosub.SCHEDULERCHECKRSS" /></td>
+		<td width="25px" align="right"><a href='#' data-dropdown="#informationCheckrss"><img src="/media/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationCheckrss" class="dropdown-menu has-tip" align="left"><ul><li>Change the interval of the CheckRSS thread, it checks if there is a match on the bierdopje RSS feed. Cannot be et lower then 60. Time is in seconds, default is 900 seconds</li></ul></td>
+	</tr>
+
+	<tr>
+		<td width="120px">Downloadsubs</td>
+		<td><input type="text" size="50" name="downloadsubs" value="$autosub.SCHEDULERDOWNLOADSUBS" /></td>
+		<td width="25px" align="right"><a href='#' data-dropdown="#informationDownloadsubs"><img src="/media/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationDownloadsubs" class="dropdown-menu has-tip" align="left"><ul><li>Change the interval of the DownloadSubs thread, it checks if there is a new match found by either checksub or checkrss and downloads it. Time is in seconds, default is 1 second</li></ul></td>
+	</tr>
+</table>
 

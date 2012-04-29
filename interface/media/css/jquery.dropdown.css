@@ -62,7 +62,7 @@
 
 .dropdown-menu LI {
 	list-style: none;
-	padding: 0;
+	padding: 3px 15px;
 	margin: 0;
 	line-height: 18px;
 }
@@ -73,7 +73,6 @@
 	color: #555;
 	text-decoration: none;
 	line-height: 18px;
-	padding: 3px 15px;
 	white-space: nowrap;
 }
 
