@@ -3,18 +3,37 @@
 </div>
 
 <center>
-
-AutoSub version: $autosubversion
-<p>
-APICalls left since last call: $autosub.APICALLS, reset in: 
-#if ($autosub.APICALLSRESETINT - ($time.time() - $autosub.APICALLSLASTRESET)) < 0
-resets at next API call
-#else
-$time.strftime('%H:%M:%S', $time.gmtime(($autosub.APICALLSRESETINT - ($time.time() - $autosub.APICALLSLASTRESET) )))
-#end if
-<p>
-<a href="/home/resetAPICalls">Click to reset APICalls</a>
+<br />
+<table>
+	<tr>
+		<td width="120px" align="left">AutoSub version</td>
+		<td align="right">$autosubversion</td>
+	</tr>
+	
+	<tr>
+		<td width="120px" align="left">API calls left</td>
+		<td align="right">$autosub.APICALLS</td>
+	</tr>
+	
+	<tr>
+		<td width="120px" align="left">API call reset in</td>
+		<td align="right">#if ($autosub.APICALLSRESETINT - ($time.time() - $autosub.APICALLSLASTRESET)) < 0
+		At next API call
+		#else
+		$time.strftime('%H:%M:%S', $time.gmtime(($autosub.APICALLSRESETINT - ($time.time() - $autosub.APICALLSLASTRESET) )))
+		#end if</td>
+	</tr>
+	
+	<tr>
+		<td colspan="2" align="center">&nbsp;</td>
+	</tr>
+	
+	<tr>
+		<td colspan="2" align="center"><a href="/home/resetAPICalls">Click to reset API Calls</a></td>
+	</tr>
+</table>
 
 </center>
+
 </body>
 </html>
