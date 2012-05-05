@@ -10,10 +10,6 @@
 
 #include $os.path.join($autosub.PATH.encode(), "interface/templates/menu.tmpl")
 
-<br>
-
-
-
 #if $len($autosub.WANTEDQUEUE) >= 1
 <form>
 <div class="box">
@@ -44,7 +40,7 @@
 #set $title_escaped = $cgi.escape($var['title'], True)
 
 <tr>
-	<td width="500px"><b><a href='#'data-dropdown="#dropdown-$counter">$var['title']</a></b></td>
+	<td width="500px"><b><a href='#' data-dropdown="#dropdown-$counter">$var['title']</a></b></td>
 	<td width="100px" align="center">$var['season']</td>
 	<td width="100px" align="center">$var['episode']</td>
 
@@ -72,8 +68,6 @@
 	</td>
 
 </tr>
-
-
 
 #end for
 </table>
@@ -143,42 +137,38 @@
 #end if
 <br>
 <table>
-<tr>
-	<td>
-		Next RSSCheck in:
-	</td> 
-	<td>
-		#try
-		  $time.strftime('%H:%M:%S', $time.gmtime(($autosub.CHECKRSS.interval - ($time.time() - $autosub.CHECKRSS.lastrun) ))) <br>
-		#except
-		  Please wait... <br>
-		#end try
-	</td>
-</tr>
-<tr>
-	<td>
-		Next ScanDisk in: 
-	</td>
-	<td>
-		#try
-		  $time.strftime('%H:%M:%S', $time.gmtime(($autosub.SCANDISK.interval - ($time.time() - $autosub.SCANDISK.lastrun) ))) <br>
-		#except
-		  Please wait... <br>
-		#end try
-	</td>
-</tr>
-<tr>
-	<td>
-		Next CheckSub in: 
-	</td>
-	<td>
-		#try
-		  $time.strftime('%H:%M:%S', $time.gmtime(($autosub.CHECKSUB.interval - ($time.time() - $autosub.CHECKSUB.lastrun) ))) <br>
-		#except
-		  Please wait... <br>
-		#end try
-	</td>
-</tr>
+	<tr>
+		<td width="100px">Next RSSCheck</td> 
+		<td>
+			#try
+			  $time.strftime('%H:%M:%S', $time.gmtime(($autosub.CHECKRSS.interval - ($time.time() - $autosub.CHECKRSS.lastrun) ))) <br>
+			#except
+			  Please wait... <br>
+			#end try
+		</td>
+	</tr>
+	
+	<tr>
+		<td width="100px">Next ScanDisk</td>
+		<td>
+			#try
+			  $time.strftime('%H:%M:%S', $time.gmtime(($autosub.SCANDISK.interval - ($time.time() - $autosub.SCANDISK.lastrun) ))) <br>
+			#except
+			  Please wait... <br>
+			#end try
+		</td>
+	</tr>
+	
+	<tr>
+		<td width="100px">Next CheckSub</td>
+		<td>
+			#try
+			  $time.strftime('%H:%M:%S', $time.gmtime(($autosub.CHECKSUB.interval - ($time.time() - $autosub.CHECKSUB.lastrun) ))) <br>
+			#except
+			  Please wait... <br>
+			#end try
+		</td>
+	</tr>
 </table>
 
 #include $os.path.join($autosub.PATH.encode(), "interface/templates/footer.tmpl")
