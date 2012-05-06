@@ -56,7 +56,7 @@ class Config:
         return str(tmpl)
 
     @cherrypy.expose
-    def saveConfig(self, subeng, checksub, scandisk, minmatchscore, checkrss, subnl, minmatchscorerss, postprocesscmd, downloadsubs, path, logfile, rootpath, fallbacktoeng, downloadeng, username, password, skipshow, lognum, loglevelconsole, logsize, loglevel, webserverip, webserverport, usernamemapping):
+    def saveConfig(self, subeng, checksub, scandisk, minmatchscore, checkrss, subnl, minmatchscorerss, postprocesscmd, downloadsubs, path, logfile, rootpath, fallbacktoeng, downloadeng, username, password, skipshow, lognum, loglevelconsole, logsize, loglevel, webserverip, webserverport, usernamemapping, notifymail, notifygrowl, notifynma, notifytwitter, mailsrv, mailfromaddr, mailtoaddr, mailusername, mailpassword, mailsubject, mailencryption, growlhost, growlport, growlpass, nmaapi, twitterkey, twittersecret):
         # Set all internal variables
         autosub.PATH = path
         autosub.ROOTPATH = rootpath
@@ -82,6 +82,25 @@ class Config:
         autosub.PASSWORD = password
         autosub.SKIPSHOW = autosub.Config.stringToDict(skipshow)
         autosub.USERNAMEMAPPING = autosub.Config.stringToDict(usernamemapping)
+
+        # Set all internal notify variables
+        autosub.NOTIFYMAIL = notifymail
+        autosub.MAILSRV = mailsrv
+        autosub.MAILFROMADDR = mailfromaddr
+        autosub.MAILTOADDR = mailtoaddr
+        autosub.MAILUSERNAME = mailusername
+        autosub.MAILPASSWORD = mailpassword
+        autosub.MAILSUBJECT = mailsubject
+        autosub.MAILENCRYPTION = mailencryption
+        autosub.NOTIFYGROWL = notifygrowl
+        autosub.GROWLHOST = growlhost
+        autosub.GROWLPORT = growlport
+        autosub.GROWLPASS = growlpass
+        autosub.NOTIFYNMA = notifynma
+        autosub.NMAAPI = nmaapi
+        autosub.NOTIFYTWITTER = notifytwitter
+        autosub.TWITTERKEY = twitterkey
+        autosub.TWITTERSECRET = twittersecret
 
         # Now save to the configfile
         message = autosub.Config.WriteConfig()

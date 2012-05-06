@@ -7,26 +7,30 @@
 <form method="post" action="/config/saveConfig">
   <div id="tabs">
     <ul>
-        <li><a href="#fragment-1">Default</a></li>
-        <li><a href="#fragment-2">Logfile</a></li>
-        <li><a href="#fragment-3">Webserver</a></li>
-        <li><a href="#fragment-4">Skipshow</a></li>
-        <li><a href="#fragment-5">NameMapping</a></li>
+        <li><a href="#default">Default</a></li>
+        <li><a href="#logfile">Logfile</a></li>
+        <li><a href="#webserver">Webserver</a></li>
+        <li><a href="#skipshow">Skipshow</a></li>
+        <li><a href="#namemapping">NameMapping</a></li>
+		<li><a href="#notifications">Notifications</a></li>
     </ul>
-    <div id="fragment-1">
+    <div id="default">
       #include $os.path.join($autosub.PATH.encode(), "interface/templates/config-section.tmpl")
     </div>
-    <div id="fragment-2">
+    <div id="logfile">
       #include $os.path.join($autosub.PATH.encode(), "interface/templates/logfile-section.tmpl")
     </div>
-    <div id="fragment-3">
+    <div id="webserver">
       #include $os.path.join($autosub.PATH.encode(), "interface/templates/webserver-section.tmpl")
     </div>
-    <div id="fragment-4">
+    <div id="skipshow">
       #include $os.path.join($autosub.PATH.encode(), "interface/templates/skipshow-section.tmpl")
     </div>
-    <div id="fragment-5">
+    <div id="namemapping">
       #include $os.path.join($autosub.PATH.encode(), "interface/templates/namemapping-section.tmpl")
+    </div>
+    <div id="notifications">
+      #include $os.path.join($autosub.PATH.encode(), "interface/templates/notification-section.tmpl")
     </div>
   </div>
   <input type="submit" value="Save" />

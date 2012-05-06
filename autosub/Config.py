@@ -238,6 +238,112 @@ def ReadConfig(configfile):
         autosub.USERNAMEMAPPING = {}
         autosub.USERNAMEMAPPINGUPPER = {}
 
+    if cfg.has_section('notify'):
+            if cfg.has_option('notify', 'notifymail'):
+                autosub.NOTIFYMAIL = cfg.getboolean('notify', 'notifymail')
+            else:
+                autosub.NOTIFYMAIL = False
+
+            if cfg.has_option('notify', 'mailsrv'):
+                autosub.MAILSRV = cfg.get('notify', 'mailsrv')
+            else:
+                autosub.MAILSRV = "smtp.gmail.com:587"
+
+            if cfg.has_option('notify', 'mailfromaddr'):
+                autosub.MAILFROMADDR = cfg.get('notify', 'mailfromaddr')
+            else:
+                autosub.MAILFROMADDR = "example@gmail.com"
+
+            if cfg.has_option('notify', 'mailtoaddr'):
+                autosub.MAILTOADDR = cfg.get('notify', 'mailtoaddr')
+            else:
+                autosub.MAILTOADDR = "example@gmail.com"
+
+            if cfg.has_option('notify', 'mailusername'):
+                autosub.MAILUSERNAME = cfg.get('notify', 'mailusername')
+            else:
+                autosub.MAILUSERNAME = "example@gmail.com"
+
+            if cfg.has_option('notify', 'mailpassword'):
+                autosub.MAILPASSWORD = cfg.get('notify', 'mailpassword')
+            else:
+                autosub.MAILPASSWORD = "mysecretpassword"
+
+            if cfg.has_option('notify', 'mailsubject'):
+                autosub.MAILSUBJECT = cfg.get('notify', 'mailsubject')
+            else:
+                autosub.MAILSUBJECT = "Subs info"
+
+            if cfg.has_option('notify', 'mailencryption'):
+                autosub.MAILENCRYPTION = cfg.get('notify', 'mailencryption')
+            else:
+                autosub.MAILENCRYPTION = "TLS"
+
+            if cfg.has_option('notify', 'notifygrowl'):
+                autosub.NOTIFYGROWL = cfg.getboolean('notify', 'notifygrowl')
+            else:
+                autosub.NOTIFYGROWL = False
+
+            if cfg.has_option('notify', 'growlhost'):
+                autosub.GROWLHOST = cfg.get('notify', 'growlhost')
+            else:
+                autosub.GROWLHOST = "127.0.0.1"
+
+            if cfg.has_option('notify', 'growlport'):
+                autosub.GROWLPORT = cfg.get('notify', 'growlport')
+            else:
+                autosub.GROWLPORT = "23053"
+
+            if cfg.has_option('notify', 'growlpass'):
+                autosub.GROWLPASS = cfg.get('notify', 'growlpass')
+            else:
+                autosub.GROWLPASS = "mysecretpassword"
+
+            if cfg.has_option('notify', 'notifytwitter'):
+                autosub.NOTIFYTWITTER = cfg.getboolean('notify', 'notifytwitter')
+            else:
+                autosub.NOTIFYTWITTER = False
+
+            if cfg.has_option('notify', 'twitterkey'):
+                autosub.TWITTERKEY = cfg.get('notify', 'twitterkey')
+            else:
+                autosub.TWITTERKEY = "token key"
+
+            if cfg.has_option('notify', 'twittersecret'):
+                autosub.TWITTERSECRET = cfg.get('notify', 'twittersecret')
+            else:
+                autosub.TWITTERSECRET = "token secret"
+
+            if cfg.has_option('notify', 'notifynma'):
+                autosub.NOTIFYNMA = cfg.getboolean('notify', 'notifynma')
+            else:
+                autosub.NOTIFYNMA = False
+
+            if cfg.has_option('notify', 'nmaapi'):
+                autosub.NMAAPI = cfg.get('notify', 'nmaapi')
+            else:
+                autosub.NMAAPI = "API key"
+
+    else:
+        # notify section is missing
+        autosub.NOTIFYMAIL = False
+        autosub.MAILSRV = "smtp.gmail.com:587"
+        autosub.MAILFROMADDR = "example@gmail.com"
+        autosub.MAILTOADDR = "example@gmail.com"
+        autosub.MAILUSERNAME = "example@gmail.com"
+        autosub.MAILPASSWORD = "mysecretpassword"
+        autosub.MAILSUBJECT = "Subs info"
+        autosub.MAILENCRYPTION = "TLS"
+        autosub.NOTIFYGROWL = False
+        autosub.GROWLHOST = "127.0.0.1"
+        autosub.GROWLPORT = "23053"
+        autosub.GROWLPASS = "mysecretpassword"
+        autosub.NOTIFYTWITTER = False
+        autosub.TWITTERKEY = "token key"
+        autosub.TWITTERSECRET = "token secret"
+        autosub.NOTIFYNMA = False
+        autosub.NMAAPI = "API key"
+
     if cfg.has_section('dev'):
         if cfg.has_option('dev', 'apikey'):
             autosub.APIKEY = cfg.get('dev', 'apikey')
@@ -614,6 +720,44 @@ def saveUsernamemappingSection():
     # Set all namemapping stuff correct
     applynameMapping()
 
+def saveNotifySection():
+    """
+    Save stuff
+    """
+    section = 'notify'
+
+    cfg = SafeConfigParser()
+    try:
+        with codecs.open(autosub.CONFIGFILE, 'r', autosub.SYSENCODING) as f:
+            cfg.readfp(f)
+    except:
+        #no config yet
+        cfg = SafeConfigParser()
+        pass
+
+    if not cfg.has_section(section):
+        cfg.add_section(section)
+
+    cfg.set(section, "notifymail", autosub.NOTIFYMAIL)
+    cfg.set(section, "mailsrv", autosub.MAILSRV)
+    cfg.set(section, 'mailfromaddr', autosub.MAILFROMADDR)
+    cfg.set(section, "mailtoaddr", autosub.MAILTOADDR)
+    cfg.set(section, "mailusername", autosub.MAILUSERNAME)
+    cfg.set(section, "mailpassword", autosub.MAILPASSWORD)
+    cfg.set(section, "mailsubject", autosub.MAILSUBJECT)
+    cfg.set(section, "mailencryption", autosub.MAILENCRYPTION)
+    cfg.set(section, "notifygrowl", autosub.NOTIFYGROWL)
+    cfg.set(section, "growlhost", autosub.GROWLHOST)
+    cfg.set(section, "growlport", autosub.GROWLPORT)
+    cfg.set(section, "growlpass", autosub.GROWLPASS)
+    cfg.set(section, "notifynma", autosub.NOTIFYNMA)
+    cfg.set(section, "nmaapi", autosub.NMAAPI)
+    cfg.set(section, "notifytwitter", autosub.NOTIFYTWITTER)
+    cfg.set(section, "twitterkey", autosub.TWITTERKEY)
+    cfg.set(section, "twittersecret", autosub.TWITTERSECRET)
+
+    with open(autosub.CONFIGFILE, 'wb') as file:
+        cfg.write(file)
 
 def checkForRestart():
     """
@@ -739,6 +883,7 @@ def WriteConfig():
     saveWebserverSection()
     saveSkipshowSection()
     saveUsernamemappingSection()
+    saveNotifySection()
 
     if restart:
         # This needs to be replaced by a restart thingy, until then, just re-read the config and tell the users to do a manual restart
