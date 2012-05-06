@@ -1,5 +1,13 @@
 #This is the new change log, containing up-to-date info since version 0.5.3
 
+Version 0.5.5
+Bug fixes and notify library!
+ - Notifications are now integrated for:
+ 	- Twitter
+ 	- Email
+ - Notifications are configurable through webui
+ - Small Webui fixes
+
 Version 0.5.4
 Bug fixes and features!
  - Python 2.5 is supported now
