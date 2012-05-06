@@ -10,6 +10,7 @@ import os
 
 from autosub.Db import lastDown
 from autosub.Bierdopje import API
+import autosub.notify as notify
 
 log = logging.getLogger('thelogger')
 
@@ -66,6 +67,8 @@ class downloadSubs():
                     toDelete_toDownloadQueue.append(index)
                     
                     lastDown().setlastDown(dict = autosub.TODOWNLOADQUEUE[index])
+                    
+                    notify.notify(autosub.TODOWNLOADQUEUE[index]['downlang'], destsrt, downloadItem["originalFileLocationOnDisk"])
 
                     if autosub.POSTPROCESSCMD:
                         postprocesscmdconstructed = autosub.POSTPROCESSCMD + ' "' + downloadItem["destinationFileLocationOnDisk"] + '" "' + downloadItem["originalFileLocationOnDisk"] + '"'
@@ -75,7 +78,7 @@ class downloadSubs():
                         if postprocesserr:
                             log.error("downloadSubs: PostProcess: %s" % postprocesserr)
                         log.debug("downloadSubs: PostProcess Output:% s" % postprocessoutput)
-
+                    
                     #toDownloadQueue.remove(downloadItem)
                 else:
                     log.error("downloadSub: No downloadLink or locationOnDisk found at downloadItem, skipping")

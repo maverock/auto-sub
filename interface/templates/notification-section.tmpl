@@ -1,6 +1,8 @@
 #import autosub
+<b>WARNING</b>: All passwords are stored in plaintext!
 
 	<table>
+
 		<tr>
 			<td width="150px">Mail Notifications?</td>
 			<td><select name="notifymail">
@@ -41,7 +43,7 @@
 		
 		<tr>
 			<td width="150px">Password</td>
-			<td><input type="text" size="50" name="mailpassword" value="$autosub.MAILPASSWORD" /></td>
+			<td><input type="password" size="50" name="mailpassword" value="$autosub.MAILPASSWORD" /></td>
 			<td width="25px" align="right"><a href='#' data-dropdown="#informationMailPassword"><img src="/media/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationMailPassword" class="dropdown-menu has-tip" align="left"><ul><li>What is the password belonging to this username?</li></ul></td>
 		</tr>
 		
@@ -58,7 +60,7 @@
 		</tr>
 		
 		<tr>
-			<td colspan="3" align="left"><a href='#'>Test Mail</a></td>
+			<td colspan="3" align="left"><a href='/config/testNotify/mail'>Test Mail</a></td>
 		</tr>
 
 		<tr>
@@ -93,7 +95,7 @@
 		
 		<tr>
 			<td width="150px">Pass</td>
-			<td><input type="text" size="50" name="growlpass" value="$autosub.GROWLPASS" /></td>
+			<td><input type="password" size="50" name="growlpass" value="$autosub.GROWLPASS" /></td>
 			<td width="25px" align="right"><a href='#' data-dropdown="#informationGrowlPass"><img src="/media/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationGrowlPass" class="dropdown-menu has-tip" align="left"><ul><li>What is the password?</li></ul></td>
 		</tr>
 		
@@ -160,6 +162,6 @@
 		</tr>
 
 		<tr>
-			<td colspan="3" align="left"><a href='#'>Test Twitter</a> - <a href='#'>Register Twitter</a></td>
+			<td colspan="3" align="left"><a href='/config/testNotify/twitter'>Test Twitter</a> - <a href='/config/regTwitter'>Register Twitter</a></td>
 		</tr>
 	</table>

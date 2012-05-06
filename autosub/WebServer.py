@@ -9,6 +9,9 @@ import threading
 import time
 import autosub.Config
 from autosub.Db import idCache, lastDown
+
+import autosub.notify as notify
+
 # TODO: Create webdesign
 class PageTemplate (Template):
     #Placeholder for future, this object can be used to add stuff to the template
@@ -138,8 +141,70 @@ class Config:
         
         tmpl = PageTemplate(file="interface/templates/message.tmpl")
         tmpl.message = message
-        return str(tmpl)
+        return str(tmpl)   
     
+    @cherrypy.expose
+    def testNotify(self, notifylib):
+        if notify.notifyTest(notifylib):
+            message = 'Sended a test message!'
+        else:
+            message = 'Failed to send a test message'
+        tmpl = PageTemplate(file="interface/templates/message.tmpl")
+        tmpl.message = message
+        return str(tmpl) 
+    
+    @cherrypy.expose
+    def regTwitter(self, token_key=None, token_secret=None, token_pin=None):
+        import library.oauth2 as oauth
+        import autosub.notify.twitter as notifytwitter 
+        try:
+            from urlparse import parse_qsl
+        except:
+            from cgi import parse_qsl
+        
+        if not token_key and not token_secret:
+            consumer = oauth.Consumer(key=notifytwitter.CONSUMER_KEY, secret=notifytwitter.CONSUMER_SECRET)
+            oauth_client = oauth.Client(consumer)
+            response, content = oauth_client.request(notifytwitter.REQUEST_TOKEN_URL, 'GET')
+            if response['status'] != '200':
+                message = "Something went wrong..."
+                tmpl = PageTemplate(file="interface/templates/message.tmpl")
+                tmpl.message = message
+                return str(tmpl)
+            else:
+                request_token = dict(parse_qsl(content))
+                tmpl = PageTemplate(file="interface/templates/config-twitter.tmpl")
+                tmpl.url = notifytwitter.AUTHORIZATION_URL + "?oauth_token=" + request_token['oauth_token']
+                token_key = request_token['oauth_token']
+                token_secret = request_token['oauth_token_secret']
+                tmpl.token_key = token_key
+                tmpl.token_secret = token_secret
+                return str(tmpl)
+        
+        if token_key and token_secret and token_pin:
+            
+            token = oauth.Token(token_key, token_secret)
+            token.set_verifier(token_pin)
+            consumer = oauth.Consumer(key=notifytwitter.CONSUMER_KEY, secret=notifytwitter.CONSUMER_SECRET)
+            oauth_client2 = oauth.Client(consumer, token)
+            response, content = oauth_client2.request(notifytwitter.ACCESS_TOKEN_URL, method='POST', body='oauth_verifier=%s' % token_pin)
+            access_token = dict(parse_qsl(content))
+
+            if response['status'] != '200':
+                message = "Something went wrong..."
+                tmpl = PageTemplate(file="interface/templates/message.tmpl")
+                tmpl.message = message
+                return str(tmpl)
+            else:
+                autosub.TWITTERKEY = access_token['oauth_token']
+                autosub.TWITTERSECRET = access_token['oauth_token_secret']
+                
+                message = "Twitter is now set up, remember to save your config and remember to test twitter! <br> <a href='/config'>Return</a>"
+                tmpl = PageTemplate(file="interface/templates/message.tmpl")
+                tmpl.message = message
+                return str(tmpl)
+                
+                
 class Home:
     @cherrypy.expose
     def index(self):
