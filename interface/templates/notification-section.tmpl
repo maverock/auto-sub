@@ -60,7 +60,7 @@
 		</tr>
 		
 		<tr>
-			<td colspan="3" align="left"><a href='/config/testNotify/mail'>Test Mail</a></td>
+			<td colspan="3" align="left"><input type="button" value="Test Mail" onClick="parent.location='/config/testNotify/mail'" /></td>
 		</tr>
 
 		<tr>
@@ -83,24 +83,24 @@
 		
 		<tr>
 			<td width="150px">Host</td>
-			<td><input type="text" size="50" name="growlhost" value="$autosub.GROWLHOST" /></td>
+			<td><input type="hidden" size="50" name="growlhost" value="$autosub.GROWLHOST" /></td>
 			<td width="25px" align="right"><a href='#' data-dropdown="#informationGrowlHost"><img src="/media/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationGrowlHost" class="dropdown-menu has-tip" align="left"><ul><li>What is the address of the growl server?</li></ul></td>
 		</tr>
 		
 		<tr>
 			<td width="150px">Port</td>
-			<td><input type="text" size="50" name="growlport" value="$autosub.GROWLPORT" /></td>
+			<td><input type="hidden" size="50" name="growlport" value="$autosub.GROWLPORT" /></td>
 			<td width="25px" align="right"><a href='#' data-dropdown="#informationGrowlPort"><img src="/media/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationGrowlPort" class="dropdown-menu has-tip" align="left"><ul><li>What port should we use?</li></ul></td>
 		</tr>
 		
 		<tr>
 			<td width="150px">Pass</td>
-			<td><input type="password" size="50" name="growlpass" value="$autosub.GROWLPASS" /></td>
+			<td><input type="hidden" size="50" name="growlpass" value="$autosub.GROWLPASS" /></td>
 			<td width="25px" align="right"><a href='#' data-dropdown="#informationGrowlPass"><img src="/media/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationGrowlPass" class="dropdown-menu has-tip" align="left"><ul><li>What is the password?</li></ul></td>
 		</tr>
 		
 		<tr>
-			<td colspan="3" align="left"><a href='#'>Test Growl</a> - <a href='#'>Register Growl</a></td>
+			<td colspan="3" align="left"><input type="button" value="Test Growl" onClick="parent.location='#'" /> <input type="button" value="Register Growl" onClick="parent.location='#'" /></td>
 		</tr>
 
 		<tr>
@@ -123,12 +123,12 @@
 		
 		<tr>
 			<td width="150px">API</td>
-			<td><input type="text" size="50" name="nmaapi" value="$autosub.NMAAPI" /></td>
+			<td><input type="hidden" size="50" name="nmaapi" value="$autosub.NMAAPI" /></td>
 			<td width="25px" align="right"><a href='#' data-dropdown="#informationNMAApi"><img src="/media/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationNMAApi" class="dropdown-menu has-tip" align="left"><ul><li>What is the API key for NMA?</li></ul></td>
 		</tr>
 
 		<tr>
-			<td colspan="3" align="left"><a href='#'>Test NMA</a></td>
+			<td colspan="3" align="left"><input type="button" value="Test NMA" onClick="parent.location='#'" /></td>
 		</tr>
 		
 		<tr>
@@ -162,6 +162,6 @@
 		</tr>
 
 		<tr>
-			<td colspan="3" align="left"><a href='/config/testNotify/twitter'>Test Twitter</a> - <a href='/config/regTwitter'>Register Twitter</a></td>
+			<td colspan="3" align="left"><input type="button" value="Test Twitter" onClick="parent.location='/config/testNotify/twitter'" /> <input type="button" value="Register Twitter" onClick="parent.location='/config/regTwitter'" /></td>
 		</tr>
 	</table>

@@ -60,6 +60,34 @@
 	</tr>
 
 	<tr>
+		<td width="120px">Notify English</td>
+		<td><select name="notifyen">
+			#if $autosub.NOTIFYEN
+			  <option value="True" selected="selected">Enabled</option>
+			  <option value="False">Disabled</option>
+			#else
+			  <option value="True">Enabled</option>
+			  <option value="False" selected="selected">Disabled</option>
+			#end if
+		</select></td>
+		<td width="25px" align="right"><a href='#' data-dropdown="#informationNotifyEN"><img src="/media/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationNotifyEN" class="dropdown-menu has-tip" align="left"><ul><li>When enabled Autosub will send a notification when an English subtitle has been downloaded.<br />Default is Enabled.</li></ul></td>
+	</tr>
+
+	<tr>
+		<td width="120px">Notify Dutch</td>
+		<td><select name="notifynl">
+			#if $autosub.NOTIFYNL
+			  <option value="True" selected="selected">Enabled</option>
+			  <option value="False">Disabled</option>
+			#else
+			  <option value="True">Enabled</option>
+			  <option value="False" selected="selected">Disabled</option>
+			#end if
+		</select></td>
+		<td width="25px" align="right"><a href='#' data-dropdown="#informationNotifyNL"><img src="/media/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationNotifyNL" class="dropdown-menu has-tip" align="left"><ul><li>When enabled Autosub will send a notification when a Dutch subtitle has been downloaded.<br />Default is Enabled.</li></ul></td>
+	</tr>
+	
+	<tr>
 		<td width="120px">Postprocesscmd</td>
 		<td><input type="text" size="50" name="postprocesscmd" value="$autosub.POSTPROCESSCMD" /></td>
 		<td width="25px" align="right"><a href='#' data-dropdown="#informationPostprocesscmd"><img src="/media/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationPostprocesscmd" class="dropdown-menu has-tip" align="left"><ul><li>AutoSub will run this command after downloading a subtitle. Check: http://code.google.com/p/auto-sub/wiki/ExamplePostProcessScript for more info</li></ul></td>

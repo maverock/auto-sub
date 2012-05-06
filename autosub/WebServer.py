@@ -59,7 +59,7 @@ class Config:
         return str(tmpl)
 
     @cherrypy.expose
-    def saveConfig(self, subeng, checksub, scandisk, minmatchscore, checkrss, subnl, minmatchscorerss, postprocesscmd, downloadsubs, path, logfile, rootpath, fallbacktoeng, downloadeng, username, password, skipshow, lognum, loglevelconsole, logsize, loglevel, webserverip, webserverport, usernamemapping, notifymail, notifygrowl, notifynma, notifytwitter, mailsrv, mailfromaddr, mailtoaddr, mailusername, mailpassword, mailsubject, mailencryption, growlhost, growlport, growlpass, nmaapi, twitterkey, twittersecret):
+    def saveConfig(self, subeng, checksub, scandisk, minmatchscore, checkrss, subnl, minmatchscorerss, postprocesscmd, downloadsubs, path, logfile, rootpath, fallbacktoeng, downloadeng, username, password, skipshow, lognum, loglevelconsole, logsize, loglevel, webserverip, webserverport, usernamemapping, notifymail, notifygrowl, notifynma, notifytwitter, mailsrv, mailfromaddr, mailtoaddr, mailusername, mailpassword, mailsubject, mailencryption, growlhost, growlport, growlpass, nmaapi, twitterkey, twittersecret, notifyen, notifynl):
         # Set all internal variables
         autosub.PATH = path
         autosub.ROOTPATH = rootpath
@@ -68,6 +68,8 @@ class Config:
         autosub.DOWNLOADENG = downloadeng
         autosub.SUBENG = subeng
         autosub.SUBNL = subnl
+        autosub.NOTIFYEN = notifyen
+        autosub.NOTIFYNL = notifynl
         autosub.POSTPROCESSCMD = postprocesscmd
         autosub.MINMATCHSCORE = int(minmatchscore)
         autosub.MINMATCHSCORERSS = int(minmatchscorerss)

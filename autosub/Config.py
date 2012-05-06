@@ -118,6 +118,16 @@ def ReadConfig(configfile):
         else:
             autosub.SUBNL = ""
 
+        if cfg.has_option("config", "notifyen"):
+            autosub.NOTIFYEN = cfg.getboolean("config", "notifyen")
+        else:
+            autosub.NOTIFYEN = True
+
+        if cfg.has_option("config", "notifynl"):
+            autosub.NOTIFYNL = cfg.getboolean("config", "notifynl")
+        else:
+            autosub.NOTIFYNL = True
+
         if cfg.has_option("config", "workdir"):
             autosub.PATH = cfg.get("config", "workdir")
             print "Config WARNING: Workdir is an old variable. Replace it with 'path'."
@@ -148,6 +158,8 @@ def ReadConfig(configfile):
         autosub.FALLBACKTOENG = True
         autosub.SUBENG = 'en'
         autosub.SUBNL = ""
+        autosub.NOTIFYEN = True
+        autosub.NOTIFYNL = True
         print "Config ERROR: Variable LOGFILE is missing. This is required! Using 'AutoSubService.log' instead."
         autosub.LOGFILE = "AutoSubService.log"
 
@@ -605,6 +617,8 @@ def saveConfigSection():
     cfg.set(section, "fallbacktoeng", autosub.FALLBACKTOENG)
     cfg.set(section, "subeng", autosub.SUBENG)
     cfg.set(section, "subnl", autosub.SUBNL)
+    cfg.set(section, "notifyen", autosub.NOTIFYEN)
+    cfg.set(section, "notifynl", autosub.NOTIFYNL)
     cfg.set(section, "logfile", autosub.LOGFILE)
     cfg.set(section, "postprocesscmd", autosub.POSTPROCESSCMD)
 
