@@ -38,5 +38,7 @@ def test_notify():
         
         api.PostUpdate(message)
         log.info("Twitter: Tweet sended")
+        return True
     except:
         log.error("Twitter: Failed to send a tweet")
+        return False
