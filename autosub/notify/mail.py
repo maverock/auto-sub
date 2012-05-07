@@ -41,7 +41,7 @@ For the videofile:\n
 %s\n
     """ %(lang, subtitlefile, videofile))
     message['To'] = email.utils.formataddr(('Recipient', autosub.MAILTOADDR))
-    message['Subject'] = autosub.MAILSUBJECT
+    message['Subject'] = '%s %s' %(autosub.MAILSUBJECT, subtitlefile) 
     message = message.as_string()
     return _send_notify(message)
     

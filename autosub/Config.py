@@ -284,7 +284,7 @@ def ReadConfig(configfile):
             if cfg.has_option('notify', 'mailsubject'):
                 autosub.MAILSUBJECT = cfg.get('notify', 'mailsubject')
             else:
-                autosub.MAILSUBJECT = "Subs info"
+                autosub.MAILSUBJECT = "Auto-Sub downloaded"
 
             if cfg.has_option('notify', 'mailencryption'):
                 autosub.MAILENCRYPTION = cfg.get('notify', 'mailencryption')
