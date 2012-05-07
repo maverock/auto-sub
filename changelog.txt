@@ -5,6 +5,7 @@ Bug fixes and notify library!
  - Notifications are now integrated for:
  	- Twitter
  	- Email
+ 	- NMA
  - Notifications are configurable through webui
  - Small Webui fixes
 

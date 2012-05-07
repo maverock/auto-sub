@@ -22,7 +22,7 @@ For the videofile:\n
     message = message.as_string()
     try:
         server = smtplib.SMTP(autosub.MAILSRV)
-        if autosub.MAILENCRYPTION == 'TLS':
+        if autosub.MAILENCRYPTION == u'TLS':
             server.starttls()
         if autosub.MAILUSERNAME != '' and autosub.MAILPASSWORD != '':
             server.login(autosub.MAILUSERNAME, autosub.MAILPASSWORD)
@@ -42,7 +42,7 @@ def test_notify():
     message = message.as_string()
     try:
         server = smtplib.SMTP(autosub.MAILSRV)
-        if autosub.MAILENCRYPTION == 'TLS':
+        if autosub.MAILENCRYPTION == u'TLS':
             server.starttls()
         if autosub.MAILUSERNAME != '' and autosub.MAILPASSWORD != '':
             server.login(autosub.MAILUSERNAME, autosub.MAILPASSWORD)
