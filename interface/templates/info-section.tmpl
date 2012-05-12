@@ -1,0 +1,36 @@
+#import autosub
+
+<font style="font-size: large;"><b>Configuration</b></font><br /><br />
+<table>
+	<tr>
+		<td width="140px">Config file</td>
+		<td>$autosub.CONFIGFILE</td>
+	</tr>
+	<tr>
+		<td width="140px">Database file</td>
+		<td>$os.path.join(autosub.PATH, autosub.DBFILE)</td>
+	</tr>
+	<tr>
+		<td width="140px">Log file</td>
+		<td>
+#if $autosub.LOGFILE.find('/') == True
+$autosub.LOGFILE
+#elif $autosub.LOGFILE.find('\\') == True
+$autosub.LOGFILE
+#else
+$os.path.join(autosub.PATH, autosub.LOGFILE)
+#end if</td>
+	</tr>
+</table>
+<hr>
+<font style="font-size: large;"><b>Websites</b></font><br /><br />
+<table>
+	<tr>
+		<td width="140px">Source</td>
+		<td><a href="http://code.google.com/p/auto-sub/" target="_blank">http://code.google.com/p/auto-sub/</a></td>
+	</tr>
+	<tr>
+		<td width="140px">Open issues</td>
+		<td><a href="http://code.google.com/p/auto-sub/issues/list" target="_blank">http://code.google.com/p/auto-sub/issues/list</a></td>
+	</tr>		
+</table>
