@@ -1,0 +1,14 @@
+#import autosub
+
+#include $os.path.join($autosub.PATH.encode(), "interface/templates/header.tmpl")
+
+#include $os.path.join($autosub.PATH.encode(), "interface/templates/menu.tmpl")
+
+<b><font style="font-size: x-large;">Log File</font></b> ($autosub.LOGFILE)
+<div style="width:100%;height:700px;overflow:auto;overflow-x:hidden;border-top-width:2px;border-top-style:solid;">
+	<pre>
+$message
+	</pre>
+</div>
+
+#include $os.path.join($autosub.PATH.encode(), "interface/templates/footer.tmpl")

@@ -31,8 +31,10 @@
 
 		if (urlPath1 == 'home') {
 			ddtabmenu.definemenu("ddtabs3", 0) }
-		else {
+		else if (urlPath1 == 'config') {
 			ddtabmenu.definemenu("ddtabs3", 1) }
+		else {
+			ddtabmenu.definemenu("ddtabs3", 2) }
 
 		</script>
 
@@ -41,7 +43,7 @@
 		  \$("#tabs").tabs();
 		  });
 		</script>
-
+		
 	</head>
 
 <body>

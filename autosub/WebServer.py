@@ -6,7 +6,7 @@ except:
     print "ERROR!!! Cheetah is not installed yet. Download it from: http://pypi.python.org/pypi/Cheetah/2.4.4"
 
 import threading
-import time
+import time, os
 import autosub.Config
 from autosub.Db import idCache, lastDown
 
@@ -16,7 +16,6 @@ import autosub.notify as notify
 class PageTemplate (Template):
     #Placeholder for future, this object can be used to add stuff to the template
     pass
-
 
 class Config:
     @cherrypy.expose
@@ -206,7 +205,7 @@ class Config:
                 tmpl.message = message
                 return str(tmpl)
                 
-                
+
 class Home:
     @cherrypy.expose
     def index(self):
@@ -240,15 +239,45 @@ class Home:
         tmpl = PageTemplate(file="interface/templates/stopped.tmpl")
         threading.Timer(2, autosub.AutoSub.stop).start()
         return str(tmpl)
-    
-class WebServerInit():
 
+class Log:
+    @cherrypy.expose
+    def index(self):
+        tmpl = PageTemplate(file="interface/templates/viewlog.tmpl")
+        maxLines = 500
+
+        data = []
+        if os.path.isfile(autosub.LOGFILE):
+            f = open(autosub.LOGFILE)
+            data = f.readlines()
+            f.close()
+
+        finalData = []
+
+        numLines = 0
+
+        numToShow = min(maxLines, len(data))
+
+        for x in reversed(data):
+            numLines += 1
+
+            if numLines >= numToShow:
+                break
+            finalData.append(x)
+        result = "".join(finalData)
+
+        tmpl.message = result
+        return str(tmpl)
+
+
+class WebServerInit():
     @cherrypy.expose
     def index(self):
         raise cherrypy.HTTPRedirect("/home")
     
     home = Home()
     config = Config()
+    log = Log()
 
     def error_page_401(status, message, traceback, version):
         return "Error %s - Well, I'm very sorry but you don't have access to this resource!" % status
