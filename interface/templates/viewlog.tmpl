@@ -4,10 +4,19 @@
 
 #include $os.path.join($autosub.PATH.encode(), "interface/templates/menu.tmpl")
 
-<b><font style="font-size: x-large;">Log File</font></b>
+<table width="100%">
+	<tr>
+		<td align="left"><b><font style="font-size: x-large;">Log File</font></b></td>
+		<td align="right"><font style="font-size: large;">$logheader</font></td>
+	</tr>
+</table>
 <div style="width:100%;height:700px;overflow:auto;overflow-x:hidden;border-top-width:2px;border-top-style:solid;">
 	<pre>
+#if $message
 $message
+#else
+There is currently no $logheader.lower() information in your log file.
+#end if
 	</pre>
 </div>
 

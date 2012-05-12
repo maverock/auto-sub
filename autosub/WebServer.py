@@ -240,7 +240,7 @@ class Home:
         threading.Timer(2, autosub.AutoSub.stop).start()
         return str(tmpl)
 
-class Log:
+class Viewlog:
     @cherrypy.expose
     def index(self):
         tmpl = PageTemplate(file="interface/templates/viewlog.tmpl")
@@ -267,6 +267,157 @@ class Log:
         result = "".join(finalData)
 
         tmpl.message = result
+        tmpl.logheader = 'All'
+        return str(tmpl)
+
+    @cherrypy.expose
+    def info(self):
+        tmpl = PageTemplate(file="interface/templates/viewlog.tmpl")
+        maxLines = 500
+
+        data = []
+        if os.path.isfile(autosub.LOGFILE):
+            f = open(autosub.LOGFILE)
+            data = f.readlines()
+            f.close()
+
+        finalData = []
+
+        numLines = 0
+
+        numToShow = min(maxLines, len(data))
+
+        for x in reversed(data):
+            if x[24] == 'I':
+                numLines += 1
+
+                if numLines >= numToShow:
+                    break
+                finalData.append(x)
+        result = "".join(finalData)
+
+        tmpl.message = result
+        tmpl.logheader = 'Info'
+        return str(tmpl)
+
+    @cherrypy.expose
+    def debug(self):
+        tmpl = PageTemplate(file="interface/templates/viewlog.tmpl")
+        maxLines = 500
+
+        data = []
+        if os.path.isfile(autosub.LOGFILE):
+            f = open(autosub.LOGFILE)
+            data = f.readlines()
+            f.close()
+
+        finalData = []
+
+        numLines = 0
+
+        numToShow = min(maxLines, len(data))
+
+        for x in reversed(data):
+            if x[24] == 'D':
+                numLines += 1
+
+                if numLines >= numToShow:
+                    break
+                finalData.append(x)
+        result = "".join(finalData)
+
+        tmpl.message = result
+        tmpl.logheader = 'Debug'
+        return str(tmpl)
+
+    @cherrypy.expose
+    def error(self):
+        tmpl = PageTemplate(file="interface/templates/viewlog.tmpl")
+        maxLines = 500
+
+        data = []
+        if os.path.isfile(autosub.LOGFILE):
+            f = open(autosub.LOGFILE)
+            data = f.readlines()
+            f.close()
+
+        finalData = []
+
+        numLines = 0
+
+        numToShow = min(maxLines, len(data))
+
+        for x in reversed(data):
+            if x[24] == 'E':
+                numLines += 1
+
+                if numLines >= numToShow:
+                    break
+                finalData.append(x)
+        result = "".join(finalData)
+
+        tmpl.message = result
+        tmpl.logheader = 'Error'
+        return str(tmpl)
+
+    @cherrypy.expose
+    def warning(self):
+        tmpl = PageTemplate(file="interface/templates/viewlog.tmpl")
+        maxLines = 500
+
+        data = []
+        if os.path.isfile(autosub.LOGFILE):
+            f = open(autosub.LOGFILE)
+            data = f.readlines()
+            f.close()
+
+        finalData = []
+
+        numLines = 0
+
+        numToShow = min(maxLines, len(data))
+
+        for x in reversed(data):
+            if x[24] == 'W':
+                numLines += 1
+
+                if numLines >= numToShow:
+                    break
+                finalData.append(x)
+        result = "".join(finalData)
+
+        tmpl.message = result
+        tmpl.logheader = 'Warning'
+        return str(tmpl)
+
+    @cherrypy.expose
+    def critical(self):
+        tmpl = PageTemplate(file="interface/templates/viewlog.tmpl")
+        maxLines = 500
+
+        data = []
+        if os.path.isfile(autosub.LOGFILE):
+            f = open(autosub.LOGFILE)
+            data = f.readlines()
+            f.close()
+
+        finalData = []
+
+        numLines = 0
+
+        numToShow = min(maxLines, len(data))
+
+        for x in reversed(data):
+            if x[24] == 'C':
+                numLines += 1
+
+                if numLines >= numToShow:
+                    break
+                finalData.append(x)
+        result = "".join(finalData)
+
+        tmpl.message = result
+        tmpl.logheader = 'Critical'
         return str(tmpl)
 
 
@@ -277,7 +428,7 @@ class WebServerInit():
     
     home = Home()
     config = Config()
-    log = Log()
+    viewlog = Viewlog()
 
     def error_page_401(status, message, traceback, version):
         return "Error %s - Well, I'm very sorry but you don't have access to this resource!" % status
