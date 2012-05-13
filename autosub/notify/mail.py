@@ -34,11 +34,8 @@ def test_notify():
 def send_notify(lang, subtitlefile, videofile):
     log.debug("Mail: Trying to send a mail")
     message = MIMEText("""Hi,\n 
-\n 
-AutoSub downloaded the following subtitle (language: %s):\n 
-%s\n
-For the videofile:\n
-%s\n
+AutoSub downloaded the following subtitle (language: %s):\n %s \n
+For the videofile:\n %s
     """ %(lang, subtitlefile, videofile))
     message['To'] = email.utils.formataddr(('Recipient', autosub.MAILTOADDR))
     message['Subject'] = '%s %s' %(autosub.MAILSUBJECT, subtitlefile) 
