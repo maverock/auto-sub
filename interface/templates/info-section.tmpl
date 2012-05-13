@@ -4,7 +4,13 @@
 <table>
 	<tr>
 		<td width="140px">Config file</td>
-		<td>$autosub.CONFIGFILE</td>
+		<td>
+#if $autosub.CONFIGFILE == 'config.properties'
+Make sure you save your config file and start Auto-Sub with the --config parameter.
+#else
+$autosub.CONFIGFILE
+#end if
+		</td>
 	</tr>
 	<tr>
 		<td width="140px">Database file</td>
