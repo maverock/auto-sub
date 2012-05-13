@@ -14,6 +14,7 @@ from library import version
 from autosub.version import autosubversion
 
 import autosub
+import os
 
 from autosub.Db import idCache
 # Settings
@@ -372,3 +373,27 @@ def checkAPICalls(use=False):
     else:
         return False
 
+def DisplayLogFile(LogFileType):
+        maxLines = 500
+ 
+        data = []
+        if os.path.isfile(autosub.LOGFILE):
+            f = open(autosub.LOGFILE)
+            data = f.readlines()
+            f.close()
+ 
+        finalData = []
+ 
+        numLines = 0
+ 
+        numToShow = min(maxLines, len(data))
+ 
+        for x in reversed(data):
+            if LogFileType in x:
+                numLines += 1
+ 
+                if numLines >= numToShow:
+                    break
+                finalData.append(x)
+        result = "".join(finalData)
+        return result
