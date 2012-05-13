@@ -7,7 +7,6 @@
 <form method="post" action="/config/saveConfig">
   <div id="tabs">
     <ul>
-        <li><a href="#info">Info</a></li>
         <li><a href="#general">General</a></li>
         <li><a href="#logfile">Logfile</a></li>
 		<li><a href="#namemapping">NameMapping</a></li>
@@ -15,9 +14,6 @@
         <li><a href="#skipshow">Skipshow</a></li>
         <li><a href="#webserver">Webserver</a></li>
     </ul>
-	<div id="info">
-      #include $os.path.join($autosub.PATH.encode(), "interface/templates/info-section.tmpl")
-    </div>
 	
     <div id="general">
       #include $os.path.join($autosub.PATH.encode(), "interface/templates/config-section.tmpl")

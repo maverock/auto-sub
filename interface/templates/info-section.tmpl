@@ -1,4 +1,9 @@
 #import autosub
+#import sys
+
+#include $os.path.join($autosub.PATH.encode(), "interface/templates/header.tmpl")
+
+#include $os.path.join($autosub.PATH.encode(), "interface/templates/menu.tmpl")
 
 <font style="font-size: large;"><b>Configuration</b></font><br /><br />
 <table>
@@ -27,6 +32,13 @@ $autosub.LOGFILE
 $os.path.join(autosub.PATH, autosub.LOGFILE)
 #end if</td>
 	</tr>
+	<tr>
+		<td colspan="2">&nbsp;</td>
+	</tr>
+	<tr>
+		<td width="140px">Python version</td>
+		<td>$sys.version</td>
+	</tr>
 </table>
 <hr>
 <font style="font-size: large;"><b>Websites</b></font><br /><br />
@@ -40,3 +52,5 @@ $os.path.join(autosub.PATH, autosub.LOGFILE)
 		<td><a href="http://code.google.com/p/auto-sub/issues/list" target="_blank">http://code.google.com/p/auto-sub/issues/list</a></td>
 	</tr>		
 </table>
+
+#include $os.path.join($autosub.PATH.encode(), "interface/templates/footer.tmpl")

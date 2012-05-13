@@ -24,6 +24,12 @@ class Config:
     def index(self):
         tmpl = PageTemplate(file="interface/templates/config.tmpl")
         return str(tmpl)
+
+    @cherrypy.expose
+    def info(self):
+        tmpl = PageTemplate(file="interface/templates/info-section.tmpl")
+        return str(tmpl)  
+
     @cherrypy.expose
     def skipShow(self, title, season=None):
         if not season:
