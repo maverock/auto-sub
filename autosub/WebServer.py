@@ -27,7 +27,7 @@ class Config:
 
     @cherrypy.expose
     def info(self):
-        tmpl = PageTemplate(file="interface/templates/info-section.tmpl")
+        tmpl = PageTemplate(file="interface/templates/information.tmpl")
         return str(tmpl)  
 
     @cherrypy.expose
