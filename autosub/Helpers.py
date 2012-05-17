@@ -9,12 +9,13 @@ import subprocess
 from string import capwords
 import time
 import urllib2
-#from distutils import version
+import codecs
+import os
+
 from library import version
 from autosub.version import autosubversion
 
 import autosub
-import os
 
 from autosub.Db import idCache
 # Settings
@@ -27,6 +28,7 @@ REGEXES = [
         ]
 SOURCE_PARSER = re.compile("(hdtv|tv|dvdrip|dvd|bdrip|blu[e]*ray|web[. _-]*dl)", re.IGNORECASE)
 QUALITY_PARSER = re.compile("(1080|720|HD|SD)" , re.IGNORECASE)
+LOG_PARSER = re.compile('^((?P<date>\d{4}\-\d{2}\-\d{2})\ (?P<time>\d{2}:\d{2}:\d{2},\d{3}) (?P<loglevel>\w+))', re.IGNORECASE)
 
 def RunCmd(cmd):
     process = subprocess.Popen(cmd,
@@ -373,27 +375,28 @@ def checkAPICalls(use=False):
     else:
         return False
 
-def DisplayLogFile(LogFileType):
-        maxLines = 500
- 
-        data = []
-        if os.path.isfile(autosub.LOGFILE):
-            f = open(autosub.LOGFILE)
-            data = f.readlines()
-            f.close()
- 
-        finalData = []
- 
-        numLines = 0
- 
-        numToShow = min(maxLines, len(data))
- 
-        for x in reversed(data):
-            if LogFileType in x:
+def DisplayLogFile(loglevel):
+    maxLines = 500
+    data = []
+    if os.path.isfile(autosub.LOGFILE):
+        f = codecs.open(autosub.LOGFILE, 'r', autosub.SYSENCODING)
+        data = f.readlines()
+        f.close()
+    
+    finalData = []
+    
+    numLines = 0
+    
+    for x in reversed(data):
+        try:
+            matches = LOG_PARSER.search(x)
+            matchdic = matches.groupdict()
+            if (matchdic['loglevel'] == loglevel.upper()) or (loglevel == ''):
                 numLines += 1
- 
-                if numLines >= numToShow:
+                if numLines >= maxLines:
                     break
                 finalData.append(x)
-        result = "".join(finalData)
-        return result
+        except:
+            continue
+    result = "".join(finalData)
+    return result

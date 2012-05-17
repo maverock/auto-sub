@@ -6,7 +6,7 @@ except:
     print "ERROR!!! Cheetah is not installed yet. Download it from: http://pypi.python.org/pypi/Cheetah/2.4.4"
 
 import threading
-import time, os
+import time
 import autosub.Config
 from autosub.Db import idCache, lastDown
 
@@ -248,68 +248,23 @@ class Home:
         threading.Timer(2, autosub.AutoSub.stop).start()
         return str(tmpl)
 
-class Viewlog:
+class Log:
     @cherrypy.expose
-    def index(self):
-        tmpl = PageTemplate(file="interface/templates/viewlog.tmpl")
-        LogFileType = ''
-        autosub.Helpers.DisplayLogFile(LogFileType)
-        result = autosub.Helpers.DisplayLogFile(LogFileType)
-        tmpl.message = result
-        tmpl.logheader = 'All'
-        return str(tmpl)
- 
+    def index(self, loglevel = ''):
+        raise cherrypy.HTTPRedirect("/log/viewLog")
+    
     @cherrypy.expose
-    def info(self):
+    def viewLog(self, loglevel = ''):
         tmpl = PageTemplate(file="interface/templates/viewlog.tmpl")
-        LogFileType = 'INFO'
-        autosub.Helpers.DisplayLogFile(LogFileType)
-        result = autosub.Helpers.DisplayLogFile(LogFileType)
+        if loglevel == '':
+            tmpl.loglevel = 'All'
+        else:
+            tmpl.loglevel = loglevel
+        result = autosub.Helpers.DisplayLogFile(loglevel)
         tmpl.message = result
-        tmpl.logheader = 'Info'
+        
         return str(tmpl)
- 
-    @cherrypy.expose
-    def debug(self):
-        tmpl = PageTemplate(file="interface/templates/viewlog.tmpl")
-        LogFileType = 'DEBUG'
-        autosub.Helpers.DisplayLogFile(LogFileType)
-        result = autosub.Helpers.DisplayLogFile(LogFileType)
-        tmpl.message = result
-        tmpl.logheader = 'Debug'
-        return str(tmpl)
-               
-    @cherrypy.expose
-    def error(self):
-        tmpl = PageTemplate(file="interface/templates/viewlog.tmpl")
-        LogFileType = 'ERROR'
-        autosub.Helpers.DisplayLogFile(LogFileType)
-        result = autosub.Helpers.DisplayLogFile(LogFileType)
-        tmpl.message = result
-        tmpl.logheader = 'Error'
-        return str(tmpl)
- 
-    @cherrypy.expose
-    def warning(self):
-        tmpl = PageTemplate(file="interface/templates/viewlog.tmpl")
-        LogFileType = 'WARNING'
-        autosub.Helpers.DisplayLogFile(LogFileType)
-        result = autosub.Helpers.DisplayLogFile(LogFileType)
-        tmpl.message = result
-        tmpl.logheader = 'Warning'
-        return str(tmpl)
- 
-    @cherrypy.expose
-    def critical(self):
-        tmpl = PageTemplate(file="interface/templates/viewlog.tmpl")
-        LogFileType = 'CRITICAL'
-        autosub.Helpers.DisplayLogFile(LogFileType)
-        result = autosub.Helpers.DisplayLogFile(LogFileType)
-        tmpl.message = result
-        tmpl.logheader = 'Critical'
-        return str(tmpl)
-
-
+    
 class WebServerInit():
     @cherrypy.expose
     def index(self):
@@ -317,7 +272,7 @@ class WebServerInit():
     
     home = Home()
     config = Config()
-    viewlog = Viewlog()
+    log = Log()
 
     def error_page_401(status, message, traceback, version):
         return "Error %s - Well, I'm very sorry but you don't have access to this resource!" % status
