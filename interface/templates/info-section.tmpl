@@ -1,5 +1,6 @@
 #import autosub
 #import sys
+#import os
 #from autosub.version import autosubversion
 
 <font style="font-size: large;"><b>Configuration</b></font><br /><br />
@@ -7,27 +8,26 @@
 	<tr>
 		<td width="140px">Config file</td>
 		<td>
-#if $autosub.CONFIGFILE == 'config.properties'
-Please start Auto-Sub with --config="full-path-to-config.properties"
-#else
-$autosub.CONFIGFILE
-#end if
+			#if $os.path.split($autosub.CONFIGFILE)[0] == ''	
+				$os.path.join($autosub.PATH, $autosub.CONFIGFILE)
+			#else
+				$autosub.CONFIGFILE
+			#end if
 		</td>
 	</tr>
 	<tr>
 		<td width="140px">Database file</td>
-		<td>$os.path.join(autosub.PATH, autosub.DBFILE)</td>
+		<td>$os.path.join($autosub.PATH, $autosub.DBFILE)</td>
 	</tr>
 	<tr>
 		<td width="140px">Log file</td>
 		<td>
-#if $autosub.LOGFILE.find('/') == True
-$autosub.LOGFILE
-#elif $autosub.LOGFILE.find('\\') == True
-$autosub.LOGFILE
-#else
-$os.path.join(autosub.PATH, autosub.LOGFILE)
-#end if</td>
+			#if $os.path.split($autosub.LOGFILE)[0] == ''	
+				$os.path.join($autosub.PATH, $autosub.LOGFILE)
+			#else
+				$autosub.LOGFILE
+			#end if
+		</td>
 	</tr>
 	<tr>
 		<td colspan="2">&nbsp;</td>
