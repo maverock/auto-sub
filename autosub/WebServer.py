@@ -155,7 +155,7 @@ class Config:
     @cherrypy.expose
     def testNotify(self, notifylib):
         if notify.notifyTest(notifylib):
-            message = 'Sended a test message!'
+            message = 'Sent a test message!'
         else:
             message = 'Failed to send a test message'
         tmpl = PageTemplate(file="interface/templates/message.tmpl")
