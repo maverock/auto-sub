@@ -1,0 +1,167 @@
+#import autosub
+
+<b>WARNING</b>: All passwords are stored in plaintext!<br /><br />
+
+	<table>
+		<tr>
+			<td width="150px">Mail Notifications?</td>
+			<td><select name="notifymail">
+				#if $autosub.NOTIFYMAIL
+				  <option value="True" selected="selected">Enabled</option>
+				  <option value="False">Disabled</option>
+				#else
+				  <option value="True">Enabled</option>
+				  <option value="False" selected="selected">Disabled</option>
+				#end if
+			</select></td>
+			<td width="25px" align="right"><a href='#' data-dropdown="#informationNotifyMail"><img src="/media/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationNotifyMail" class="dropdown-menu has-tip" align="left"><ul><li>When enabled Autosub will send an email notification. Default is Disabled.</li></ul></div></td>
+		</tr>
+		
+		<tr>
+			<td width="150px">Server</td>
+			<td><input type="text" size="50" name="mailsrv" value="$autosub.MAILSRV" /></td>
+			<td width="25px" align="right"><a href='#' data-dropdown="#informationMailServer"><img src="/media/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationMailServer" class="dropdown-menu has-tip" align="left"><ul><li>It should point to the mail server you would like to use</li></ul></div></td>
+		</tr>
+		
+		<tr>
+			<td width="150px">From</td>
+			<td><input type="text" size="50" name="mailfromaddr" value="$autosub.MAILFROMADDR" /></td>
+			<td width="25px" align="right"><a href='#' data-dropdown="#informationMailFrom"><img src="/media/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationMailFrom" class="dropdown-menu has-tip" align="left"><ul><li>From which address will the notification be sent?</li></ul></div></td>
+		</tr>
+		
+		<tr>
+			<td width="150px">To</td>
+			<td><input type="text" size="50" name="mailtoaddr" value="$autosub.MAILTOADDR" /></td>
+			<td width="25px" align="right"><a href='#' data-dropdown="#informationMailTo"><img src="/media/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationMailTo" class="dropdown-menu has-tip" align="left"><ul><li>To which address will the notification be sent?</li></ul></div></td>
+		</tr>
+		
+		<tr>
+			<td width="150px">Username</td>
+			<td><input type="text" size="50" name="mailusername" value="$autosub.MAILUSERNAME" /></td>
+			<td width="25px" align="right"><a href='#' data-dropdown="#informationMailUsername"><img src="/media/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationMailUsername" class="dropdown-menu has-tip" align="left"><ul><li>What is your username on this server?</li></ul></div></td>
+		</tr>
+		
+		<tr>
+			<td width="150px">Password</td>
+			<td><input type="password" size="50" name="mailpassword" value="$autosub.MAILPASSWORD" /></td>
+			<td width="25px" align="right"><a href='#' data-dropdown="#informationMailPassword"><img src="/media/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationMailPassword" class="dropdown-menu has-tip" align="left"><ul><li>What is the password belonging to this username?</li></ul></div></td>
+		</tr>
+		
+		<tr>
+			<td width="150px">Subject</td>
+			<td><input type="text" size="50" name="mailsubject" value="$autosub.MAILSUBJECT" /></td>
+			<td width="25px" align="right"><a href='#' data-dropdown="#informationMailSubject"><img src="/media/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationMailSubject" class="dropdown-menu has-tip" align="left"><ul><li>What should the subject be? (the download subtitle file will be added at the end of the subject)</li></ul></div></td>
+		</tr>
+		
+		<tr>
+			<td width="150px">Encryption</td>
+			<td><input type="text" size="50" name="mailencryption" value="$autosub.MAILENCRYPTION" /></td>
+			<td width="25px" align="right"><a href='#' data-dropdown="#informationMailEncryption"><img src="/media/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationMailEncryption" class="dropdown-menu has-tip" align="left"><ul><li>What is the encryption method?</li></ul></div></td>
+		</tr>
+		
+		<tr>
+			<td colspan="3" align="left"><input type="button" value="Test Mail" onClick="parent.location='/config/testNotify/mail'" /></td>
+		</tr>
+
+		<tr>
+			<td colspan="3">&nbsp;</td>
+		</tr>
+		
+		<tr>
+			<td width="150px">Growl Notifications?</td>
+			<td><select name="notifygrowl">
+				#if $autosub.NOTIFYGROWL
+				  <option value="True" selected="selected">Enabled</option>
+				  <option value="False">Disabled</option>
+				#else
+				  <option value="True">Enabled</option>
+				  <option value="False" selected="selected">Disabled</option>
+				#end if
+			</select></td>
+			<td width="25px" align="right"><a href='#' data-dropdown="#informationNotifyGrowl"><img src="/media/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationNotifyGrowl" class="dropdown-menu has-tip" align="left"><ul><li>When enabled Autosub will send a Growl notification. Default is Disabled.</li></ul></div></td>
+		</tr>
+		
+		<tr>
+			<td width="150px">Host</td>
+			<td><input type="hidden" size="50" name="growlhost" value="$autosub.GROWLHOST" /></td>
+			<td width="25px" align="right"><a href='#' data-dropdown="#informationGrowlHost"><img src="/media/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationGrowlHost" class="dropdown-menu has-tip" align="left"><ul><li>What is the address of the growl server?</li></ul></div></td>
+		</tr>
+		
+		<tr>
+			<td width="150px">Port</td>
+			<td><input type="hidden" size="50" name="growlport" value="$autosub.GROWLPORT" /></td>
+			<td width="25px" align="right"><a href='#' data-dropdown="#informationGrowlPort"><img src="/media/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationGrowlPort" class="dropdown-menu has-tip" align="left"><ul><li>What port should we use?</li></ul></div></td>
+		</tr>
+		
+		<tr>
+			<td width="150px">Pass</td>
+			<td><input type="hidden" size="50" name="growlpass" value="$autosub.GROWLPASS" /></td>
+			<td width="25px" align="right"><a href='#' data-dropdown="#informationGrowlPass"><img src="/media/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationGrowlPass" class="dropdown-menu has-tip" align="left"><ul><li>What is the password?</li></ul></div></td>
+		</tr>
+		
+		<tr>
+			<td colspan="3" align="left"><input type="button" value="Test Growl" onClick="parent.location='#'" /> <input type="button" value="Register Growl" onClick="parent.location='#'" /></td>
+		</tr>
+
+		<tr>
+			<td colspan="3">&nbsp;</td>
+		</tr>		
+		
+		<tr>
+			<td width="150px">NMA Notifications?</td>
+			<td><select name="notifynma">
+				#if $autosub.NOTIFYNMA
+				  <option value="True" selected="selected">Enabled</option>
+				  <option value="False">Disabled</option>
+				#else
+				  <option value="True">Enabled</option>
+				  <option value="False" selected="selected">Disabled</option>
+				#end if
+			</select></td>
+			<td width="25px" align="right"><a href='#' data-dropdown="#informationNotifyNMA"><img src="/media/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationNotifyNMA" class="dropdown-menu has-tip" align="left"><ul><li>When enabled Autosub will send a Notify My Android notification. Default is Disabled.</li></ul></div></td>
+		</tr>
+		
+		<tr>
+			<td width="150px">API</td>
+			<td><input type="input" size="50" name="nmaapi" value="$autosub.NMAAPI" /></td>
+			<td width="25px" align="right"><a href='#' data-dropdown="#informationNMAApi"><img src="/media/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationNMAApi" class="dropdown-menu has-tip" align="left"><ul><li>What is the API key for NMA?</li></ul></div></td>
+		</tr>
+
+		<tr>
+			<td colspan="3" align="left"><input type="button" value="Test NMA" onClick="parent.location='/config/testNotify/nma'" /></td>
+		</tr>
+		
+		<tr>
+			<td colspan="3">&nbsp;</td>
+		</tr>		
+		
+		<tr>
+			<td width="150px">Twitter Notifications?</td>
+			<td><select name="notifytwitter">
+				#if $autosub.NOTIFYTWITTER
+				  <option value="True" selected="selected">Enabled</option>
+				  <option value="False">Disabled</option>
+				#else
+				  <option value="True">Enabled</option>
+				  <option value="False" selected="selected">Disabled</option>
+				#end if
+			</select></td>
+			<td width="25px" align="right"><a href='#' data-dropdown="#informationNotifyTwitter"><img src="/media/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationNotifyTwitter" class="dropdown-menu has-tip" align="left"><ul><li>When enabled Autosub will send a Twitter notification. Default is Disabled.</li></ul></div></td>
+		</tr>
+		
+		<tr>
+			<td width="150px">Key</td>
+			<td><input type="text" size="50" name="twitterkey" value="$autosub.TWITTERKEY" /></td>
+			<td width="25px" align="right"><a href='#' data-dropdown="#informationTwitterKey"><img src="/media/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationTwitterKey" class="dropdown-menu has-tip" align="left"><ul><li>What is the key for twitter?</li></ul></div></td>
+		</tr>
+		
+		<tr>
+			<td width="150px">Secret</td>
+			<td><input type="text" size="50" name="twittersecret" value="$autosub.TWITTERSECRET" /></td>
+			<td width="25px" align="right"><a href='#' data-dropdown="#informationTwitterSecret"><img src="/media/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationTwitterSecret" class="dropdown-menu has-tip" align="left"><ul><li>What is the secret code for twitter?</li></ul></div></td>
+		</tr>
+
+		<tr>
+			<td colspan="3" align="left"><input type="button" value="Test Twitter" onClick="parent.location='/config/testNotify/twitter'" /> <input type="button" value="Register Twitter" onClick="parent.location='/config/regTwitter'" /></td>
+		</tr>
+	</table>
