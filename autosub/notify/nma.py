@@ -14,18 +14,18 @@ def _send_notify(message):
             log.error("NMA: Failed to send a notification")
             return False
         else:
-            log.info("NMA: notification sended")
+            log.info("NMA: Notification sent")
             return True
     except:
         log.error("NMA: Something wrong with API-key, failed")
 
 def test_notify():
-    log.debug("NMA: Try to send a notifications")
-    message = "Auto-Sub sucessfully sended a test message"
+    log.debug("NMA: Trying to send a notification")
+    message = "Auto-Sub sucessfully sent a test message"
     return _send_notify(message)
         
 def send_notify(lang, subtitlefile, videofile):
-    log.debug("NMA: Try to send a notifications")
-    message = "Auto-Sub just downloaded the following subtitle \n %s" %subtitlefile
+    log.debug("NMA: Trying to send a notification")
+    message = "Auto-Sub just downloaded the following subtitle: \n %s" %subtitlefile
     return _send_notify(message)
     

@@ -17,7 +17,7 @@ def _send_notify(message):
             server.login(autosub.MAILUSERNAME, autosub.MAILPASSWORD)
         server.sendmail(autosub.MAILFROMADDR, autosub.MAILTOADDR, message)
         server.quit()
-        log.info("Mail: Mail sended")
+        log.info("Mail: Mail sent")
         return True
     except:
         log.error("Mail: Failed to send a mail")

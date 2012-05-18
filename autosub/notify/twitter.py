@@ -21,7 +21,7 @@ def _send_notify(message):
     try:
         api = twitter.Api(CONSUMER_KEY, CONSUMER_SECRET, autosub.TWITTERKEY, autosub.TWITTERSECRET)
         api.PostUpdate(message[:140])
-        log.info("Twitter: Tweet sended")
+        log.info("Twitter: Tweet sent")
         return True
     except:
         log.error("Twitter: Failed to send a tweet")

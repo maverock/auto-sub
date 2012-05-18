@@ -4,18 +4,14 @@
 		<version>Alpha 0.5.5</version>
 		<releasedate>01-06-2012</releasedate>
 		<changelog>Bug fixes, notify library en new webui feature!&lt;br&gt;
- - Notifications are now integrated for:&lt;br&gt;
- 	- Twitter&lt;br&gt;
- 	- Email&lt;br&gt;
- 	- NMA&lt;br&gt;
- - New webui feature:&lt;br&gt;
+ - Notifications are now integrated for: Twitter, Email and NMA. Growl not yet!&lt;br&gt;
+ - New webui features:&lt;br&gt;
     - Notifications are configurable through webui&lt;br&gt;
     - Log is viewable through webui&lt;br&gt;
-    - Info page &lt;br&gt;
-        - Project changes in webui &lt;br&gt;
-        - Change log in webui &lt;br&gt;
-        - Information regarding AutoSub (python version, file location etc) &lt;br&gt;
- - Small Webui fixes
+    - Info page: Project changes in webui, change log in webui &lt;br&gt;
+and Information regarding AutoSub (python version, file location etc) &lt;br&gt;
+ - Small Webui fixes &lt;br&gt;
+ - Beter filename detection
  		</changelog>
 	</release>
 	<release>
