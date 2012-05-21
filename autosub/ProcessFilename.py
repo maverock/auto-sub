@@ -134,4 +134,4 @@ def ProcessFilename(filename, fileext):
         return show_dict
     else: 
         log.error("ProcessFileName: Could not process %s" %filename)
-        return
+        return {}
