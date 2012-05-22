@@ -109,132 +109,6 @@ def ReturnUpper(text):
         pass
 
 
-def ProcessFileName(filename, extension):
-    """
-    Process the file names, gather all the show information
-    Input should be a filename
-    
-    Output is a dictionary with the following keys: 
-    title, season, episode, source, quality, releasegrp
-    """
-    processedFilenameResults = {}
-    title = None       # The Show Name
-    season = None      # Season number
-    episode = None     # Episode number
-    quality = None     # quality, can either be 1080, 720 or SD
-    releasegrp = None  # The Release group
-    source = None      # The source, can either be hdtv, dvdrip, bdrip, blueray or web-dl
-    extra_info = None  # All the information that couldn't be parsed
-    matchdic = {}
-
-    filename = filename.lower()
-    # Try to determine the TV Episode information
-    for regexes in REGEXES:  # Lets try all the regexpresions in REGEXES
-        matches = regexes.search(filename)
-        try:
-            matchdic = matches.groupdict()
-            log.debug("ProcessFileName: Hit with a regex, dumping it for debug purpose: " + str(matchdic))
-            break  # If we got a match, lets break
-        except AttributeError:
-            continue
-    # Trying to set all the main attributes
-    if 'title' in matchdic.keys(): title = CleanSerieName(matchdic["title"])
-    if 'season' in matchdic.keys(): season = matchdic["season"]
-    if 'episode' in matchdic.keys(): episode = matchdic["episode"]
-    if 'source' in matchdic.keys():
-        source = matchdic["source"]
-        if source != None:
-            source = re.sub("[. _-]", "-", source)
-    if 'releasegrp' in matchdic.keys(): releasegrp = matchdic["releasegrp"]
-    if 'quality' in matchdic.keys(): quality = ReturnUpper(matchdic["quality"])  # Quality should be upper case, in case the quality is SD
-    if 'extra_info' in matchdic.keys(): extra_info = matchdic["extra_info"]
-    
-    # Fallback for the quality and source mkv files are most likely HD quality
-    # Other files are more likely sd quality
-    # Will search the file for a couple of possible sources, also parse out dots and dashes and replace with a dash
-    if source == None:
-        if extra_info:
-            # If we have extra info, lets try to find the source
-            results = re.search(SOURCE_PARSER, extra_info)
-            try:
-                source = results.group(0)
-                source = re.sub("[. _-]", "-", source)
-                # The following four rules are there to support the file naming SickBeard used (like: Serie.Name.S01E02.SD.TV.avi
-                if source == u'tv':
-                    source = u'hdtv'
-                if source == u'dvd':
-                    source = u'dvdrip'
-                log.debug("ProcessFileName: Fallback hit for source, source is %s" % source)
-            except:
-                pass
-        
-    if source == None:
-        results = re.search(SOURCE_PARSER, filename)
-        try:
-            source = results.group(0)
-            source = re.sub("[. _-]", "-", source)
-            # The following four rules are there to support the file naming SickBeard used (like: Serie.Name.S01E02.SD.TV.avi
-            if source == u'tv':
-                source = u'hdtv'
-            if source == u'dvd':
-                source = u'dvdrip'
-            log.debug("ProcessFileName: Fallback hit for source, source is %s" % source)
-        except:
-            pass
-
-    if quality == None:
-        if extra_info:
-            # If we have extra info, lets try to find the quality
-            results = re.search(QUALITY_PARSER, extra_info)
-            try:
-                quality = results.group(0)
-                # Sickbeard renames files to HD if they are 720... So if HD is found as q, q should be 720.
-                if quality == u'hd' and source != u'hdtv':
-                    quality = u'720'
-                else:
-                    quality = None
-                if quality:
-                    quality = quality.upper() #in case quality is SD
-                    log.debug("ProcessFileName: Fallback hit for quality, quality is %s" % quality)
-            except:
-                pass
-            
-    if quality == None:
-        log.debug("ProcessFileName: No extra information. Falling back...")
-        results = re.search(QUALITY_PARSER, filename)
-        try:
-            quality = results.group(0)
-            # Sickbeard renames files to HD if they are 720... So if HD is found as q, q should be 720.
-            if quality == u'hd' and source != u'hdtv':
-                    quality = u'720'
-            else:
-                quality = None
-            if quality:
-                quality = quality.upper() #in case quality is SD
-                log.debug("ProcessFileName: Fallback hit for quality, quality is %s" % quality)
-        except:
-            pass
-            
-    if quality == None:
-        log.debug("ProcessFileName: Still not? -_-' Ok ok, last fallback... Trying to guess it by looking at the file extension")
-        if extension == ".mkv":
-            quality = u'720'
-            log.debug("ProcessFileName: File seems to be mkv so best guess for quality would be 720")
-        else:
-            quality = u'SD'
-            log.debug("ProcessFileName: I give up! Can't determine the quality so guess SD")
-
-    if title: processedFilenameResults['title'] = title
-    if season: processedFilenameResults['season'] = season
-    if episode: processedFilenameResults['episode'] = episode
-    if quality: processedFilenameResults['quality'] = quality
-    if source: processedFilenameResults['source'] = source
-    if releasegrp: processedFilenameResults['releasegrp'] = releasegrp
-    log.debug("ProcessFileName: Returning %s" % processedFilenameResults)
-
-    return processedFilenameResults
-
-
 def matchQuality(quality, item):
     if quality == u"SD":
         if re.search('720', item):
@@ -246,15 +120,15 @@ def matchQuality(quality, item):
         else:
             log.debug("matchQuality: Quality matched SD to %s" % item)
             return 1
-    elif quality == u"1080" and re.search('1080', item):
+    elif quality == u"1080p" and re.search('1080', item):
         log.debug("matchQuality: Quality is 1080 matched to %s" % item)
         return 1
-    elif quality == u"720" and re.search('720', item):
+    elif quality == u"720p" and re.search('720', item):
         log.debug("matchQuality: Quality is 720 matched to %s" % item)
         return 1
 
 
-def scoreMatch(release, quality, releasegrp, source):
+def scoreMatch(releasedict, release, quality, releasegrp, source):
     """
     Return how high the match is. Currently 7 is the best match
     This function give the flexibility to change the most important attribute for matching or even give the user the possibility to set his own preference
@@ -264,9 +138,8 @@ def scoreMatch(release, quality, releasegrp, source):
     If source is matched, score is increased with 4
     """
     score = 0
-    log.debug("scoreMatch: Giving a matchscore for: %s. Try to match it with Q: %s GRP: %s S: %s" % (release, quality, releasegrp, source))
+    log.debug("scoreMatch: Giving a matchscore for: %r. Try to match it with Q: %r GRP: %r S: %r" % (releasedict, quality, releasegrp, source))
     
-    releasedict = ProcessFileName(release, None)
     releasesource = None
     releasequality = None
     releasereleasegrp = None
@@ -282,7 +155,7 @@ def scoreMatch(release, quality, releasegrp, source):
         if releasesource == source:
             score += 4
     if quality and releasequality:
-        if (matchQuality(quality, releasequality)):
+        if quality == releasequality:
             score += 2
     
     if not releasedict:
