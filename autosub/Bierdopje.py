@@ -11,7 +11,7 @@ from xml.dom import minidom
 from operator import itemgetter
 
 import autosub.Helpers
-
+from autosub.ProcessFilename import ProcessFilename
 # Settings
 log = logging.getLogger('thelogger')
 
@@ -118,7 +118,7 @@ def getSubLink(showid, lang, releaseDetails):
         if release.endswith(".srt"):
             release = release[:-4]
         # Scoredict is a dictionary with a download link and its match score. This will be used to determine the best match (the highest matchscore)
-        scoredict[sub.getElementsByTagName('downloadlink')[0].firstChild.data] = autosub.Helpers.scoreMatch(release, quality, releasegrp, source)
+        scoredict[sub.getElementsByTagName('downloadlink')[0].firstChild.data] = autosub.Helpers.scoreMatch(ProcessFilename(release, ''), release, quality, releasegrp, source)
         if scoredict[sub.getElementsByTagName('downloadlink')[0].firstChild.data] == 7:
             # Sometimes you just find a perfect match, why should we continue to search if we got a perfect match?
             log.debug('getSubLink: A perfect match found, returning the download link')

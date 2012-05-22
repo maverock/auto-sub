@@ -148,7 +148,7 @@ class checkRss():
                     if showid == normalizedRssTitleshowid and wantedItemseason == normalizedRssTitleseason and wantedItemepisode == normalizedRssTitleepisode:
                         log.debug("checkRSS:  The episode %s - Season %s Episode %s was found in the RSS list, attempting to match a proper match" % (wantedItemtitle, wantedItemseason, wantedItemepisode))
 
-                        score = autosub.Helpers.scoreMatch(ProcessFilename(normalizedRssTitlerssfile, ''), normalizedRssTitlerssfile, wantedItemquality, wantedItemreleasegrp, wantedItemsource)
+                        score = autosub.Helpers.scoreMatch(normalizedRssTitle, normalizedRssTitlerssfile, wantedItemquality, wantedItemreleasegrp, wantedItemsource)
                         if score >= autosub.MINMATCHSCORERSS:
                             log.debug ("checkRss: A match got a high enough score. MinMatchscore is %s " % autosub.MINMATCHSCORERSS)
                             downloadLink = normalizedRssTitlelink + autosub.APIRSS
