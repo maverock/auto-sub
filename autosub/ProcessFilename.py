@@ -7,6 +7,10 @@ import logging
 log = logging.getLogger('thelogger')
 
 def _checkTitle(title):
+    if not title:
+        log.error("ProcessFileName: Invalid title. AutoSub needs a showtitle in the video file! S01E02.mkv file are not supported...")
+        return
+    
     for reg in episode_regex:
         results = re.findall(reg, title)
         if not results:
@@ -91,6 +95,9 @@ def _getReleasegrp(file_info):
     return result
 
 def _returnSceneNumber(number):
+    if not number:
+        return
+    
     number = int(number)
     if number <=9:
         number = '0' + str(number)
@@ -111,9 +118,6 @@ def ProcessFilename(filename, fileext):
         if 'season' in show_info.keys(): season = _returnSceneNumber(show_info['season'])
         if 'episode' in show_info.keys(): episode = _returnSceneNumber(show_info['episode'])
         if 'extra_info' in show_info.keys(): file_info = show_info['extra_info']
-        
-        if not title or not season or not episode:
-            return {}
         
         if file_info:
             file_info = file_info.lower()
