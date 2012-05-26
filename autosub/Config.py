@@ -51,7 +51,7 @@ def ReadConfig(configfile):
             autosub.PATH = cfg.get('config', 'path')
         else:
             print "Config ERROR: Variable PATH is missing. This is required! Using current working directory instead."
-            autosub.PATH = os.getcwd()
+            autosub.PATH = unicode(os.getcwd(), autosub.SYSENCODING)
 
         if cfg.has_option('config', 'downloadeng'):
             autosub.DOWNLOADENG = cfg.getboolean('config', 'downloadeng')
@@ -101,7 +101,7 @@ def ReadConfig(configfile):
             autosub.ROOTPATH = cfg.get("config", "rootpath")
         else:
             print "Config ERROR: Variable ROOTPATH is missing. This is required! Using current working directory instead."
-            autosub.ROOTPATH = os.getcwd()
+            autosub.ROOTPATH = unicode(os.getcwd(), autosub.SYSENCODING)
 
         if cfg.has_option("config", "fallbacktoeng"):
             autosub.FALLBACKTOENG = cfg.getboolean("config", "fallbacktoeng")
@@ -116,7 +116,7 @@ def ReadConfig(configfile):
         if cfg.has_option("config", "subnl"):
             autosub.SUBNL = cfg.get("config", "subnl")
         else:
-            autosub.SUBNL = ""
+            autosub.SUBNL = u""
 
         if cfg.has_option("config", "notifyen"):
             autosub.NOTIFYEN = cfg.getboolean("config", "notifyen")
@@ -136,7 +136,7 @@ def ReadConfig(configfile):
             autosub.LOGFILE = cfg.get("config", "logfile")
         else:
             print "Config ERROR: Variable LOGFILE is missing. This is required! Using 'AutoSubService.log' instead."
-            autosub.LOGFILE = "AutoSubService.log"
+            autosub.LOGFILE = u"AutoSubService.log"
 
         if cfg.has_option("config", "postprocesscmd"):
             autosub.POSTPROCESSCMD = cfg.get("config", "postprocesscmd")
@@ -145,7 +145,7 @@ def ReadConfig(configfile):
         # config section is missing
         print "Config ERROR: Config section is missing. This is required, it contains vital options! Using default values instead!"
         print "Config ERROR: Variable ROOTPATH is missing. This is required! Using current working directory instead."
-        autosub.PATH = os.getcwd()
+        autosub.PATH = unicode(os.getcwd(), autosub.SYSENCODING)
         autosub.DOWNLOADENG = False
         autosub.MINMATCHSCORE = 0
         autosub.MINMATCHSCORERSS = 4
@@ -154,42 +154,42 @@ def ReadConfig(configfile):
         autosub.SCHEDULERCHECKRSS = 900
         autosub.SCHEDULERDOWNLOADSUBS = 1
         print "Config ERROR: Variable ROOTPATH is missing. This is required! Using current working directory instead."
-        autosub.ROOTPATH = os.getcwd()
+        autosub.ROOTPATH = unicode(os.getcwd(), autosub.SYSENCODING)
         autosub.FALLBACKTOENG = True
-        autosub.SUBENG = 'en'
-        autosub.SUBNL = ""
+        autosub.SUBENG = u'en'
+        autosub.SUBNL = u""
         autosub.NOTIFYEN = True
         autosub.NOTIFYNL = True
         print "Config ERROR: Variable LOGFILE is missing. This is required! Using 'AutoSubService.log' instead."
-        autosub.LOGFILE = "AutoSubService.log"
+        autosub.LOGFILE = u"AutoSubService.log"
 
     if cfg.has_section('logfile'):
         if cfg.has_option("logfile", "loglevel"):
             autosub.LOGLEVEL = cfg.get("logfile", "loglevel")
-            if autosub.LOGLEVEL.lower() == 'error':
+            if autosub.LOGLEVEL.lower() == u'error':
                 autosub.LOGLEVEL = logging.ERROR
-            elif autosub.LOGLEVEL.lower() == "warning":
+            elif autosub.LOGLEVEL.lower() == u"warning":
                 autosub.LOGLEVEL = logging.WARNING
-            elif autosub.LOGLEVEL.lower() == "debug":
+            elif autosub.LOGLEVEL.lower() == u"debug":
                 autosub.LOGLEVEL = logging.DEBUG
-            elif autosub.LOGLEVEL.lower() == "info":
+            elif autosub.LOGLEVEL.lower() == u"info":
                 autosub.LOGLEVEL = logging.INFO
-            elif autosub.LOGLEVEL.lower() == "critical":
+            elif autosub.LOGLEVEL.lower() == u"critical":
                 autosub.LOGLEVEL = logging.CRITICAL
         else:
             autosub.LOGLEVEL = logging.INFO
 
         if cfg.has_option("logfile", "loglevelconsole"):
             autosub.LOGLEVELCONSOLE = cfg.get("logfile", "loglevelconsole")
-            if autosub.LOGLEVELCONSOLE.lower() == 'error':
+            if autosub.LOGLEVELCONSOLE.lower() == u'error':
                 autosub.LOGLEVELCONSOLE = logging.ERROR
-            elif autosub.LOGLEVELCONSOLE.lower() == "warning":
+            elif autosub.LOGLEVELCONSOLE.lower() == u"warning":
                 autosub.LOGLEVELCONSOLE = logging.WARNING
-            elif autosub.LOGLEVELCONSOLE.lower() == "debug":
+            elif autosub.LOGLEVELCONSOLE.lower() == u"debug":
                 autosub.LOGLEVELCONSOLE = logging.DEBUG
-            elif autosub.LOGLEVELCONSOLE.lower() == "info":
+            elif autosub.LOGLEVELCONSOLE.lower() == u"info":
                 autosub.LOGLEVELCONSOLE = logging.INFO
-            elif autosub.LOGLEVELCONSOLE.lower() == "critical":
+            elif autosub.LOGLEVELCONSOLE.lower() == u"critical":
                 autosub.LOGLEVELCONSOLE = logging.CRITICAL
         else:
             autosub.LOGLEVELCONSOLE = logging.ERROR
@@ -217,7 +217,7 @@ def ReadConfig(configfile):
             autosub.WEBSERVERPORT = int(cfg.get('webserver', 'webserverport'))
         else:
             print "Config ERROR: Webserver IP and port are required! Now setting the default values (0.0.0.0:8083)."
-            autosub.WEBSERVERIP = "0.0.0.0"
+            autosub.WEBSERVERIP = u"0.0.0.0"
             autosub.WEBSERVERPORT = 8083
         if cfg.has_option('webserver', 'username') and cfg.has_option('webserver', 'password'):
             autosub.USERNAME = cfg.get('webserver', 'username')
@@ -227,7 +227,7 @@ def ReadConfig(configfile):
     else:
         print "Config ERROR: The webserver section is required! Now setting the default values (0.0.0.0:8083)."
         print "Config WARNING: The webserver is started without authentication!"
-        autosub.WEBSERVERIP = '0.0.0.0'
+        autosub.WEBSERVERIP = u'0.0.0.0'
         autosub.WEBSERVERPORT = 8083
 
     if cfg.has_section('skipshow'):
@@ -259,37 +259,37 @@ def ReadConfig(configfile):
             if cfg.has_option('notify', 'mailsrv'):
                 autosub.MAILSRV = cfg.get('notify', 'mailsrv')
             else:
-                autosub.MAILSRV = "smtp.gmail.com:587"
+                autosub.MAILSRV = "usmtp.gmail.com:587"
 
             if cfg.has_option('notify', 'mailfromaddr'):
                 autosub.MAILFROMADDR = cfg.get('notify', 'mailfromaddr')
             else:
-                autosub.MAILFROMADDR = "example@gmail.com"
+                autosub.MAILFROMADDR = u"example@gmail.com"
 
             if cfg.has_option('notify', 'mailtoaddr'):
                 autosub.MAILTOADDR = cfg.get('notify', 'mailtoaddr')
             else:
-                autosub.MAILTOADDR = "example@gmail.com"
+                autosub.MAILTOADDR = u"example@gmail.com"
 
             if cfg.has_option('notify', 'mailusername'):
                 autosub.MAILUSERNAME = cfg.get('notify', 'mailusername')
             else:
-                autosub.MAILUSERNAME = "example@gmail.com"
+                autosub.MAILUSERNAME = u"example@gmail.com"
 
             if cfg.has_option('notify', 'mailpassword'):
                 autosub.MAILPASSWORD = cfg.get('notify', 'mailpassword')
             else:
-                autosub.MAILPASSWORD = "mysecretpassword"
+                autosub.MAILPASSWORD = u"mysecretpassword"
 
             if cfg.has_option('notify', 'mailsubject'):
                 autosub.MAILSUBJECT = cfg.get('notify', 'mailsubject')
             else:
-                autosub.MAILSUBJECT = "Auto-Sub downloaded"
+                autosub.MAILSUBJECT = u"Auto-Sub downloaded"
 
             if cfg.has_option('notify', 'mailencryption'):
                 autosub.MAILENCRYPTION = cfg.get('notify', 'mailencryption')
             else:
-                autosub.MAILENCRYPTION = "TLS"
+                autosub.MAILENCRYPTION = u"TLS"
 
             if cfg.has_option('notify', 'notifygrowl'):
                 autosub.NOTIFYGROWL = cfg.getboolean('notify', 'notifygrowl')
@@ -299,17 +299,17 @@ def ReadConfig(configfile):
             if cfg.has_option('notify', 'growlhost'):
                 autosub.GROWLHOST = cfg.get('notify', 'growlhost')
             else:
-                autosub.GROWLHOST = "127.0.0.1"
+                autosub.GROWLHOST = u"127.0.0.1"
 
             if cfg.has_option('notify', 'growlport'):
                 autosub.GROWLPORT = cfg.get('notify', 'growlport')
             else:
-                autosub.GROWLPORT = "23053"
+                autosub.GROWLPORT = u"23053"
 
             if cfg.has_option('notify', 'growlpass'):
                 autosub.GROWLPASS = cfg.get('notify', 'growlpass')
             else:
-                autosub.GROWLPASS = "mysecretpassword"
+                autosub.GROWLPASS = u"mysecretpassword"
 
             if cfg.has_option('notify', 'notifytwitter'):
                 autosub.NOTIFYTWITTER = cfg.getboolean('notify', 'notifytwitter')
@@ -319,12 +319,12 @@ def ReadConfig(configfile):
             if cfg.has_option('notify', 'twitterkey'):
                 autosub.TWITTERKEY = cfg.get('notify', 'twitterkey')
             else:
-                autosub.TWITTERKEY = "token key"
+                autosub.TWITTERKEY = u"token key"
 
             if cfg.has_option('notify', 'twittersecret'):
                 autosub.TWITTERSECRET = cfg.get('notify', 'twittersecret')
             else:
-                autosub.TWITTERSECRET = "token secret"
+                autosub.TWITTERSECRET = u"token secret"
 
             if cfg.has_option('notify', 'notifynma'):
                 autosub.NOTIFYNMA = cfg.getboolean('notify', 'notifynma')
@@ -334,27 +334,27 @@ def ReadConfig(configfile):
             if cfg.has_option('notify', 'nmaapi'):
                 autosub.NMAAPI = cfg.get('notify', 'nmaapi')
             else:
-                autosub.NMAAPI = "API key"
+                autosub.NMAAPI = u"API key"
 
     else:
         # notify section is missing
         autosub.NOTIFYMAIL = False
-        autosub.MAILSRV = "smtp.gmail.com:587"
-        autosub.MAILFROMADDR = "example@gmail.com"
-        autosub.MAILTOADDR = "example@gmail.com"
-        autosub.MAILUSERNAME = "example@gmail.com"
-        autosub.MAILPASSWORD = "mysecretpassword"
-        autosub.MAILSUBJECT = "Subs info"
-        autosub.MAILENCRYPTION = "TLS"
+        autosub.MAILSRV = u"smtp.gmail.com:587"
+        autosub.MAILFROMADDR = u"example@gmail.com"
+        autosub.MAILTOADDR = u"example@gmail.com"
+        autosub.MAILUSERNAME = u"example@gmail.com"
+        autosub.MAILPASSWORD = u"mysecretpassword"
+        autosub.MAILSUBJECT = u"Subs info"
+        autosub.MAILENCRYPTION = u"TLS"
         autosub.NOTIFYGROWL = False
-        autosub.GROWLHOST = "127.0.0.1"
-        autosub.GROWLPORT = "23053"
-        autosub.GROWLPASS = "mysecretpassword"
+        autosub.GROWLHOST = u"127.0.0.1"
+        autosub.GROWLPORT = u"23053"
+        autosub.GROWLPASS = u"mysecretpassword"
         autosub.NOTIFYTWITTER = False
-        autosub.TWITTERKEY = "token key"
-        autosub.TWITTERSECRET = "token secret"
+        autosub.TWITTERKEY = u"token key"
+        autosub.TWITTERSECRET = u"token secret"
         autosub.NOTIFYNMA = False
-        autosub.NMAAPI = "API key"
+        autosub.NMAAPI = u"API key"
 
     if cfg.has_section('dev'):
         if cfg.has_option('dev', 'apikey'):
@@ -797,10 +797,10 @@ def checkForRestart():
     loglevelconsole = logging.ERROR
     logsize = 1000000
     lognum = 1
-    webserverip = '0.0.0.0'
+    webserverip = u'0.0.0.0'
     webserverport = 8083
-    username = ''
-    password = ''
+    username = u''
+    password = u''
 
     # Check if an option excists in the config file, if so replace the default value
     if cfg.has_section('config'):
