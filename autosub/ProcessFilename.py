@@ -107,10 +107,14 @@ def ProcessFilename(filename, fileext):
     file_info = None
     
     if show_info:
-        title = _checkTitle(show_info['title'])
-        season = _returnSceneNumber(show_info['season'])
-        episode = _returnSceneNumber(show_info['episode'])
-        file_info = show_info['extra_info']
+        if 'title' in show_info.keys(): title = _checkTitle(show_info['title'])
+        if 'season' in show_info.keys(): season = _returnSceneNumber(show_info['season'])
+        if 'episode' in show_info.keys(): episode = _returnSceneNumber(show_info['episode'])
+        if 'extra_info' in show_info.keys(): file_info = show_info['extra_info']
+        
+        if not title or not season or not episode:
+            return {}
+        
         if file_info:
             file_info = file_info.lower()
       
