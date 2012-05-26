@@ -9,9 +9,11 @@
     - Notifications are configurable through webui&lt;br&gt;
     - Log is viewable through webui&lt;br&gt;
     - Info page: Project changes in webui, change log in webui &lt;br&gt;
-and Information regarding AutoSub (python version, file location etc) &lt;br&gt;
+and Information regarding AutoSub (python version, python location, file location etc) &lt;br&gt;
  - Small Webui fixes &lt;br&gt;
- - Beter filename detection
+ - Beter filename detection &lt;br&gt;
+ - Unicode fixes / workaround &lt;br&gt;
+ - Small bug fixes
  		</changelog>
 	</release>
 	<release>
