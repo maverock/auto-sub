@@ -50,8 +50,6 @@ def _checkSynonyms(synonyms, result):
     else:
         return result
 
-_checkSynonyms(source_syn, u'tv')
-
 def _getSource(file_info):
     result = _checkSynonyms(source_syn,
                             _returnHit(source, file_info))
@@ -134,4 +132,4 @@ def ProcessFilename(filename, fileext):
         return show_dict
     else: 
         log.error("ProcessFileName: Could not process %s" %filename)
-        return
+        return {}

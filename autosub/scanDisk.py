@@ -14,26 +14,8 @@ from autosub.ProcessFilename import ProcessFilename
 # Settings
 log = logging.getLogger('thelogger')
 
-
-class scanDisk():
-    """
-    Scan the specified path for episodes without Dutch or (if wanted) English subtitles.
-    If found add these Dutch or English subtitles to the WANTEDQUEUE.
-    """
-    def run(self):
-        log.debug("scanDir: Starting round of local disk checking at %s" % autosub.ROOTPATH)
-        if autosub.WANTEDQUEUELOCK == True:
-            log.debug("scanDir: Exiting, another threat is using the queues")
-            return False
-        else:
-            autosub.WANTEDQUEUELOCK = True
-        autosub.WANTEDQUEUE = []
-
-        if not os.path.exists(autosub.ROOTPATH):
-            log.error("Root path does %s not exists, aborting..." % autosub.ROOTPATH)
-            exit()
-
-        for dirname, dirnames, filenames in os.walk(os.path.join(autosub.ROOTPATH)):
+def walkDir(path):
+    for dirname, dirnames, filenames in os.walk(os.path.join(path)):
             if re.search('_unpack_', dirname, re.IGNORECASE): 
                 log.debug("scanDisk: found a unpack directory, skipping")
                 continue
@@ -92,7 +74,34 @@ class scanDisk():
                         else:
                             log.error("scanDir: Could not process the filename properly filename: %s" % filename)
                             continue
+
+class scanDisk():
+    """
+    Scan the specified path for episodes without Dutch or (if wanted) English subtitles.
+    If found add these Dutch or English subtitles to the WANTEDQUEUE.
+    """
+    def run(self):
+        log.debug("scanDir: Starting round of local disk checking at %s" % autosub.ROOTPATH)
+        if autosub.WANTEDQUEUELOCK == True:
+            log.debug("scanDir: Exiting, another threat is using the queues")
+            return False
+        else:
+            autosub.WANTEDQUEUELOCK = True
+        autosub.WANTEDQUEUE = []
+
+        if not os.path.exists(autosub.ROOTPATH):
+            log.error("Root path does %s not exists, aborting..." % autosub.ROOTPATH)
+            exit()
+        
+        
+        
+        try:
+            walkDir(autosub.ROOTPATH)
+        except:
+            walkDir(str(autosub.ROOTPATH))
                     
         log.debug("scanDir: Finished round of local disk checking")
         autosub.WANTEDQUEUELOCK = False
         return True
+
+
