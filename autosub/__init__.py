@@ -111,7 +111,7 @@ def Initialize():
     versionnumber = autosubversion.split(' ')[1]
     
     VERSIONURL = 'http://auto-sub.googlecode.com/hg/autosub/version.py'
-    USERAGENT = 'auto-sub/' + versionnumber + release.lower()[0]
+    USERAGENT = 'AutoSub/' + versionnumber + release.lower()[0]
     
     TODOWNLOADQUEUE = []
     WANTEDQUEUE = []
