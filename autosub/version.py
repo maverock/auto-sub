@@ -1,1 +1,1 @@
-autosubversion='Beta 0.5.6'
+autosubversion='Beta 0.5.5'
