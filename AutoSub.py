@@ -106,6 +106,7 @@ def main(argv=None):
     print "AutoSub: Changing output to log. Bye!"
     log = autosub.initLogging(autosub.LOGFILE)
     log.debug("AutoSub: Systemencoding is: %s" %autosub.SYSENCODING)
+    log.debug("AutoSub: Configversion is: %d" %autosub.CONFIGVERSION)
     
     log.info("AutoSub: Starting threads")
     autosub.AutoSub.start()

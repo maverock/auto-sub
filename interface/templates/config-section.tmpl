@@ -95,162 +95,53 @@
 
 	<tr>
 		<td width="140px">MinMatchScore</td>
-		<td><select name="minmatchscore">
-#if $autosub.MINMATCHSCORE == 0
-  <option value=0 selected="selected">0.Best match</option>
-  <option value=1>1.Releasegroup</option>
-  <option value=2>2.Quality</option>
-  <option value=3>3.Releasegroup & Quality</option>
-  <option value=4>4.Source</option>
-  <option value=5>5.Source & Releasegroup</option>
-  <option value=6>6.Source & Quality</option>
-  <option value=7>7.Source, Releasegroup & Quality</option>
-#elif $autosub.MINMATCHSCORE == 1
-  <option value=0>0.Best match</option>
-  <option value=1 selected="selected">1.Releasegroup</option>
-  <option value=2>2.Quality</option>
-  <option value=3>3.Releasegroup & Quality</option>
-  <option value=4>4.Source</option>
-  <option value=5>5.Source & Releasegroup</option>
-  <option value=6>6.Source & Quality</option>
-  <option value=7>7.Source, Releasegroup & Quality</option>
-#elif $autosub.MINMATCHSCORE == 2
-  <option value=0>0.Best match</option>
-  <option value=1>1.Releasegroup</option>
-  <option value=2 selected="selected">2.Quality</option>
-  <option value=3>3.Releasegroup & Quality</option>
-  <option value=4>4.Source</option>
-  <option value=5>5.Source & Releasegroup</option>
-  <option value=6>6.Source & Quality</option>
-  <option value=7>7.Source, Releasegroup & Quality</option>
-#elif $autosub.MINMATCHSCORE == 3
-  <option value=0>0.Best match</option>
-  <option value=1>1.Releasegroup</option>
-  <option value=2>2.Quality</option>
-  <option value=3 selected="selected">3.Releasegroup & Quality</option>
-  <option value=4>4.Source</option>
-  <option value=5>5.Source & Releasegroup</option>
-  <option value=6>6.Source & Quality</option>
-  <option value=7>7.Source, Releasegroup & Quality</option>
-#elif $autosub.MINMATCHSCORE == 4
-  <option value=0>0.Best match</option>
-  <option value=1>1.Releasegroup</option>
-  <option value=2>2.Quality</option>
-  <option value=3>3.Releasegroup & Quality</option>
-  <option value=4 selected="selected">4.Source</option>
-  <option value=5>5.Source & Releasegroup</option>
-  <option value=6>6.Source & Quality</option>
-  <option value=7>7.Source, Releasegroup & Quality</option>
-#elif $autosub.MINMATCHSCORE == 5
-  <option value=0>0.Best match</option>
-  <option value=1>1.Releasegroup</option>
-  <option value=2>2.Quality</option>
-  <option value=3>3.Releasegroup & Quality</option>
-  <option value=4>4.Source</option>
-  <option value=5 selected="selected">5.Source & Releasegroup</option>
-  <option value=6>6.Source & Quality</option>
-  <option value=7>7.Source, Releasegroup & Quality</option>
-#elif $autosub.MINMATCHSCORE == 6
-  <option value=0>0.Best match</option>
-  <option value=1>1.Releasegroup</option>
-  <option value=2>2.Quality</option>
-  <option value=3>3.Releasegroup & Quality</option>
-  <option value=4>4.Source</option>
-  <option value=5>5.Source & Releasegroup</option>
-  <option value=6 selected="selected">6.Source & Quality</option>
-  <option value=7>7.Source, Releasegroup & Quality</option>
-#elif $autosub.MINMATCHSCORE == 7
-  <option value=0>0.Best match</option>
-  <option value=1>1.Releasegroup</option>
-  <option value=2>2.Quality</option>
-  <option value=3>3.Releasegroup & Quality</option>
-  <option value=4>4.Source</option>
-  <option value=5>5.Source & Releasegroup</option>
-  <option value=6>6.Source & Quality</option>
-  <option value=7 selected="selected">7.Source, Releasegroup & Quality</option>
-#end if
-</select></td>
-		<td width="25px" align="right"><a href='#' data-dropdown="#informationMinmatchscore"><img src="/media/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationMinmatchscore" class="dropdown-menu has-tip" align="left"><ul><li>What items should match before a subtitle is downloaded via the API?</li></ul></div></td>
+		<td><input type="text" size="50" name="minmatchscore" value="$autosub.MINMATCHSCORE" /></td>
+		<td width="25px" align="right"><a href='#' data-dropdown="#informationMinmatchscore"><img src="/media/images/info.gif" width="20px" height="20px" alt="" /></a>
+		<div id="informationMinmatchscore" class="dropdown-menu has-tip" align="left"><ul><li>
+		What items should match before a subtitle is downloaded via the API?  <br>
+		(source = HDTV for example, quality = 720p or SD for example, codec = xvid for example and releasegrp = LOL for example) <br>
+		0 means any subtitle <br>
+		1 should minimal match releasegrp <br>
+		2 should minimal match codec <br>
+		3 should minimal match releasegrp and codec <br>
+		4 should minimal match quality <br>
+		5 should minimal match quality and releasegrp <br>
+		6 should minimal match quality and codec <br>
+		7 should minimal match quality, releasegrp and codec <br>
+		8 should minimal match source <br>
+		9 should minimal match source and releasegrp <br>
+		10 should minimal match source and codec <br>
+		11 should minimal match scource, releasegrp and codec <br>
+		12 should minimal match source and quality <br>
+		13 should minimal match source, quality and releasegrp <br>
+		14 should minimal match source, quality and codec <br>
+		15 should minimal match all the elements
+		</li></ul></div></td>
 	</tr>
 
 	<tr>
 		<td width="140px">MinMatchScore RSS</td>
-		<td><select name="minmatchscorerss">
-#if $autosub.MINMATCHSCORERSS == 0
-  <option value=0 selected="selected">0.Best match</option>
-  <option value=1>1.Releasegroup</option>
-  <option value=2>2.Quality</option>
-  <option value=3>3.Releasegroup & Quality</option>
-  <option value=4>4.Source</option>
-  <option value=5>5.Source & Releasegroup</option>
-  <option value=6>6.Source & Quality</option>
-  <option value=7>7.Source, Releasegroup & Quality</option>
-#elif $autosub.MINMATCHSCORERSS == 1
-  <option value=0>0.Best match</option>
-  <option value=1 selected="selected">1.Releasegroup</option>
-  <option value=2>2.Quality</option>
-  <option value=3>3.Releasegroup & Quality</option>
-  <option value=4>4.Source</option>
-  <option value=5>5.Source & Releasegroup</option>
-  <option value=6>6.Source & Quality</option>
-  <option value=7>7.Source, Releasegroup & Quality</option>
-#elif $autosub.MINMATCHSCORERSS == 2
-  <option value=0>0.Best match</option>
-  <option value=1>1.Releasegroup</option>
-  <option value=2 selected="selected">2.Quality</option>
-  <option value=3>3.Releasegroup & Quality</option>
-  <option value=4>4.Source</option>
-  <option value=5>5.Source & Releasegroup</option>
-  <option value=6>6.Source & Quality</option>
-  <option value=7>7.Source, Releasegroup & Quality</option>
-#elif $autosub.MINMATCHSCORERSS == 3
-  <option value=0>0.Best match</option>
-  <option value=1>1.Releasegroup</option>
-  <option value=2>2.Quality</option>
-  <option value=3 selected="selected">3.Releasegroup & Quality</option>
-  <option value=4>4.Source</option>
-  <option value=5>5.Source & Releasegroup</option>
-  <option value=6>6.Source & Quality</option>
-  <option value=7>7.Source, Releasegroup & Quality</option>
-#elif $autosub.MINMATCHSCORERSS == 4
-  <option value=0>0.Best match</option>
-  <option value=1>1.Releasegroup</option>
-  <option value=2>2.Quality</option>
-  <option value=3>3.Releasegroup & Quality</option>
-  <option value=4 selected="selected">4.Source</option>
-  <option value=5>5.Source & Releasegroup</option>
-  <option value=6>6.Source & Quality</option>
-  <option value=7>7.Source, Releasegroup & Quality</option>
-#elif $autosub.MINMATCHSCORERSS == 5
-  <option value=0>0.Best match</option>
-  <option value=1>1.Releasegroup</option>
-  <option value=2>2.Quality</option>
-  <option value=3>3.Releasegroup & Quality</option>
-  <option value=4>4.Source</option>
-  <option value=5 selected="selected">5.Source & Releasegroup</option>
-  <option value=6>6.Source & Quality</option>
-  <option value=7>7.Source, Releasegroup & Quality</option>
-#elif $autosub.MINMATCHSCORERSS == 6
-  <option value=0>0.Best match</option>
-  <option value=1>1.Releasegroup</option>
-  <option value=2>2.Quality</option>
-  <option value=3>3.Releasegroup & Quality</option>
-  <option value=4>4.Source</option>
-  <option value=5>5.Source & Releasegroup</option>
-  <option value=6 selected="selected">6.Source & Quality</option>
-  <option value=7>7.Source, Releasegroup & Quality</option>
-#elif $autosub.MINMATCHSCORERSS == 7
-  <option value=0>0.Best match</option>
-  <option value=1>1.Releasegroup</option>
-  <option value=2>2.Quality</option>
-  <option value=3>3.Releasegroup & Quality</option>
-  <option value=4>4.Source</option>
-  <option value=5>5.Source & Releasegroup</option>
-  <option value=6>6.Source & Quality</option>
-  <option value=7 selected="selected">7.Source, Releasegroup & Quality</option>
-#end if
-</select></td>
-		<td width="25px" align="right"><a href='#' data-dropdown="#informationMinmatchscorerss"><img src="/media/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationMinmatchscorerss" class="dropdown-menu has-tip" align="left"><ul><li>What items should match before a subtitle is downloaded via the RSS feed?</li></ul></div></td>
+		<td><input type="text" size="50" name="minmatchscorerss" value="$autosub.MINMATCHSCORERSS" /></td>
+		<td width="25px" align="right"><a href='#' data-dropdown="#informationMinmatchscorerss"><img src="/media/images/info.gif" width="20px" height="20px" alt="" /></a>
+		<div id="informationMinmatchscorerss" class="dropdown-menu has-tip" align="left"><ul><li>
+		What items should match before a subtitle is downloaded via the RSS feed? <br>
+		(source = HDTV for example, quality = 720p or SD for example, codec = xvid for example and releasegrp = LOL for example) <br>
+		0 means any subtitle <br>
+		1 should minimal match releasegrp <br>
+		2 should minimal match codec <br>
+		3 should minimal match releasegrp and codec <br>
+		4 should minimal match quality <br>
+		5 should minimal match quality and releasegrp <br>
+		6 should minimal match quality and codec <br>
+		7 should minimal match quality, releasegrp and codec <br>
+		8 should minimal match source <br>
+		9 should minimal match source and releasegrp <br>
+		10 should minimal match source and codec <br>
+		11 should minimal match scource, releasegrp and codec <br>
+		12 should minimal match source and quality <br>
+		13 should minimal match source, quality and releasegrp <br>
+		14 should minimal match source, quality and codec <br>
+		15 should minimal match all the elements</li></ul></div></td>
 	</tr>
 
 	<tr>

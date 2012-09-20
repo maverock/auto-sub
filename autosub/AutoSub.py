@@ -9,7 +9,6 @@ import logging
 import os
 import cherrypy
 import sys
-import time
 import webbrowser
 
 # Settings

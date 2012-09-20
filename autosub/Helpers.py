@@ -128,7 +128,7 @@ def matchQuality(quality, item):
         return 1
 
 
-def scoreMatch(releasedict, release, quality, releasegrp, source):
+def scoreMatch(releasedict, release, quality, releasegrp, source, codec):
     """
     Return how high the match is. Currently 7 is the best match
     This function give the flexibility to change the most important attribute for matching or even give the user the possibility to set his own preference
@@ -143,19 +143,24 @@ def scoreMatch(releasedict, release, quality, releasegrp, source):
     releasesource = None
     releasequality = None
     releasereleasegrp = None
+    releasecodec = None
     
     if 'source' in releasedict.keys(): releasesource = releasedict['source']
     if 'quality' in releasedict.keys(): releasequality = releasedict['quality']
     if 'releasegrp' in releasedict.keys(): releasereleasegrp = releasedict['releasegrp']
+    if 'codec' in releasedict.keys(): releasecodec = releasedict['codec']
     
     if releasegrp and releasereleasegrp:
         if releasereleasegrp == releasegrp:
             score += 1
     if source and releasesource:
         if releasesource == source:
-            score += 4
+            score += 8
     if quality and releasequality:
         if quality == releasequality:
+            score += 4
+    if codec and releasecodec:
+        if codec == releasecodec:
             score += 2
     
     if not releasedict:
@@ -166,9 +171,12 @@ def scoreMatch(releasedict, release, quality, releasegrp, source):
                 score += 1
         if source:
             if (re.search(re.escape(source), release, re.IGNORECASE)):
-                score += 4
+                score += 8
         if quality:
             if (matchQuality(re.escape(quality), release)):
+                score += 4
+        if codec:
+            if (re.search(re.escape(codec), release, re.IGNORECASE)):
                 score += 2
          
     log.debug("scoreMatch: MatchScore is %s" % str(score))

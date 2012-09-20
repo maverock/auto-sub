@@ -105,6 +105,7 @@ def getSubLink(showid, lang, releaseDetails):
     if 'quality' in releaseDetails.keys(): quality = releaseDetails['quality']
     if 'releasegrp' in releaseDetails.keys(): releasegrp = releaseDetails['releasegrp']
     if 'source' in releaseDetails.keys(): source = releaseDetails['source']
+    if 'codec' in releaseDetails.keys(): codec = releaseDetails['codec']
 
     if not dom or len(dom.getElementsByTagName('result')) == 0:
         return None
@@ -118,7 +119,7 @@ def getSubLink(showid, lang, releaseDetails):
         if release.endswith(".srt"):
             release = release[:-4]
         # Scoredict is a dictionary with a download link and its match score. This will be used to determine the best match (the highest matchscore)
-        scoredict[sub.getElementsByTagName('downloadlink')[0].firstChild.data] = autosub.Helpers.scoreMatch(ProcessFilename(release, ''), release, quality, releasegrp, source)
+        scoredict[sub.getElementsByTagName('downloadlink')[0].firstChild.data] = autosub.Helpers.scoreMatch(ProcessFilename(release, ''), release, quality, releasegrp, source, codec)
         if scoredict[sub.getElementsByTagName('downloadlink')[0].firstChild.data] == 7:
             # Sometimes you just find a perfect match, why should we continue to search if we got a perfect match?
             log.debug('getSubLink: A perfect match found, returning the download link')

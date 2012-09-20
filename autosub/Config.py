@@ -13,6 +13,7 @@ import codecs
 from ConfigParser import SafeConfigParser
 
 import autosub
+import autosub.version as version
 
 # Autosub specific modules
 
@@ -140,15 +141,19 @@ def ReadConfig(configfile):
 
         if cfg.has_option("config", "postprocesscmd"):
             autosub.POSTPROCESSCMD = cfg.get("config", "postprocesscmd")
-
+        
+        if cfg.has_option("config", "configversion"):
+            autosub.CONFIGVERSION = int(cfg.get("config", "configversion"))
+        else:
+            autosub.CONFIGVERSION = 1
     else:
         # config section is missing
         print "Config ERROR: Config section is missing. This is required, it contains vital options! Using default values instead!"
         print "Config ERROR: Variable ROOTPATH is missing. This is required! Using current working directory instead."
         autosub.PATH = unicode(os.getcwd(), autosub.SYSENCODING)
         autosub.DOWNLOADENG = False
-        autosub.MINMATCHSCORE = 0
-        autosub.MINMATCHSCORERSS = 4
+        autosub.MINMATCHSCORE = 8
+        autosub.MINMATCHSCORERSS = 14
         autosub.SCHEDULERSCANDISK = 3600
         autosub.SCHEDULERCHECKSUB = 28800
         autosub.SCHEDULERCHECKRSS = 900
@@ -162,7 +167,14 @@ def ReadConfig(configfile):
         autosub.NOTIFYNL = True
         print "Config ERROR: Variable LOGFILE is missing. This is required! Using 'AutoSubService.log' instead."
         autosub.LOGFILE = u"AutoSubService.log"
-
+        autosub.CONFIGVERSION = version.configversion
+    
+    if autosub.CONFIGVERSION < version.configversion:
+        upgradeConfig(autosub.CONFIGVERSION, version.configversion)
+    elif autosub.CONFIGVERSION > version.configversion:
+        print "Config: ERROR! Config version higher then this version of AutoSub supports. Update AutoSub!"
+        os._exit(1)
+    
     if cfg.has_section('logfile'):
         if cfg.has_option("logfile", "loglevel"):
             autosub.LOGLEVEL = cfg.get("logfile", "loglevel")
@@ -604,9 +616,9 @@ def saveConfigSection():
 
     if not cfg.has_section(section):
         cfg.add_section(section)
-
+    
     cfg.set(section, "path", autosub.PATH)
-    cfg.set(section, "downloadeng", autosub.DOWNLOADENG)
+    cfg.set(section, "downloadeng", str(autosub.DOWNLOADENG))
     cfg.set(section, "minmatchscore", str(autosub.MINMATCHSCORE))
     cfg.set(section, "minmatchscorerss", str(autosub.MINMATCHSCORERSS))
     cfg.set(section, "scandisk", str(autosub.SCHEDULERSCANDISK))
@@ -614,14 +626,15 @@ def saveConfigSection():
     cfg.set(section, "checkrss", str(autosub.SCHEDULERCHECKRSS))
     cfg.set(section, "downloadsubs", str(autosub.SCHEDULERDOWNLOADSUBS))
     cfg.set(section, "rootpath", autosub.ROOTPATH)
-    cfg.set(section, "fallbacktoeng", autosub.FALLBACKTOENG)
+    cfg.set(section, "fallbacktoeng", str(autosub.FALLBACKTOENG))
     cfg.set(section, "subeng", autosub.SUBENG)
     cfg.set(section, "subnl", autosub.SUBNL)
-    cfg.set(section, "notifyen", autosub.NOTIFYEN)
-    cfg.set(section, "notifynl", autosub.NOTIFYNL)
+    cfg.set(section, "notifyen", str(autosub.NOTIFYEN))
+    cfg.set(section, "notifynl", str(autosub.NOTIFYNL))
     cfg.set(section, "logfile", autosub.LOGFILE)
     cfg.set(section, "postprocesscmd", autosub.POSTPROCESSCMD)
-
+    cfg.set(section, "configversion", str(autosub.CONFIGVERSION))
+    
     with codecs.open(autosub.CONFIGFILE, 'wb', encoding=autosub.SYSENCODING) as file:
         cfg.write(file)
 
@@ -752,7 +765,7 @@ def saveNotifySection():
     if not cfg.has_section(section):
         cfg.add_section(section)
 
-    cfg.set(section, "notifymail", autosub.NOTIFYMAIL)
+    cfg.set(section, "notifymail", str(autosub.NOTIFYMAIL))
     cfg.set(section, "mailsrv", autosub.MAILSRV)
     cfg.set(section, 'mailfromaddr', autosub.MAILFROMADDR)
     cfg.set(section, "mailtoaddr", autosub.MAILTOADDR)
@@ -760,13 +773,13 @@ def saveNotifySection():
     cfg.set(section, "mailpassword", autosub.MAILPASSWORD)
     cfg.set(section, "mailsubject", autosub.MAILSUBJECT)
     cfg.set(section, "mailencryption", autosub.MAILENCRYPTION)
-    cfg.set(section, "notifygrowl", autosub.NOTIFYGROWL)
+    cfg.set(section, "notifygrowl", str(autosub.NOTIFYGROWL))
     cfg.set(section, "growlhost", autosub.GROWLHOST)
     cfg.set(section, "growlport", autosub.GROWLPORT)
     cfg.set(section, "growlpass", autosub.GROWLPASS)
-    cfg.set(section, "notifynma", autosub.NOTIFYNMA)
+    cfg.set(section, "notifynma", str(autosub.NOTIFYNMA))
     cfg.set(section, "nmaapi", autosub.NMAAPI)
-    cfg.set(section, "notifytwitter", autosub.NOTIFYTWITTER)
+    cfg.set(section, "notifytwitter", str(autosub.NOTIFYTWITTER))
     cfg.set(section, "twitterkey", autosub.TWITTERKEY)
     cfg.set(section, "twittersecret", autosub.TWITTERSECRET)
 
@@ -907,3 +920,21 @@ def WriteConfig():
         # For some reason the needs to be read again, otherwise all pages get an error
         ReadConfig(autosub.CONFIGFILE)
         return "Config saved.<br><a href='/config'>Return</a>"
+
+def upgradeConfig(from_version, to_version):
+    print "Config: Upgrading config version from %d to %d" %(from_version, to_version)
+    upgrades = to_version - from_version
+    if upgrades != 1:
+        print "Config: More than 1 upgrade required. Starting subupgrades"
+        for x in range (from_version, upgrades + 1):
+            upgradeConfig((from_version - 1) + x, x + 1)
+    else:
+        if from_version == 1 and to_version == 2:
+            print "Config: Upgrading minmatchscores"
+            print "Config: Old value's Minmatchscore: %d & MinmatchscoreRSS: %d" %(autosub.MINMATCHSCORE, autosub.MINMATCHSCORERSS)
+            autosub.MINMATCHSCORE = (autosub.MINMATCHSCORE * 2) + 1
+            autosub.MINMATCHSCORERSS = (autosub.MINMATCHSCORERSS * 2) + 1
+            print "Config: New value's Minmatchscore: %d & MinmatchscoreRSS: %d" %(autosub.MINMATCHSCORE, autosub.MINMATCHSCORERSS)
+            print "Config: Config upgraded to version 2"
+            autosub.CONFIGVERSION = 2
+            autosub.CONFIGUPGRADED = True
