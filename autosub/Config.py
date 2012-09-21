@@ -932,8 +932,17 @@ def upgradeConfig(from_version, to_version):
         if from_version == 1 and to_version == 2:
             print "Config: Upgrading minmatchscores"
             print "Config: Old value's Minmatchscore: %d & MinmatchscoreRSS: %d" %(autosub.MINMATCHSCORE, autosub.MINMATCHSCORERSS)
-            autosub.MINMATCHSCORE = (autosub.MINMATCHSCORE * 2) + 2
-            autosub.MINMATCHSCORERSS = (autosub.MINMATCHSCORERSS * 2) + 2
+            
+            if (autosub.MINMATCHSCORE % 2) == 0:
+                autosub.MINMATCHSCORE = (autosub.MINMATCHSCORE * 2) + 2
+            else:
+                autosub.MINMATCHSCORE = (autosub.MINMATCHSCORE * 2) + 1
+            
+            if (autosub.MINMATCHSCORERSS % 2) == 0:
+                autosub.MINMATCHSCORERSS = (autosub.MINMATCHSCORERSS * 2) + 2
+            else:
+                autosub.MINMATCHSCORERSS = (autosub.MINMATCHSCORERSS * 2) + 1
+            
             print "Config: New value's Minmatchscore: %d & MinmatchscoreRSS: %d" %(autosub.MINMATCHSCORE, autosub.MINMATCHSCORERSS)
             print "Config: Config upgraded to version 2"
             autosub.CONFIGVERSION = 2
