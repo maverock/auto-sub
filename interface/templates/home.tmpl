@@ -26,6 +26,7 @@
 			<th>Source</th>
 			<th>Quality</th>
 			<th>Codec</th>
+			<th>Time</th>
 			<th>Language</th>
 		</tr>
 	</thead>
@@ -59,6 +60,12 @@
 
 #if $var['codec']:
 	<td width="100px" align="center">$var['codec'].upper()</td>
+#else
+	<td width="100px" align="center">Unknown</td>
+#end if
+
+#if $var['timestamp']:
+	<td width="100px" align="center">$ConvertTimestamp($var['timestamp'])</td>
 #else
 	<td width="100px" align="center">Unknown</td>
 #end if

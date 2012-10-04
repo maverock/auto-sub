@@ -6,6 +6,7 @@
 import logging
 import os
 import re
+import time
 
 # Autosub specific modules
 import autosub
@@ -56,7 +57,7 @@ def walkDir(path):
                                         continue
                                     log.info("scanDir: Dutch subtitle wanted for %s and added to wantedQueue" % filename)
                                     filenameResults['originalFileLocationOnDisk'] = os.path.join(dirname, filename)
-                                    
+                                    filenameResults['timestamp'] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(os.path.getctime(filenameResults['originalFileLocationOnDisk'])))
                                     if not os.path.exists(os.path.join(dirname, srtfile)):
                                         lang.append('nl')
                                     if not os.path.exists(os.path.join(dirname, srtfileeng)) and (autosub.FALLBACKTOENG or autosub.DOWNLOADENG):
