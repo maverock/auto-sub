@@ -302,7 +302,12 @@ def ReadConfig(configfile):
                 autosub.MAILENCRYPTION = cfg.get('notify', 'mailencryption')
             else:
                 autosub.MAILENCRYPTION = u"TLS"
-
+                
+            if cfg.has_option('notify', 'mailauth'):
+                autosub.MAILAUTH = cfg.get('notify', 'mailauth')
+            else:
+                autosub.MAILAUTH = u""
+            
             if cfg.has_option('notify', 'notifygrowl'):
                 autosub.NOTIFYGROWL = cfg.getboolean('notify', 'notifygrowl')
             else:
@@ -773,6 +778,7 @@ def saveNotifySection():
     cfg.set(section, "mailpassword", autosub.MAILPASSWORD)
     cfg.set(section, "mailsubject", autosub.MAILSUBJECT)
     cfg.set(section, "mailencryption", autosub.MAILENCRYPTION)
+    cfg.set(section, "mailauth", autosub.MAILAUTH)
     cfg.set(section, "notifygrowl", str(autosub.NOTIFYGROWL))
     cfg.set(section, "growlhost", autosub.GROWLHOST)
     cfg.set(section, "growlport", autosub.GROWLPORT)

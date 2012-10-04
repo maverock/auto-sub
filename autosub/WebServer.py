@@ -66,7 +66,7 @@ class Config:
         return str(tmpl)
 
     @cherrypy.expose
-    def saveConfig(self, subeng, checksub, scandisk, minmatchscore, checkrss, subnl, minmatchscorerss, postprocesscmd, downloadsubs, path, logfile, rootpath, fallbacktoeng, downloadeng, username, password, skipshow, lognum, loglevelconsole, logsize, loglevel, webserverip, webserverport, usernamemapping, notifymail, notifygrowl, notifynma, notifytwitter, mailsrv, mailfromaddr, mailtoaddr, mailusername, mailpassword, mailsubject, mailencryption, growlhost, growlport, growlpass, nmaapi, twitterkey, twittersecret, notifyen, notifynl):
+    def saveConfig(self, subeng, checksub, scandisk, minmatchscore, checkrss, subnl, minmatchscorerss, postprocesscmd, downloadsubs, path, logfile, rootpath, fallbacktoeng, downloadeng, username, password, skipshow, lognum, loglevelconsole, logsize, loglevel, webserverip, webserverport, usernamemapping, notifymail, notifygrowl, notifynma, notifytwitter, mailsrv, mailfromaddr, mailtoaddr, mailusername, mailpassword, mailsubject, mailencryption, mailauth, growlhost, growlport, growlpass, nmaapi, twitterkey, twittersecret, notifyen, notifynl):
         # Set all internal variables
         autosub.PATH = path
         autosub.ROOTPATH = rootpath
@@ -104,6 +104,8 @@ class Config:
         autosub.MAILPASSWORD = mailpassword
         autosub.MAILSUBJECT = mailsubject
         autosub.MAILENCRYPTION = mailencryption
+        autosub.MAILAUTH = mailauth
+        print mailauth
         autosub.NOTIFYGROWL = notifygrowl
         autosub.GROWLHOST = growlhost
         autosub.GROWLPORT = growlport
