@@ -93,8 +93,7 @@ def main(argv=None):
     import autosub.Db
     
     #make sure that sqlite database is loaded after you demonize 
-    if autosub.Db.initDatabase():
-        print "AutoSub: Database created"
+    autosub.Db.initDatabase()
     
     #change to the new work directory
     if os.path.exists(autosub.PATH):
@@ -107,6 +106,7 @@ def main(argv=None):
     log = autosub.initLogging(autosub.LOGFILE)
     log.debug("AutoSub: Systemencoding is: %s" %autosub.SYSENCODING)
     log.debug("AutoSub: Configversion is: %d" %autosub.CONFIGVERSION)
+    log.debug("AutoSub: Dbversion is: %d" %autosub.DBVERSION)
     
     log.info("AutoSub: Starting threads")
     autosub.AutoSub.start()

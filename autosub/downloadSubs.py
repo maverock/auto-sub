@@ -7,6 +7,7 @@ import logging
 
 import autosub
 import os
+import time
 
 from autosub.Db import lastDown
 from autosub.Bierdopje import API
@@ -65,6 +66,8 @@ class downloadSubs():
 
                     log.info("downloadSubs: DOWNLOADED: %s" % destsrt)
                     toDelete_toDownloadQueue.append(index)
+                    
+                    autosub.TODOWNLOADQUEUE[index]['timestamp'] = time.strftime('%Y-%m-%d %H:%M:%S')
                     
                     lastDown().setlastDown(dict = autosub.TODOWNLOADQUEUE[index])
                     
