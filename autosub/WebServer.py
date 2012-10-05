@@ -66,7 +66,9 @@ class Config:
         return str(tmpl)
 
     @cherrypy.expose
-    def saveConfig(self, subeng, checksub, scandisk, minmatchscore, checkrss, subnl, minmatchscorerss, postprocesscmd, downloadsubs, path, logfile, rootpath, fallbacktoeng, downloadeng, username, password, skipshow, lognum, loglevelconsole, logsize, loglevel, webserverip, webserverport, usernamemapping, notifymail, notifygrowl, notifynma, notifytwitter, mailsrv, mailfromaddr, mailtoaddr, mailusername, mailpassword, mailsubject, mailencryption, mailauth, growlhost, growlport, growlpass, nmaapi, twitterkey, twittersecret, notifyen, notifynl):
+    def saveConfig(self, subeng, checksub, scandisk, checkrss, subnl, postprocesscmd, downloadsubs, path, logfile, rootpath, fallbacktoeng, downloadeng, username, password, skipshow, lognum, loglevelconsole, logsize, loglevel, webserverip, webserverport, usernamemapping, notifymail, notifygrowl, notifynma, notifytwitter, mailsrv, mailfromaddr, mailtoaddr, mailusername, mailpassword, mailsubject, mailencryption, mailauth, growlhost, growlport, growlpass, nmaapi, twitterkey, twittersecret, notifyen, notifynl, 
+                   mmssource = None, mmsquality = None, mmscodec = None, mmsrelease = None,
+                   mmsrsource = None, mmsrquality = None, mmsrcodec = None, mmsrrelease = None):
         # Set all internal variables
         autosub.PATH = path
         autosub.ROOTPATH = rootpath
@@ -78,8 +80,27 @@ class Config:
         autosub.NOTIFYEN = notifyen
         autosub.NOTIFYNL = notifynl
         autosub.POSTPROCESSCMD = postprocesscmd
-        autosub.MINMATCHSCORE = int(minmatchscore)
-        autosub.MINMATCHSCORERSS = int(minmatchscorerss)
+        
+        autosub.MINMATCHSCORE = 0
+        if mmssource:
+            autosub.MINMATCHSCORE += 8
+        if mmsquality:
+            autosub.MINMATCHSCORE += 4
+        if mmscodec:
+            autosub.MINMATCHSCORE += 2
+        if mmsrelease:
+            autosub.MINMATCHSCORE += 1 
+        
+        autosub.MINMATCHSCORERSS = 0
+        if mmsrsource:
+            autosub.MINMATCHSCORERSS += 8
+        if mmsrquality:
+            autosub.MINMATCHSCORERSS += 4
+        if mmsrcodec:
+            autosub.MINMATCHSCORERSS += 2
+        if mmsrrelease:
+            autosub.MINMATCHSCORERSS += 1 
+        
         autosub.SCHEDULERSCANDISK = int(scandisk)
         autosub.SCHEDULERCHECKSUB = int(checksub)
         autosub.SCHEDULERCHECKRSS = int(checkrss)
