@@ -43,7 +43,7 @@
 #set $title_escaped = $cgi.escape($var['title'], True)
 
 <tr>
-	<td width="500px"><b><a href='#' data-dropdown="#dropdown-$counter">$var['title']</a></b></td>
+	<td><b><a href='#' data-dropdown="#dropdown-$counter">$var['title']</a></b></td>
 	<td width="75px" align="center">$var['season']</td>
 	<td width="75px" align="center">$var['episode']</td>
 
@@ -83,9 +83,9 @@
 	</td>
 
 #if $var['timestamp']:
-	<td width="125px" align="center">$ConvertTimestamp($var['timestamp'])</td>
+	<td width="150px" align="center">$ConvertTimestamp($var['timestamp'])</td>
 #else
-	<td width="125px" align="center">Unknown</td>
+	<td width="150px" align="center">Unknown</td>
 #end if
 	
 </tr>
@@ -128,7 +128,6 @@
 	<th>Source</th>
 	<th>Quality</th>
 	<th>Codec</th>
-	<th>Group</th>
 	<th>Language</th>
 	<th>Time</th>
 </tr>
@@ -136,7 +135,7 @@
 
 #for $var in $lastdownload
 <tr>
-	<td width="500px"><b>$var['show_name']</b></td>
+	<td><b>$var['show_name']</b></td>
 	<td width="75px" align="center">$var['season']</td>
 	<td width="75px" align="center">$var['episode']</td>
 
@@ -158,17 +157,15 @@
 	<td width="75px" align="center">Unknown</td>
 #end if
 
-	<td width="75px" align="center">CREATE-VAR</td>
-
 <td width="75px" align="center">
 	#set $imageurl = "/media/images/" + $var['language'] + ".png"
 	<img src="$imageurl" alt="$var['language']" />
 </td>
 
 #if $var['timestamp']:
-	<td width="125px" align="center">$ConvertTimestamp($var['timestamp'])</td>
+	<td width="150px" align="center">$ConvertTimestamp($var['timestamp'])</td>
 #else
-	<td width="125px" align="center">Unknown</td>
+	<td width="150px" align="center">Unknown</td>
 #end if
 
 </tr>
