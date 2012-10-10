@@ -1,0 +1,207 @@
+#import autosub
+#import time
+#import cgi
+#import urllib
+#import re
+
+#from autosub.Db import lastDown
+#from autosub.Helpers import ConvertTimestamp
+
+#include $os.path.join($autosub.PATH.encode(), "interface/templates/header.tmpl")
+
+#include $os.path.join($autosub.PATH.encode(), "interface/templates/menu.tmpl")
+
+#if $len($autosub.WANTEDQUEUE) >= 1
+<div class="box">
+<div class="header">
+	<h1>Wanted</h1><span></span>
+</div>
+<div class="content no-padding">
+<table class="table">
+	<thead>
+		<tr>
+			<th>Show name</th>
+			<th>Season</th>
+			<th>Episode</th>
+			<th>Source</th>
+			<th>Quality</th>
+			<th>Codec</th>
+			<th>Time</th>
+			<th>Language</th>
+		</tr>
+	</thead>
+<tbody>
+#set $counter = 0
+#for $var in $autosub.WANTEDQUEUE
+#set $divname = "skipshow-" + str($counter)
+#set $buttonname = "skipshowbutton-" + str($counter)
+#set $buttonseason = "skipshowbuttonseason-" + str($counter)
+#set $buttonall = "skipshowbuttonall-" + str($counter)
+#set $counter = $counter + 1
+
+#set $title_escaped = $cgi.escape($var['title'], True)
+
+<tr>
+	<td width="500px"><b><a href='#' data-dropdown="#dropdown-$counter">$var['title']</a></b></td>
+	<td width="100px" align="center">$var['season']</td>
+	<td width="100px" align="center">$var['episode']</td>
+
+#if $var['source']:
+	<td width="100px" align="center">$var['source'].upper()</td>
+#else
+	<td width="100px" align="center">Unknown</td>
+#end if
+
+#if $var['quality']:
+	<td width="100px" align="center">$var['quality'].upper()</td>
+#else
+	<td width="100px" align="center">Unknown</td>
+#end if
+
+#if $var['codec']:
+	<td width="100px" align="center">$var['codec'].upper()</td>
+#else
+	<td width="100px" align="center">Unknown</td>
+#end if
+
+#if $var['timestamp']:
+	<td width="100px" align="center">$ConvertTimestamp($var['timestamp'])</td>
+#else
+	<td width="100px" align="center">Unknown</td>
+#end if
+
+	<td width="50px" align="center">
+#for lang in $var['lang']
+#if lang == "nl"
+	<img src="/media/images/nl.png" alt="nl">
+#end if
+#if lang == "en"
+	<img src="/media/images/en.png" alt="en">
+#end if
+#end for
+	</td>
+
+</tr>
+
+#end for
+</table>
+#set $counter = 0
+#for $var in $autosub.WANTEDQUEUE
+#set $counter = $counter + 1
+<div id="dropdown-$counter" class="dropdown-menu has-tip">
+    <ul>
+        <li><a href="/config/skipShow/$var['title']/$var['season']">Skip season $var['season']</a></li>
+        <li><a href="/config/skipShow/$var['title']/0">Skip show</a></li>
+    </ul>
+</div>
+#end for
+
+</div>
+</div>
+<i>Click showname in wanted list to skip it</i>
+#end if
+<p>
+
+
+#set $lastdownload = lastDown().getlastDown()
+
+#if $len($lastdownload) >= 1
+    
+<div class="box">
+<div class="header">
+	<h1>Latest downloaded subtitles</h1><span></span>
+</div>
+<div class="content no-padding">
+<table class="table">
+<thead>
+<tr>
+	<th>Show name</th>
+	<th>Season</th>
+	<th>Episode</th>
+	<th>Source</th>
+	<th>Quality</th>
+	<th>Codec</th>
+	<th>Time</th>
+	<th>Language</th>
+</tr>
+</thead>
+
+#for $var in $lastdownload
+<tr>
+	<td width="500px"><b>$var['show_name']</b></td>
+	<td width="100px" align="center">$var['season']</td>
+	<td width="100px" align="center">$var['episode']</td>
+
+#if $var['source']:
+	<td width="100px" align="center">$var['source'].upper()</td>
+#else
+	<td width="100px" align="center">Unknown</td>
+#end if
+
+#if $var['quality']:
+	<td width="100px" align="center">$var['quality'].upper()</td>
+#else
+	<td width="100px" align="center">Unknown</td>
+#end if
+
+#if $var['codec']:
+	<td width="100px" align="center">$var['codec'].upper()</td>
+#else
+	<td width="100px" align="center">Unknown</td>
+#end if
+
+#if $var['timestamp']:
+	<td width="100px" align="center">$ConvertTimestamp($var['timestamp'])</td>
+#else
+	<td width="100px" align="center">Unknown</td>
+#end if
+
+<td width="50px" align="center">
+	#set $imageurl = "/media/images/" + $var['language'] + ".png"
+	<img src="$imageurl" alt="$var['language']" />
+</td>
+</tr>
+
+#end for
+</table>
+</div>
+</div>
+
+#end if
+<br>
+<table>
+	<tr>
+		<td width="100px">Next RSSCheck</td> 
+		<td>
+			#try
+			  $time.strftime('%H:%M:%S', $time.gmtime(($autosub.CHECKRSS.interval - ($time.time() - $autosub.CHECKRSS.lastrun) ))) <br>
+			#except
+			  Please wait... <br>
+			#end try
+		</td>
+	</tr>
+	
+	<tr>
+		<td width="100px">Next ScanDisk</td>
+		<td>
+			#try
+			  $time.strftime('%H:%M:%S', $time.gmtime(($autosub.SCANDISK.interval - ($time.time() - $autosub.SCANDISK.lastrun) ))) <br>
+			#except
+			  Please wait... <br>
+			#end try
+		</td>
+	</tr>
+	
+	<tr>
+		<td width="100px">Next CheckSub</td>
+		<td>
+			#try
+			  $time.strftime('%H:%M:%S', $time.gmtime(($autosub.CHECKSUB.interval - ($time.time() - $autosub.CHECKSUB.lastrun) ))) <br>
+			#except
+			  Please wait... <br>
+			#end try
+		</td>
+	</tr>
+</table>
+
+#include $os.path.join($autosub.PATH.encode(), "interface/templates/footer.tmpl")
