@@ -271,7 +271,7 @@ def ReadConfig(configfile):
             if cfg.has_option('notify', 'mailsrv'):
                 autosub.MAILSRV = cfg.get('notify', 'mailsrv')
             else:
-                autosub.MAILSRV = "usmtp.gmail.com:587"
+                autosub.MAILSRV = u"smtp.gmail.com:587"
 
             if cfg.has_option('notify', 'mailfromaddr'):
                 autosub.MAILFROMADDR = cfg.get('notify', 'mailfromaddr')
@@ -352,7 +352,23 @@ def ReadConfig(configfile):
                 autosub.NMAAPI = cfg.get('notify', 'nmaapi')
             else:
                 autosub.NMAAPI = u"API key"
+            
+            #Prowl    
+            if cfg.has_option('notify', 'notifyprowl'):
+                autosub.NOTIFYPROWL = cfg.getboolean('notify', 'notifyprowl')
+            else:
+                autosub.NOTIFYPROWL = False
 
+            if cfg.has_option('notify', 'prowlapi'):
+                autosub.PROWLAPI = cfg.get('notify', 'prowlapi')
+            else:
+                autosub.PROWLAPI = u"API key"
+            
+            if cfg.has_option('notify', 'prowlpriority'):
+                autosub.PROWLPRIORITY = int(cfg.get('notify', 'prowlpriority'))
+            else:
+                autosub.PROWLPRIORITY = 0
+            
     else:
         # notify section is missing
         autosub.NOTIFYMAIL = False
@@ -807,7 +823,10 @@ def saveNotifySection():
     cfg.set(section, "notifytwitter", str(autosub.NOTIFYTWITTER))
     cfg.set(section, "twitterkey", autosub.TWITTERKEY)
     cfg.set(section, "twittersecret", autosub.TWITTERSECRET)
-
+    cfg.set(section, "notifyprowl", str(autosub.NOTIFYPROWL))
+    cfg.set(section, "prowlapi", autosub.PROWLAPI)
+    cfg.set(section, "prowlpriority", str(autosub.PROWLPRIORITY))
+    
     with open(autosub.CONFIGFILE, 'wb') as file:
         cfg.write(file)
 

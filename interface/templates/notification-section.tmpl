@@ -170,4 +170,53 @@
 		<tr>
 			<td colspan="3" align="left"><input type="button" value="Test Twitter" onClick="parent.location='/config/testNotify/twitter'" /> <input type="button" value="Register Twitter" onClick="parent.location='/config/regTwitter'" /></td>
 		</tr>
+				
+		<tr>
+			<td colspan="3">&nbsp;</td>
+		</tr>
+		
+		<tr>
+			<td width="150px">Prowl Notifications?</td>
+			<td><select name="notifyprowl">
+				#if $autosub.NOTIFYPROWL
+				  <option value="True" selected="selected">Enabled</option>
+				  <option value="False">Disabled</option>
+				#else
+				  <option value="True">Enabled</option>
+				  <option value="False" selected="selected">Disabled</option>
+				#end if
+			</select></td>
+			<td width="25px" align="right"><a href='#' data-dropdown="#informationNotifyProwl"><img src="/media/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationNotifyProwl" class="dropdown-menu has-tip" align="left"><ul><li>When enabled Autosub will send a Prowl notification. Default is Disabled.</li></ul></div></td>
+		</tr>
+		
+		<tr>
+			<td width="150px">ApiKey</td>
+			<td><input type="text" size="50" name="prowlapi" value="$autosub.PROWLAPI" /></td>
+			<td width="25px" align="right"><a href='#' data-dropdown="#informationProwlApi"><img src="/media/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationProwlApi" class="dropdown-menu has-tip" align="left"><ul><li>What API should I use? Your api key can be find by visiting: https://prowlapp.com/api_settings.php</li></ul></div></td>
+		</tr>
+		
+		<tr>
+			<td width="150px">Priority</td>
+			<td>
+				#set priormapper = {-2 : 'Very Low', -1 : 'Moderate', 0 : 'Normal', 1 : 'High', 2 : 'Emergency'}
+				<select name="prowlpriority">
+				#for $prior in $range(-2, 3, 1):
+					#if $prior == $autosub.PROWLPRIORITY
+						<option value="$prior" selected="selected">$priormapper[$prior]</option>
+					#else
+						<option value="$prior">$priormapper[$prior]</option>
+					#end if
+				#end for
+				</select>
+			</td>
+			
+			
+			
+			<td width="25px" align="right"><a href='#' data-dropdown="#informationProwlPriority"><img src="/media/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationProwlPriority" class="dropdown-menu has-tip" align="left"><ul><li>What priority should be used to send the notification? Default is Normal</li></ul></div></td>
+		</tr>
+
+		<tr>
+			<td colspan="3" align="left"><input type="button" value="Test Prowl" onClick="parent.location='/config/testNotify/prowl'" /></td>
+		</tr>
+		
 	</table>
