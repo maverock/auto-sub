@@ -1,6 +1,16 @@
 <?xml version="1.0"?>
 <autosub>
 	<release>
+		<version>Alpha 0.5.6</version>
+		<releasedate>work in progress</releasedate>
+		<changelog>Bug fixes, lot of enhancements&lt;br&gt;
+ - Codec matching now supported&lt;br&gt;
+ - Datetime stamp integrated into webui &lt;br&gt;
+ - Growl & Prowl Notifications
+ - Small bug fixes
+ 		</changelog>
+	</release>
+	<release>
 		<version>Alpha 0.5.5</version>
 		<releasedate>01-06-2012</releasedate>
 		<changelog>Bug fixes, notify library en new webui feature!&lt;br&gt;
