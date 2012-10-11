@@ -3,7 +3,7 @@
 #import cgi
 #import urllib
 #import re
-
+#from types import *
 #from autosub.Db import lastDown
 #from autosub.Helpers import ConvertTimestamp
 
@@ -46,25 +46,25 @@
 	<td width="100px" align="center">$var['season']</td>
 	<td width="100px" align="center">$var['episode']</td>
 
-#if $var['source']:
+#if $type($var['source']) == UnicodeType:
 	<td width="100px" align="center">$var['source'].upper()</td>
 #else
 	<td width="100px" align="center">Unknown</td>
 #end if
 
-#if $var['quality']:
+#if $type($var['quality']) == UnicodeType:
 	<td width="100px" align="center">$var['quality'].upper()</td>
 #else
 	<td width="100px" align="center">Unknown</td>
 #end if
 
-#if $var['codec']:
+#if $type($var['codec']) == UnicodeType:
 	<td width="100px" align="center">$var['codec'].upper()</td>
 #else
 	<td width="100px" align="center">Unknown</td>
 #end if
 
-#if $var['timestamp']:
+#if $type($var['timestamp']) == UnicodeType:
 	<td width="100px" align="center">$ConvertTimestamp($var['timestamp'])</td>
 #else
 	<td width="100px" align="center">Unknown</td>
@@ -132,25 +132,25 @@
 	<td width="100px" align="center">$var['season']</td>
 	<td width="100px" align="center">$var['episode']</td>
 
-#if $var['source']:
+#if $type($var['source']) == UnicodeType:
 	<td width="100px" align="center">$var['source'].upper()</td>
 #else
 	<td width="100px" align="center">Unknown</td>
 #end if
 
-#if $var['quality']:
+#if $type($var['quality']) == UnicodeType:
 	<td width="100px" align="center">$var['quality'].upper()</td>
 #else
 	<td width="100px" align="center">Unknown</td>
 #end if
 
-#if $var['codec']:
+#if $type($var['codec']) == UnicodeType:
 	<td width="100px" align="center">$var['codec'].upper()</td>
 #else
 	<td width="100px" align="center">Unknown</td>
 #end if
 
-#if $var['timestamp']:
+#if $type($var['timestamp']) == UnicodeType:
 	<td width="100px" align="center">$ConvertTimestamp($var['timestamp'])</td>
 #else
 	<td width="100px" align="center">Unknown</td>
