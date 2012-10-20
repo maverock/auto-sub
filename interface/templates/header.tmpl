@@ -29,8 +29,8 @@
 
 		urlPath=window.location.pathname;
 		urlPathArray = urlPath.split('/');
-		urlPath1=urlPathArray[1];
-
+		urlPath1=urlPathArray[urlPathArray.length-2];
+		
 		if (urlPath1 == 'home') {
 			ddtabmenu.definemenu("ddtabs3", 0) }
 		else if (urlPath1 == 'config') {

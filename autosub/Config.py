@@ -227,12 +227,17 @@ def ReadConfig(configfile):
         if cfg.has_option('webserver', 'webserverip') and cfg.has_option('webserver', 'webserverport'):
             autosub.WEBSERVERIP = cfg.get('webserver', 'webserverip')
             autosub.WEBSERVERPORT = int(cfg.get('webserver', 'webserverport'))
-            autosub.WEBROOT = cfg.get('webserver', 'webroot')
+            
         else:
             print "Config ERROR: Webserver IP and port are required! Now setting the default values (0.0.0.0:8083)."
             autosub.WEBSERVERIP = u"0.0.0.0"
             autosub.WEBSERVERPORT = 8083
-            autosub.WEBROOT = '/'
+            
+        if cfg.has_option('webserver', 'webroot'):
+            autosub.WEBROOT = cfg.get('webserver', 'webroot')
+        else:
+            autosub.WEBROOT = u''
+            
         if cfg.has_option('webserver', 'username') and cfg.has_option('webserver', 'password'):
             autosub.USERNAME = cfg.get('webserver', 'username')
             autosub.PASSWORD = cfg.get('webserver', 'password')
@@ -243,7 +248,7 @@ def ReadConfig(configfile):
         print "Config WARNING: The webserver is started without authentication!"
         autosub.WEBSERVERIP = u'0.0.0.0'
         autosub.WEBSERVERPORT = 8083
-	autosub.WEBROOT = '/'
+        autosub.WEBROOT = u''
 
     if cfg.has_section('skipshow'):
         # Try to read skipshow section in the config
@@ -860,7 +865,7 @@ def checkForRestart():
     lognum = 1
     webserverip = u'0.0.0.0'
     webserverport = 8083
-    webroot = '/'
+    webroot = u''
     username = u''
     password = u''
 
@@ -924,7 +929,7 @@ def checkForRestart():
             password = cfg.get('webserver', 'password')
 
     # Now compare the values, if one differs a restart is required.
-    if schedulerscandisk != autosub.SCHEDULERSCANDISK or schedulerchecksub != autosub.SCHEDULERCHECKSUB or schedulercheckrss != autosub.SCHEDULERCHECKRSS or schedulerdownloadsubs != autosub.SCHEDULERDOWNLOADSUBS or loglevel != autosub.LOGLEVEL or loglevelconsole != autosub.LOGLEVELCONSOLE or logsize != autosub.LOGSIZE or lognum != autosub.LOGNUM or webserverip != autosub.WEBSERVERIP or webserverport != autosub.WEBSERVERPORT or username != autosub.USERNAME or password != autosub.PASSWORD:
+    if schedulerscandisk != autosub.SCHEDULERSCANDISK or schedulerchecksub != autosub.SCHEDULERCHECKSUB or schedulercheckrss != autosub.SCHEDULERCHECKRSS or schedulerdownloadsubs != autosub.SCHEDULERDOWNLOADSUBS or loglevel != autosub.LOGLEVEL or loglevelconsole != autosub.LOGLEVELCONSOLE or logsize != autosub.LOGSIZE or lognum != autosub.LOGNUM or webserverip != autosub.WEBSERVERIP or webserverport != autosub.WEBSERVERPORT or username != autosub.USERNAME or password != autosub.PASSWORD or webroot != autosub.WEBROOT:
         return True
     else:
         return False
