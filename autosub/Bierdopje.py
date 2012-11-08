@@ -113,6 +113,7 @@ def getSubLink(showid, lang, releaseDetails):
         return (None, None)
 
     scoredict = {}
+    releasedict = {}
 
     for sub in dom.getElementsByTagName('result'):
         release = sub.getElementsByTagName('filename')[0].firstChild.data
@@ -122,6 +123,10 @@ def getSubLink(showid, lang, releaseDetails):
             release = release[:-4]
         # Scoredict is a dictionary with a download link and its match score. This will be used to determine the best match (the highest matchscore)
         scoredict[sub.getElementsByTagName('downloadlink')[0].firstChild.data] = autosub.Helpers.scoreMatch(ProcessFilename(release, ''), release, quality, releasegrp, source, codec)
+        
+        # Releasedict is a dictionary with the release name, used for the lastdownload database
+        releasedict[sub.getElementsByTagName('downloadlink')[0].firstChild.data] = release
+        
         if scoredict[sub.getElementsByTagName('downloadlink')[0].firstChild.data] == 15:
             # Sometimes you just find a perfect match, why should we continue to search if we got a perfect match?
             log.debug('getSubLink: A perfect match found, returning the download link')
@@ -144,6 +149,7 @@ def getSubLink(showid, lang, releaseDetails):
         sortedscoredict.pop(toDelete[i])
         i = i - 1
     if len (sortedscoredict) > 0:
+        release = releasedict[sortedscoredict[0][0]]
         return (sortedscoredict[0][0], release)
     
     return (None, None)
