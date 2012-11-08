@@ -180,7 +180,13 @@
 
 <div id="dropdown-lastDown-$var['id']" class="dropdown-menu has-tip">
     <ul>
-        <li>$var['subtitle']</li>
+        <li>
+        #if $var['subtitle'] == None
+        	N/A
+        #else
+        	$var['subtitle']
+        #end if
+        </li>
     </ul>
 </div>
 

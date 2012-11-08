@@ -150,7 +150,7 @@ def upgradeDb(from_version, to_version):
             cursor=connection.cursor()
             cursor.execute("ALTER TABLE last_downloads ADD COLUMN '%s' 'TEXT'" % 'releasegrp')
             cursor.execute("ALTER TABLE last_downloads ADD COLUMN '%s' 'TEXT'" % 'subtitle')
-            cursor.execute("UPDATE info SET 'database_version' = %d WHERE 'database_version = %d" % (3,2))
+            cursor.execute("UPDATE info SET database_version = %d WHERE database_version = %d" % (3,2))
             connection.commit()
             connection.close()
 
