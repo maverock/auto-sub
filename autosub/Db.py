@@ -58,7 +58,7 @@ class idCache():
 class lastDown():
     def __init__(self):
         self.query_get = 'select * from last_downloads'
-        self.query_set = 'insert into last_downloads values (NULL,?,?,?,?,?,?,?,?)'
+        self.query_set = 'insert into last_downloads values (NULL,?,?,?,?,?,?,?,?,?)'
         self.query_flush = 'delete from last_downloads'
         
     def getlastDown(self):
@@ -91,7 +91,8 @@ class lastDown():
                        Ldict['source'],
                        Ldict['downlang'],
                        Ldict['codec'],
-                       Ldict['timestamp']])
+                       Ldict['timestamp'],
+                       Ldict['releasegrp']])
         connection.commit()
         connection.close()
     
@@ -109,7 +110,7 @@ def createDatabase():
         cursor=connection.cursor()
         
         cursor.execute("CREATE TABLE id_cache (bierdopje_id INTEGER, show_name TEXT);")
-        cursor.execute("CREATE TABLE last_downloads (id INTEGER PRIMARY KEY, show_name TEXT, season TEXT, episode TEXT, quality TEXT, source TEXT, language TEXT, codec TEXT, timestamp DATETIME);")
+        cursor.execute("CREATE TABLE last_downloads (id INTEGER PRIMARY KEY, show_name TEXT, season TEXT, episode TEXT, quality TEXT, source TEXT, language TEXT, codec TEXT, timestamp DATETIME, releasegrp TEXT);")
         cursor.execute("CREATE TABLE info (database_version NUMERIC);")
         connection.commit()
         cursor.execute("INSERT INTO info VALUES (%d)" % version.dbversion)
@@ -140,6 +141,13 @@ def upgradeDb(from_version, to_version):
             cursor.execute("ALTER TABLE last_downloads ADD COLUMN '%s' 'TEXT'" % 'timestamp')
             cursor.execute("CREATE TABLE info (database_version NUMERIC);")
             cursor.execute("INSERT INTO info VALUES (%d)" % 2)
+            connection.commit()
+            connection.close()
+        if from_version == 2 and to_version == 3:
+            #Add Releasegrp
+            connection=sqlite3.connect(autosub.DBFILE)
+            cursor=connection.cursor()
+            cursor.execute("ALTER TABLE last_downloads ADD COLUMN '%s' 'TEXT'" % 'releasegrp')
             connection.commit()
             connection.close()
 
