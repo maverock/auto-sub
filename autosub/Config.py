@@ -923,6 +923,7 @@ def checkForRestart():
         if cfg.has_option('webserver', 'webserverip') and cfg.has_option('webserver', 'webserverport'):
             webserverip = cfg.get('webserver', 'webserverip')
             webserverport = int(cfg.get('webserver', 'webserverport'))
+        if cfg.has_option('webroot'):
             webroot = cfg.get('webserver', 'webroot')
         if cfg.has_option('webserver', 'username') and cfg.has_option('webserver', 'password'):
             username = cfg.get('webserver', 'username')
