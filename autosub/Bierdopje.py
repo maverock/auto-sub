@@ -87,7 +87,7 @@ def getSubLink(showid, lang, releaseDetails):
     api = autosub.API
 
     if showid == -1:
-        return None
+        return (None, None)
     quality = None
     releasegrp = None
     source = None
@@ -102,7 +102,7 @@ def getSubLink(showid, lang, releaseDetails):
         bierdopjeapi.resp.close()
     except:
         log.error("getSubLink: The server returned an error for request %s" % getSubLinkUrl)
-        return None
+        return (None, None)
     
     if 'quality' in releaseDetails.keys(): quality = releaseDetails['quality']
     if 'releasegrp' in releaseDetails.keys(): releasegrp = releaseDetails['releasegrp']
@@ -110,7 +110,7 @@ def getSubLink(showid, lang, releaseDetails):
     if 'codec' in releaseDetails.keys(): codec = releaseDetails['codec']
 
     if not dom or len(dom.getElementsByTagName('result')) == 0:
-        return None
+        return (None, None)
 
     scoredict = {}
 
@@ -122,10 +122,10 @@ def getSubLink(showid, lang, releaseDetails):
             release = release[:-4]
         # Scoredict is a dictionary with a download link and its match score. This will be used to determine the best match (the highest matchscore)
         scoredict[sub.getElementsByTagName('downloadlink')[0].firstChild.data] = autosub.Helpers.scoreMatch(ProcessFilename(release, ''), release, quality, releasegrp, source, codec)
-        if scoredict[sub.getElementsByTagName('downloadlink')[0].firstChild.data] == 7:
+        if scoredict[sub.getElementsByTagName('downloadlink')[0].firstChild.data] == 15:
             # Sometimes you just find a perfect match, why should we continue to search if we got a perfect match?
             log.debug('getSubLink: A perfect match found, returning the download link')
-            return sub.getElementsByTagName('downloadlink')[0].firstChild.data
+            return (sub.getElementsByTagName('downloadlink')[0].firstChild.data, release)
     # Done comparing all the results, lets sort them and return the highest result
     # If there are results with the same score, the download links which comes first (alphabetically) will be returned
     # Also check if the result match the minimal score
@@ -144,4 +144,4 @@ def getSubLink(showid, lang, releaseDetails):
         sortedscoredict.pop(toDelete[i])
         i = i - 1
     if len (sortedscoredict) > 0:
-        return sortedscoredict[0][0]
+        return (sortedscoredict[0][0], release)

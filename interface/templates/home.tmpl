@@ -137,7 +137,7 @@
 
 #for $var in $lastdownload
 <tr>
-	<td><b>$var['show_name']</b></td>
+	<td><b><a href='#' data-dropdown="#dropdown-lastDown-$var['id']">$var['show_name']</a></b></td>
 	<td width="75px" align="center">$var['season']</td>
 	<td width="75px" align="center">$var['episode']</td>
 
@@ -178,7 +178,14 @@
 
 </tr>
 
+<div id="dropdown-lastDown-$var['id']" class="dropdown-menu has-tip">
+    <ul>
+        <li>$var['subtitle']</li>
+    </ul>
+</div>
+
 #end for
+
 </table>
 </div>
 </div>

@@ -57,7 +57,7 @@ class checkSub():
             langtmp = languages[:]
             for lang in langtmp:
                 log.debug("checkSub: trying to get a downloadlink for %s, language is %s" % (originalfile, lang))
-                downloadLink = autosub.Bierdopje.getSubLink(showid, lang, wantedItem)
+                downloadLink, release = autosub.Bierdopje.getSubLink(showid, lang, wantedItem)
                 
                 if downloadLink:
                     if lang == 'nl':
@@ -72,6 +72,7 @@ class checkSub():
                     wantedItem['downloadLink'] = downloadLink
                     downloadItem = wantedItem.copy()
                     downloadItem['downlang'] = lang
+                    downloadItem['subtitle'] = release
                     
                     autosub.TODOWNLOADQUEUE.append(downloadItem)
                     
