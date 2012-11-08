@@ -11,6 +11,8 @@ import cherrypy
 import sys
 import webbrowser
 
+import HTMLParser #Don't remove this one, needed for the windows bins
+
 # Settings
 log = logging.getLogger('thelogger')
 
