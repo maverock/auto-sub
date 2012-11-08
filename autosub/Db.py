@@ -148,6 +148,7 @@ def upgradeDb(from_version, to_version):
             connection=sqlite3.connect(autosub.DBFILE)
             cursor=connection.cursor()
             cursor.execute("ALTER TABLE last_downloads ADD COLUMN '%s' 'TEXT'" % 'releasegrp')
+            cursor.execute("UPDATE info SET 'database_version' = %d WHERE 'database_version = %d" % (3,2))
             connection.commit()
             connection.close()
 
