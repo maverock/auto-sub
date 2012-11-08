@@ -91,10 +91,9 @@ class scanDisk():
         autosub.WANTEDQUEUE = []
 
         if not os.path.exists(autosub.ROOTPATH):
-            log.error("Root path does %s not exists, aborting..." % autosub.ROOTPATH)
-            exit()
-        
-        
+            log.error("scanDir: Root path does %s not exists, aborting..." % autosub.ROOTPATH)
+            autosub.WANTEDQUEUELOCK = False
+            return True
         
         try:
             walkDir(autosub.ROOTPATH)
