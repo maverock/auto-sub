@@ -145,3 +145,5 @@ def getSubLink(showid, lang, releaseDetails):
         i = i - 1
     if len (sortedscoredict) > 0:
         return (sortedscoredict[0][0], release)
+    
+    return (None, None)
