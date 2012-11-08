@@ -59,7 +59,7 @@ class Config:
             autosub.Config.SaveToConfig('skipshow',title,season)
             autosub.Config.applyskipShow()
             
-            tmpl.message = "Add %s and season %s to the skipshow and applied it. <br> Remember, WantedQueue will be refresh at the next run of scanDisk <br> <a href='" + autosub.WEBROOT + "/home'>Return home</a>" % (title, season)
+            tmpl.message = "Done<br> Remember, WantedQueue will be refresh at the next run of scanDisk <br> <a href='" + autosub.WEBROOT + "/home'>Return home</a>" 
             return str(tmpl)
     
     @cherrypy.expose
