@@ -165,6 +165,7 @@ class checkRss():
                             
                             downloadItem = wantedItem.copy()
                             downloadItem['downlang'] = lang
+                            downloadItem['subtitle'] = normalizedRssTitlerssfile
                             autosub.TODOWNLOADQUEUE.append(downloadItem)
                             
                             if lang == 'nl' and (autosub.FALLBACKTOENG and not autosub.DOWNLOADENG) and 'en' in wantedItem['lang']:
