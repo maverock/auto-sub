@@ -6,6 +6,7 @@
 import urllib
 import urllib2
 import logging
+import time
 
 from xml.dom import minidom
 from operator import itemgetter
@@ -41,6 +42,7 @@ class API:
         import socket
         socket.setdefaulttimeout(autosub.TIMEOUT)
         self.resp = urllib2.urlopen(self.req)
+        time.sleep(0.5) #Max 2 connections each second
         
     def close(self):
         self.resp.close()
@@ -67,7 +69,7 @@ def getShowidApi(showName):
 
     if not dom or len(dom.getElementsByTagName('showid')) == 0:
         return None
-
+    
     showid = dom.getElementsByTagName('showid')[0].firstChild.data
     return showid
 
@@ -101,7 +103,7 @@ def getSubLink(showid, lang, releaseDetails):
     except:
         log.error("getSubLink: The server returned an error for request %s" % getSubLinkUrl)
         return None
-
+    
     if 'quality' in releaseDetails.keys(): quality = releaseDetails['quality']
     if 'releasegrp' in releaseDetails.keys(): releasegrp = releaseDetails['releasegrp']
     if 'source' in releaseDetails.keys(): source = releaseDetails['source']
