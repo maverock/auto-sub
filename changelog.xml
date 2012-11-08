@@ -2,10 +2,12 @@
 <autosub>
 	<release>
 		<version>Alpha 0.5.6</version>
-		<releasedate>work in progress</releasedate>
+		<releasedate>08-11-2012</releasedate>
 		<changelog>Bug fixes, lot of enhancements&lt;br&gt;
  - Codec matching now supported&lt;br&gt;
  - Datetime stamp integrated into webui &lt;br&gt;
+ - Releasegrp in webui &lt;br&gt;
+ - Which subtitle was release can now be viewed in webui &lt;br&gt;
  - Growl & Prowl Notifications
  - Small bug fixes
  		</changelog>
