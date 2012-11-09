@@ -100,7 +100,7 @@ _releasegrp_pre = '(' + '|'.join(_releasegrps) + ')$'
 releasegrp = [re.compile(_releasegrp_pre, re.IGNORECASE)]
 
 #If the releasegrp is not in the list (_releasegrps), try our old regex.
-releasegrp_fallback = [re.compile("(-(?P<releasegrp>[^-]+))?$", re.IGNORECASE)]
+releasegrp_fallback = [re.compile("(-(?P<releasegrp>[^- \.]+))?$", re.IGNORECASE)]
 
 #If you know a result is invalid you can use the syn dict to renaming it to a None type.
 releasegrp_syn = {u'dl': None}
