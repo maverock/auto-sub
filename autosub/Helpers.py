@@ -42,6 +42,16 @@ def RunCmd(cmd):
     return shell, shellerr
 
 def CheckVersion():
+    '''
+    CheckVersion
+    
+    Return values:
+    0 Same version
+    1 New version
+    2 New (higher) release, same version
+    3 New lower release, higher version
+    4 Release lower, version lower
+    '''
     try:
         req = urllib2.Request(autosub.VERSIONURL)
         req.add_header("User-agent", autosub.USERAGENT) 
@@ -63,13 +73,20 @@ def CheckVersion():
     running_release = autosubversion.split(' ')[0]
     running_versionnumber = version.StrictVersion(autosubversion.split(' ')[1])
     
-    if release == running_release:
-        if versionnumber > running_versionnumber:
-            return True
-        else:
-            return False
-    else:
-        return None
+    if release == running_release: #Alpha = Alpha
+        if versionnumber > running_versionnumber: #0.5.6 > 0.5.5
+            return 1
+        else: #0.5.6 = 0.5.6
+            return 0
+    elif release > running_release: #Beta > Alpha
+        if versionnumber == running_versionnumber: #0.5.5 = 0.5.5
+            return 2
+        elif versionnumber > running_versionnumber: #0.5.6 > 0.5.5
+            return 4
+    elif release < running_release: #Alpha < Beta
+        if versionnumber > running_versionnumber: #0.5.6 > 0.5.5
+            return 3
+        
 
 def CleanSerieName(series_name):
     """Clean up series name by removing any . and _
