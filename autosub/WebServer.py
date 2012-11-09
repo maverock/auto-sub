@@ -14,6 +14,10 @@ import autosub.notify as notify
 
 import autosub.Helpers
 
+def redirect(abspath, *args, **KWs):
+    assert abspath[0] == '/'
+    raise cherrypy.HTTPRedirect(autosub.WEBROOT + abspath, *args, **KWs)
+
 # TODO: Create webdesign
 class PageTemplate (Template):
     #Placeholder for future, this object can be used to add stuff to the template
@@ -43,7 +47,7 @@ class Config:
             if title.upper() in autosub.SKIPSHOWUPPER:
                 for x in autosub.SKIPSHOWUPPER[title.upper()]:
                     if x == season or x == '0':
-                        tmpl.message = "Already skipped <br> <a href='/home'>Return home</a>"
+                        tmpl.message = "Already skipped <br> <a href='" + autosub.WEBROOT + "/home'>Return home</a>"
                         return str(tmpl)
                 if season == '00':
                     season = season + ',' + ','.join(autosub.SKIPSHOWUPPER[title.upper()])
@@ -55,18 +59,21 @@ class Config:
             autosub.Config.SaveToConfig('skipshow',title,season)
             autosub.Config.applyskipShow()
             
-            tmpl.message = "Add %s and season %s to the skipshow and applied it. <br> Remember, WantedQueue will be refresh at the next run of scanDisk <br> <a href='/home'>Return home</a>" % (title, season)
+            tmpl.message = "Done<br> Remember, WantedQueue will be refresh at the next run of scanDisk <br> <a href='" + autosub.WEBROOT + "/home'>Return home</a>" 
             return str(tmpl)
     
     @cherrypy.expose
     def applyConfig(self):
         autosub.Config.applyAllSettings()
         tmpl = PageTemplate(file="interface/templates/message.tmpl")
-        tmpl.message = "Settings read & applied<br><a href='/config'>Return</a>"
+        tmpl.message = "Settings read & applied<br><a href='" + autosub.WEBROOT + "/config'>Return</a>"
         return str(tmpl)
 
     @cherrypy.expose
-    def saveConfig(self, subeng, checksub, scandisk, minmatchscore, checkrss, subnl, minmatchscorerss, postprocesscmd, downloadsubs, path, logfile, rootpath, fallbacktoeng, downloadeng, username, password, skipshow, lognum, loglevelconsole, logsize, loglevel, webserverip, webserverport, usernamemapping, notifymail, notifygrowl, notifynma, notifytwitter, mailsrv, mailfromaddr, mailtoaddr, mailusername, mailpassword, mailsubject, mailencryption, growlhost, growlport, growlpass, nmaapi, twitterkey, twittersecret, notifyen, notifynl):
+    def saveConfig(self, subeng, checksub, scandisk, checkrss, subnl, postprocesscmd, downloadsubs, path, logfile, rootpath, fallbacktoeng, downloadeng, username, password, webroot, skipshow, lognum, loglevelconsole, logsize, loglevel, webserverip, webserverport, usernamemapping, notifymail, notifygrowl, notifynma, notifytwitter, mailsrv, mailfromaddr, mailtoaddr, mailusername, mailpassword, mailsubject, mailencryption, mailauth, growlhost, growlport, growlpass, nmaapi, twitterkey, twittersecret, notifyen, notifynl, 
+                   notifyprowl, prowlapi, prowlpriority,
+                   mmssource = None, mmsquality = None, mmscodec = None, mmsrelease = None,
+                   mmsrsource = None, mmsrquality = None, mmsrcodec = None, mmsrrelease = None):
         # Set all internal variables
         autosub.PATH = path
         autosub.ROOTPATH = rootpath
@@ -78,8 +85,27 @@ class Config:
         autosub.NOTIFYEN = notifyen
         autosub.NOTIFYNL = notifynl
         autosub.POSTPROCESSCMD = postprocesscmd
-        autosub.MINMATCHSCORE = int(minmatchscore)
-        autosub.MINMATCHSCORERSS = int(minmatchscorerss)
+        
+        autosub.MINMATCHSCORE = 0
+        if mmssource:
+            autosub.MINMATCHSCORE += 8
+        if mmsquality:
+            autosub.MINMATCHSCORE += 4
+        if mmscodec:
+            autosub.MINMATCHSCORE += 2
+        if mmsrelease:
+            autosub.MINMATCHSCORE += 1 
+        
+        autosub.MINMATCHSCORERSS = 0
+        if mmsrsource:
+            autosub.MINMATCHSCORERSS += 8
+        if mmsrquality:
+            autosub.MINMATCHSCORERSS += 4
+        if mmsrcodec:
+            autosub.MINMATCHSCORERSS += 2
+        if mmsrrelease:
+            autosub.MINMATCHSCORERSS += 1 
+        
         autosub.SCHEDULERSCANDISK = int(scandisk)
         autosub.SCHEDULERCHECKSUB = int(checksub)
         autosub.SCHEDULERCHECKRSS = int(checkrss)
@@ -92,6 +118,7 @@ class Config:
         autosub.WEBSERVERPORT = int(webserverport)
         autosub.USERNAME = username
         autosub.PASSWORD = password
+        autosub.WEBROOT = webroot
         autosub.SKIPSHOW = autosub.Config.stringToDict(skipshow)
         autosub.USERNAMEMAPPING = autosub.Config.stringToDict(usernamemapping)
 
@@ -104,6 +131,7 @@ class Config:
         autosub.MAILPASSWORD = mailpassword
         autosub.MAILSUBJECT = mailsubject
         autosub.MAILENCRYPTION = mailencryption
+        autosub.MAILAUTH = mailauth
         autosub.NOTIFYGROWL = notifygrowl
         autosub.GROWLHOST = growlhost
         autosub.GROWLPORT = growlport
@@ -113,6 +141,9 @@ class Config:
         autosub.NOTIFYTWITTER = notifytwitter
         autosub.TWITTERKEY = twitterkey
         autosub.TWITTERSECRET = twittersecret
+        autosub.NOTIFYPROWL = notifyprowl
+        autosub.PROWLAPI = prowlapi
+        autosub.PROWLPRIORITY = int(prowlpriority)
 
         # Now save to the configfile
         message = autosub.Config.WriteConfig()
@@ -141,13 +172,18 @@ class Config:
     def checkVersion(self):
         checkversion = autosub.Helpers.CheckVersion()
         
-        if checkversion==True:
-            message = 'There is a new version available! Visit: <a href=http://code.google.com/p/auto-sub/downloads/list>Google-Project</a>'
-        elif checkversion == False:
+        if checkversion == 0:
             message = 'You are running the latest version!'
-        elif checkversion == None:
-            message = 'Something is wrong. Either we could not reach google-project. Or you are trying to compare different releases (Alpha with Beta).'
-        
+        elif checkversion == 1:
+            message = 'There is a new version available! Visit: <a href=http://code.google.com/p/auto-sub/downloads/list>Google-Project</a>'
+        elif checkversion == 2:
+            message = 'There is a new major release available for your version. For example, you are running a alpha version and there is beta version available consider upgrading! Visit: <a href=http://code.google.com/p/auto-sub/downloads/list>Google-Project</a>'
+        elif checkversion == 3:
+            message = 'There is a newer testing version available. Only the risk-takers should upgrade! But keep an eye out on <a href=http://code.google.com/p/auto-sub/downloads/list>Google-Project</a>, because there is an upcoming new release!'
+        elif checkversion == 4:
+            message = 'What are you doing here??? It is time to upgrade! Visit: <a href=http://code.google.com/p/auto-sub/downloads/list>Google-Project</a>'
+        else:
+            message = 'Something went wrong there, is google-project reachable? Or are you running a really old release?'
         tmpl = PageTemplate(file="interface/templates/message.tmpl")
         tmpl.message = message
         return str(tmpl)   
@@ -208,7 +244,7 @@ class Config:
                 autosub.TWITTERKEY = access_token['oauth_token']
                 autosub.TWITTERSECRET = access_token['oauth_token_secret']
                 
-                message = "Twitter is now set up, remember to save your config and remember to test twitter! <br> <a href='/config'>Return</a>"
+                message = "Twitter is now set up, remember to save your config and remember to test twitter! <br> <a href='" + autosub.WEBROOT + "/config'>Return</a>"
                 tmpl = PageTemplate(file="interface/templates/message.tmpl")
                 tmpl.message = message
                 return str(tmpl)
@@ -217,27 +253,26 @@ class Config:
 class Home:
     @cherrypy.expose
     def index(self):
+        useragent = cherrypy.request.headers.get("User-Agent", '')
         tmpl = PageTemplate(file="interface/templates/home.tmpl")
+        if autosub.Helpers.CheckMobileDevice(useragent) and autosub.MOBILEAUTOSUB:
+            tmpl = PageTemplate(file="interface/templates/mobile/home.tmpl")
         return str(tmpl)
     
     @cherrypy.expose
-    def runNow(self, device = ''):
-			#time.sleep is here to prevent a timing issue, where checksub is runned before scandisk
-			autosub.SCANDISK.runnow = True
-			time.sleep(5)
-			autosub.CHECKRSS.runnow = True
-			autosub.CHECKSUB.runnow = True
-			autosub.DOWNLOADSUBS.runnow = True
-	
-			if device == 'mobile':
-				tmpl = PageTemplate(file="interface/templates/mobile/message.tmpl")
-				tmpl.message = "Searching for new subtitles!"
-				
-			else:
-				tmpl = PageTemplate(file="interface/templates/message.tmpl")
-				tmpl.message = "Running everything! <br> <a href='/home'>Return</a>"
-			
-			return str(tmpl)
+    def runNow(self):
+        #time.sleep is here to prevent a timing issue, where checksub is runned before scandisk
+        autosub.SCANDISK.runnow = True
+        time.sleep(5)
+        autosub.CHECKRSS.runnow = True
+        autosub.CHECKSUB.runnow = True
+        autosub.DOWNLOADSUBS.runnow = True
+        useragent = cherrypy.request.headers.get("User-Agent", '')
+        tmpl = PageTemplate(file="interface/templates/message.tmpl")
+        if autosub.Helpers.CheckMobileDevice(useragent) and autosub.MOBILEAUTOSUB:
+            tmpl = PageTemplate(file="interface/templates/mobile/message.tmpl")
+        tmpl.message = "Running everything! <br> <a href='" + autosub.WEBROOT + "/home'>Return</a>"
+        return str(tmpl)
     
     @cherrypy.expose
     def resetAPICalls(self):
@@ -247,6 +282,14 @@ class Home:
         tmpl = PageTemplate(file="interface/templates/message.tmpl")
         tmpl.message = "API Calls reseted"
         return str(tmpl)
+    @cherrypy.expose
+    def exitMini(self):
+        if autosub.MOBILEAUTOSUB:
+            autosub.MOBILEAUTOSUB = False
+            redirect("/home")
+        else:
+            autosub.MOBILEAUTOSUB = True
+            redirect("/home")
     
     @cherrypy.expose
     def shutdown(self):
@@ -257,7 +300,7 @@ class Home:
 class Log:
     @cherrypy.expose
     def index(self, loglevel = ''):
-        raise cherrypy.HTTPRedirect("/log/viewLog")
+        redirect("/log/viewLog")
     
     @cherrypy.expose
     def viewLog(self, loglevel = ''):
@@ -280,7 +323,7 @@ class Mobile:
 class WebServerInit():
     @cherrypy.expose
     def index(self):
-        raise cherrypy.HTTPRedirect("/home")
+        redirect("/home")
     
     home = Home()
     config = Config()

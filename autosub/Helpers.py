@@ -42,6 +42,16 @@ def RunCmd(cmd):
     return shell, shellerr
 
 def CheckVersion():
+    '''
+    CheckVersion
+    
+    Return values:
+    0 Same version
+    1 New version
+    2 New (higher) release, same version
+    3 New lower release, higher version
+    4 Release lower, version lower
+    '''
     try:
         req = urllib2.Request(autosub.VERSIONURL)
         req.add_header("User-agent", autosub.USERAGENT) 
@@ -63,13 +73,20 @@ def CheckVersion():
     running_release = autosubversion.split(' ')[0]
     running_versionnumber = version.StrictVersion(autosubversion.split(' ')[1])
     
-    if release == running_release:
-        if versionnumber > running_versionnumber:
-            return True
-        else:
-            return False
-    else:
-        return None
+    if release == running_release: #Alpha = Alpha
+        if versionnumber > running_versionnumber: #0.5.6 > 0.5.5
+            return 1
+        else: #0.5.6 = 0.5.6
+            return 0
+    elif release > running_release: #Beta > Alpha
+        if versionnumber == running_versionnumber: #0.5.5 = 0.5.5
+            return 2
+        elif versionnumber > running_versionnumber: #0.5.6 > 0.5.5
+            return 4
+    elif release < running_release: #Alpha < Beta
+        if versionnumber > running_versionnumber: #0.5.6 > 0.5.5
+            return 3
+        
 
 def CleanSerieName(series_name):
     """Clean up series name by removing any . and _
@@ -128,7 +145,7 @@ def matchQuality(quality, item):
         return 1
 
 
-def scoreMatch(releasedict, release, quality, releasegrp, source):
+def scoreMatch(releasedict, release, quality, releasegrp, source, codec):
     """
     Return how high the match is. Currently 7 is the best match
     This function give the flexibility to change the most important attribute for matching or even give the user the possibility to set his own preference
@@ -143,19 +160,24 @@ def scoreMatch(releasedict, release, quality, releasegrp, source):
     releasesource = None
     releasequality = None
     releasereleasegrp = None
+    releasecodec = None
     
     if 'source' in releasedict.keys(): releasesource = releasedict['source']
     if 'quality' in releasedict.keys(): releasequality = releasedict['quality']
     if 'releasegrp' in releasedict.keys(): releasereleasegrp = releasedict['releasegrp']
+    if 'codec' in releasedict.keys(): releasecodec = releasedict['codec']
     
     if releasegrp and releasereleasegrp:
         if releasereleasegrp == releasegrp:
             score += 1
     if source and releasesource:
         if releasesource == source:
-            score += 4
+            score += 8
     if quality and releasequality:
         if quality == releasequality:
+            score += 4
+    if codec and releasecodec:
+        if codec == releasecodec:
             score += 2
     
     if not releasedict:
@@ -166,9 +188,12 @@ def scoreMatch(releasedict, release, quality, releasegrp, source):
                 score += 1
         if source:
             if (re.search(re.escape(source), release, re.IGNORECASE)):
-                score += 4
+                score += 8
         if quality:
             if (matchQuality(re.escape(quality), release)):
+                score += 4
+        if codec:
+            if (re.search(re.escape(codec), release, re.IGNORECASE)):
                 score += 2
          
     log.debug("scoreMatch: MatchScore is %s" % str(score))
@@ -273,3 +298,13 @@ def DisplayLogFile(loglevel):
             continue
     result = "".join(finalData)
     return result
+
+def ConvertTimestamp(datestring):
+    date_object = time.strptime(datestring, "%Y-%m-%d %H:%M:%S")
+    return "%02i-%02i-%i %02i:%02i:%02i " %(date_object[2], date_object[1], date_object[0], date_object[3], date_object[4], date_object[5],)
+    
+def CheckMobileDevice(req_useragent):
+    for MUA in autosub.MOBILEUSERAGENTS:
+        if MUA.lower() in req_useragent.lower():
+            return True
+    return False

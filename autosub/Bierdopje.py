@@ -6,6 +6,7 @@
 import urllib
 import urllib2
 import logging
+import time
 
 from xml.dom import minidom
 from operator import itemgetter
@@ -41,6 +42,7 @@ class API:
         import socket
         socket.setdefaulttimeout(autosub.TIMEOUT)
         self.resp = urllib2.urlopen(self.req)
+        time.sleep(0.5) #Max 2 connections each second
         
     def close(self):
         self.resp.close()
@@ -67,7 +69,7 @@ def getShowidApi(showName):
 
     if not dom or len(dom.getElementsByTagName('showid')) == 0:
         return None
-
+    
     showid = dom.getElementsByTagName('showid')[0].firstChild.data
     return showid
 
@@ -85,7 +87,7 @@ def getSubLink(showid, lang, releaseDetails):
     api = autosub.API
 
     if showid == -1:
-        return None
+        return (None, None)
     quality = None
     releasegrp = None
     source = None
@@ -100,16 +102,18 @@ def getSubLink(showid, lang, releaseDetails):
         bierdopjeapi.resp.close()
     except:
         log.error("getSubLink: The server returned an error for request %s" % getSubLinkUrl)
-        return None
-
+        return (None, None)
+    
     if 'quality' in releaseDetails.keys(): quality = releaseDetails['quality']
     if 'releasegrp' in releaseDetails.keys(): releasegrp = releaseDetails['releasegrp']
     if 'source' in releaseDetails.keys(): source = releaseDetails['source']
+    if 'codec' in releaseDetails.keys(): codec = releaseDetails['codec']
 
     if not dom or len(dom.getElementsByTagName('result')) == 0:
-        return None
+        return (None, None)
 
     scoredict = {}
+    releasedict = {}
 
     for sub in dom.getElementsByTagName('result'):
         release = sub.getElementsByTagName('filename')[0].firstChild.data
@@ -118,11 +122,15 @@ def getSubLink(showid, lang, releaseDetails):
         if release.endswith(".srt"):
             release = release[:-4]
         # Scoredict is a dictionary with a download link and its match score. This will be used to determine the best match (the highest matchscore)
-        scoredict[sub.getElementsByTagName('downloadlink')[0].firstChild.data] = autosub.Helpers.scoreMatch(ProcessFilename(release, ''), release, quality, releasegrp, source)
-        if scoredict[sub.getElementsByTagName('downloadlink')[0].firstChild.data] == 7:
+        scoredict[sub.getElementsByTagName('downloadlink')[0].firstChild.data] = autosub.Helpers.scoreMatch(ProcessFilename(release, ''), release, quality, releasegrp, source, codec)
+        
+        # Releasedict is a dictionary with the release name, used for the lastdownload database
+        releasedict[sub.getElementsByTagName('downloadlink')[0].firstChild.data] = release
+        
+        if scoredict[sub.getElementsByTagName('downloadlink')[0].firstChild.data] == 15:
             # Sometimes you just find a perfect match, why should we continue to search if we got a perfect match?
             log.debug('getSubLink: A perfect match found, returning the download link')
-            return sub.getElementsByTagName('downloadlink')[0].firstChild.data
+            return (sub.getElementsByTagName('downloadlink')[0].firstChild.data, release)
     # Done comparing all the results, lets sort them and return the highest result
     # If there are results with the same score, the download links which comes first (alphabetically) will be returned
     # Also check if the result match the minimal score
@@ -141,4 +149,7 @@ def getSubLink(showid, lang, releaseDetails):
         sortedscoredict.pop(toDelete[i])
         i = i - 1
     if len (sortedscoredict) > 0:
-        return sortedscoredict[0][0]
+        release = releasedict[sortedscoredict[0][0]]
+        return (sortedscoredict[0][0], release)
+    
+    return (None, None)

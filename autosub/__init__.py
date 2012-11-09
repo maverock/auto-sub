@@ -27,6 +27,8 @@ CONFIGFILE=None
 PATH=None
 MINMATCHSCORE=None
 MINMATCHSCORERSS=None
+CONFIGVERSION=None
+CONFIGUPGRADED=None
 
 TODOWNLOADQUEUE=None
 WANTEDQUEUE=None
@@ -60,6 +62,7 @@ WEBSERVERPORT=None
 LAUNCHBROWSER=True
 USERNAME=None
 PASSWORD=None
+WEBROOT=None
 
 NOTIFYMAIL=None
 MAILSRV=None
@@ -68,6 +71,7 @@ MAILTOADDR=None
 MAILUSERNAME=None
 MAILPASSWORD=None
 MAILSUBJECT=None
+MAILAUTH=None
 MAILENCRYPTION=None
 NOTIFYGROWL=None
 GROWLHOST=None
@@ -78,22 +82,28 @@ TWITTERKEY=None
 TWITTERSECRET=None
 NOTIFYNMA=None
 NMAAPI=None
+NOTIFYPROWL=None
+PROWLAPI=None
+PROWLPRIORITY=None
 
 DAEMON=None
 
 DBFILE=None
+DBVERSION=None
 
 VERSIONURL=None
 USERAGENT=None
 
 SYSENCODING=None
+MOBILEUSERAGENTS=None
+MOBILEAUTOSUB=None
 
 def Initialize():
     global ROOTPATH, FALLBACKTOENG, SUBENG, LOGFILE, SUBNL, LOGLEVEL, \
     SUBNL, LOGLEVEL, LOGLEVELCONSOLE, LOGSIZE, LOGNUM, SKIPSHOW, SKIPSHOWUPPER, \
     USERNAMEMAPPING, USERNAMEMAPPINGUPPER, NAMEMAPPING, NAMEMAPPINGUPPER, \
     SHOWID_CACHE, POSTPROCESSCMD, CONFIGFILE, WORKDIR, NOTIFYEN, NOTIFYNL, \
-    MAILSRV, MAILFROMADDR, MAILTOADDR, MAILUSERNAME, \
+    MAILSRV, MAILFROMADDR, MAILTOADDR, MAILUSERNAME, CONFIGVERSION, CONFIGUPGRADED, \
     MAILPASSWORD, MAILSUBJECT, MAILENCRYPTION, \
     GROWLHOST, GROWLPORT, GROWLPASS, \
     TWITTERKEY, TWITTERSECRET, NMAAPI, NOTIFYMAIL, NOTIFYGROWL, NOTIFYTWITTER, NOTIFYNMA, \
@@ -101,8 +111,8 @@ def Initialize():
     NLRSSURL, ENRSSURL, APIKEY, API, APIRSS, TIMEOUT, APICALLS, \
     APICALLSLASTRESET, APICALLSRESETINT, APICALLSMAX, \
     SCHEDULERSCANDISK, SCHEDULERCHECKSUB, SCHEDULERCHECKRSS, SCHEDULERDOWNLOADSUBS, \
-    DAEMON, \
-    DBFILE, \
+    DAEMON, NOTIFYPROWL, PROWLAPI, PROWLPRIORITY, \
+    DBFILE, MOBILEUSERAGENTS, MOBILEAUTOSUB, \
     USERAGENT, VERSIONURL
     
     DBFILE = 'database.db'
@@ -125,9 +135,21 @@ def Initialize():
         CONFIGFILE = "config.properties"
     
     Config.ReadConfig(CONFIGFILE)
+    
+    if CONFIGUPGRADED:
+        print "AutoSub: Config seems to be upgraded. Writing config"
+        Config.WriteConfig()
+        print "AutoSub: Writing config done"
+    
     API = "http://api.bierdopje.com/%s/" %APIKEY
     APIRSS = "/apikey/%s/" %APIKEY
     
+    MOBILEUSERAGENTS = ["midp", "240x320", "blackberry", "netfront", "nokia", "panasonic", 
+                        "portalmmm", "sharp", "sie-", "sonyericsson", "symbian", "windows ce", 
+                        "benq", "mda", "mot-", "opera mini", "philips", "pocket pc", "sagem",
+                        "samsung", "sda", "sgh-", "vodafone", "xda", "palm", "iphone", "ipod", 
+                        "ipad", "android", "windows phone"]
+    MOBILEAUTOSUB = True
     
     APICALLSLASTRESET = time.time()
     APICALLSRESETINT = 86400
@@ -157,5 +179,5 @@ def initLogging(logfile):
         formatter = logging.Formatter('%(asctime)s %(levelname)s  %(message)s')
         console.setFormatter(formatter)
         log.addHandler(console)
-    
+ 
     return log

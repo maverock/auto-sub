@@ -13,6 +13,7 @@ import codecs
 from ConfigParser import SafeConfigParser
 
 import autosub
+import autosub.version as version
 
 # Autosub specific modules
 
@@ -140,15 +141,19 @@ def ReadConfig(configfile):
 
         if cfg.has_option("config", "postprocesscmd"):
             autosub.POSTPROCESSCMD = cfg.get("config", "postprocesscmd")
-
+        
+        if cfg.has_option("config", "configversion"):
+            autosub.CONFIGVERSION = int(cfg.get("config", "configversion"))
+        else:
+            autosub.CONFIGVERSION = 1
     else:
         # config section is missing
         print "Config ERROR: Config section is missing. This is required, it contains vital options! Using default values instead!"
         print "Config ERROR: Variable ROOTPATH is missing. This is required! Using current working directory instead."
         autosub.PATH = unicode(os.getcwd(), autosub.SYSENCODING)
         autosub.DOWNLOADENG = False
-        autosub.MINMATCHSCORE = 0
-        autosub.MINMATCHSCORERSS = 4
+        autosub.MINMATCHSCORE = 8
+        autosub.MINMATCHSCORERSS = 14
         autosub.SCHEDULERSCANDISK = 3600
         autosub.SCHEDULERCHECKSUB = 28800
         autosub.SCHEDULERCHECKRSS = 900
@@ -162,7 +167,14 @@ def ReadConfig(configfile):
         autosub.NOTIFYNL = True
         print "Config ERROR: Variable LOGFILE is missing. This is required! Using 'AutoSubService.log' instead."
         autosub.LOGFILE = u"AutoSubService.log"
-
+        autosub.CONFIGVERSION = version.configversion
+    
+    if autosub.CONFIGVERSION < version.configversion:
+        upgradeConfig(autosub.CONFIGVERSION, version.configversion)
+    elif autosub.CONFIGVERSION > version.configversion:
+        print "Config: ERROR! Config version higher then this version of AutoSub supports. Update AutoSub!"
+        os._exit(1)
+    
     if cfg.has_section('logfile'):
         if cfg.has_option("logfile", "loglevel"):
             autosub.LOGLEVEL = cfg.get("logfile", "loglevel")
@@ -215,10 +227,17 @@ def ReadConfig(configfile):
         if cfg.has_option('webserver', 'webserverip') and cfg.has_option('webserver', 'webserverport'):
             autosub.WEBSERVERIP = cfg.get('webserver', 'webserverip')
             autosub.WEBSERVERPORT = int(cfg.get('webserver', 'webserverport'))
+            
         else:
             print "Config ERROR: Webserver IP and port are required! Now setting the default values (0.0.0.0:8083)."
             autosub.WEBSERVERIP = u"0.0.0.0"
             autosub.WEBSERVERPORT = 8083
+            
+        if cfg.has_option('webserver', 'webroot'):
+            autosub.WEBROOT = cfg.get('webserver', 'webroot')
+        else:
+            autosub.WEBROOT = u''
+            
         if cfg.has_option('webserver', 'username') and cfg.has_option('webserver', 'password'):
             autosub.USERNAME = cfg.get('webserver', 'username')
             autosub.PASSWORD = cfg.get('webserver', 'password')
@@ -229,6 +248,7 @@ def ReadConfig(configfile):
         print "Config WARNING: The webserver is started without authentication!"
         autosub.WEBSERVERIP = u'0.0.0.0'
         autosub.WEBSERVERPORT = 8083
+        autosub.WEBROOT = u''
 
     if cfg.has_section('skipshow'):
         # Try to read skipshow section in the config
@@ -259,7 +279,7 @@ def ReadConfig(configfile):
             if cfg.has_option('notify', 'mailsrv'):
                 autosub.MAILSRV = cfg.get('notify', 'mailsrv')
             else:
-                autosub.MAILSRV = "usmtp.gmail.com:587"
+                autosub.MAILSRV = u"smtp.gmail.com:587"
 
             if cfg.has_option('notify', 'mailfromaddr'):
                 autosub.MAILFROMADDR = cfg.get('notify', 'mailfromaddr')
@@ -290,7 +310,12 @@ def ReadConfig(configfile):
                 autosub.MAILENCRYPTION = cfg.get('notify', 'mailencryption')
             else:
                 autosub.MAILENCRYPTION = u"TLS"
-
+                
+            if cfg.has_option('notify', 'mailauth'):
+                autosub.MAILAUTH = cfg.get('notify', 'mailauth')
+            else:
+                autosub.MAILAUTH = u""
+            
             if cfg.has_option('notify', 'notifygrowl'):
                 autosub.NOTIFYGROWL = cfg.getboolean('notify', 'notifygrowl')
             else:
@@ -335,7 +360,23 @@ def ReadConfig(configfile):
                 autosub.NMAAPI = cfg.get('notify', 'nmaapi')
             else:
                 autosub.NMAAPI = u"API key"
+            
+            #Prowl    
+            if cfg.has_option('notify', 'notifyprowl'):
+                autosub.NOTIFYPROWL = cfg.getboolean('notify', 'notifyprowl')
+            else:
+                autosub.NOTIFYPROWL = False
 
+            if cfg.has_option('notify', 'prowlapi'):
+                autosub.PROWLAPI = cfg.get('notify', 'prowlapi')
+            else:
+                autosub.PROWLAPI = u"API key"
+            
+            if cfg.has_option('notify', 'prowlpriority'):
+                autosub.PROWLPRIORITY = int(cfg.get('notify', 'prowlpriority'))
+            else:
+                autosub.PROWLPRIORITY = 0
+            
     else:
         # notify section is missing
         autosub.NOTIFYMAIL = False
@@ -366,91 +407,110 @@ def ReadConfig(configfile):
     # This dictionary maps local series names to BierDopje ID's
     # Example: namemapping = {"Castle":"12708"}
     autosub.NAMEMAPPING = {
-            "Against the Wall": "15522",
+            "Against the Wall" : "15522",
             "alcatraz" : "15193",
             "american dad" : "444",
-            "Are You There Chelsea": "15259",
+            "appropriate adult" : "15722",
+            "Are You There Chelsea" : "15259",
+            "blackout" : "16729",
+            "Blackout (2012)" : "16729",
             "blue bloods" : "14223",
             "bob's burgers" : "14885",
             "bobs burgers" : "14885",
-            "Body of Proof": "14420",
+            "Body of Proof" : "14420",
             "borgen" : "14715",
             "breakout kings" : "14846",
-            "Castle (2009)": "12708",
+            "Castle (2009)" : "12708",
             "castle 2009" : "12708",
             "charlie's angels 2011" : "15205",
-            "Charlies Angels 2011": "15205",
+            "Charlies Angels 2011" : "15205",
+            "Common Law 2012" : "16348",
             "covert affairs" : "13324",
             "criminal minds" : "2153",
+            "csi" : "2186",
             "csi crime scene investigation" : "2186",
-            "Csi Miami": "2187",
+            "Csi Miami" : "2187",
             "csi new york" : "2188",
             "csi ny" : "2188",
-            "csi" : "2186",
+            "Dallas 2012" : "16345",
             "desperate housewives" : "2439",
             "don't trust the b---- in apartment 23" : "15207",
-            "Femme Fatales": "15519",
-            "Free Agents Us": "15256",
-            "Grey's Anatomy": "3733",
-            "Greys Anatomy": "3733",
+            "dont trust the bitch in apartment 23" : "15207",
+            "eastbound & down" : "2768",
+            "eastbound and down" : "2768",
+            "Femme Fatales" : "15519",
+            "Franklin and Bash" : "14851",
+            "Free Agents Us" : "15256",
+            "fringe" : "3350",
+            "Grey's Anatomy" : "3733",
+            "Greys Anatomy" : "3733",
             "grimm" : "15200",
             "harry's law" : "14489",
-            "Harrys Law": "14489",
-            "Hawaii Five 0 2010": "14211",
-            "Hawaii Five 0": "14211",
+            "Harrys Law" : "14489",
+            "hatfields and mccoys" : "16614",
+            "Hawaii Five 0" : "14211",
+            "Hawaii Five 0 2010" : "14211",
+            "Hawaii Five-0" : "14211",
             "hawaii five-0 2010" : "14211",
-            "Hawaii Five-0": "14211",
             "homeland" : "15136",
             "king" : "15071",
-            "Last Man Standing Us": "15201",
+            "Last Man Standing Us" : "15201",
             "law and order svu" : "5243",
             "law and order uk" : "12689",
             "luck" : "15156",
-            "Man Up": "15209",
-            "Melissa And Joey": "14470",
-            "Merlin 2008": "5985",
-            "Mike and Molly": "14258",
+            "Man Up" : "15209",
+            "Melissa And Joey" : "14470",
+            "Merlin 2008" : "5985",
+            "Mike and Molly" : "14258",
             "missing 2012" : "15304",
             "modern family" : "12991",
-            "Mr Sunshine": "14224",
+            "Mr Sunshine" : "14224",
+            "Ncis Los Angeles" : "12994",
             "ncis los angeles" : "12994",
-            "Ncis Los Angeles": "12994",
+            "Necessary Roughness" : "15248",
             "new tricks" : "6521",
             "nip tuck" : "6586",
+            "nip-tuck" : "6586",
             "Once Upon A Time" : "15202",
-            "Prime Suspect Us": "15249",
-            "Rizzoli And Isles": "14175",
+            "Prime Suspect Us" : "15249",
+            "Revolution" : "16464",
+            "Rizzoli And Isles" : "14175",
+            "Scandal" : "15211",
             "scandal (2012)" : "15211",
             "Scandal 2012" : "15211",
             "Scandal US" : "15211",
             "scott and bailey" : "15266",
-            "Shameless Us": "14718",
+            "Shameless Us" : "14718",
             "silent witness" : "8195",
-            "Spartacus Blood And Sand": "13942",
-            "Spartacus Gods Of The Arena": "14848",
+            "sinbad" : "16718",
+            "Spartacus" : "13942",
+            "Spartacus Blood And Sand" : "13942",
+            "Spartacus Gods Of The Arena" : "14848",
             "spartacus vengeance" : "13942",
-            "Spartacus": "13942",
             "star wars the clone wars" : "8496",
             "suburgatory" : "15212",
             "suits" : "15076",
             "the client list" : "16125",
             "the closer" : "9387",
-            "The Kennedys": "15067",
+            "The Kennedys" : "15067",
             "the killing (2011)" : "14744",
-            "The La Complex": "15953",
+            "The La Complex" : "15953",
             "The Legend Of Korra" : "16303",
             "the lying game" : "15161",
             "the mentalist" : "10169",
+            "the newsroom (2012)" : "16092",
+            "the newsroom 2012" : "16092",
             "the o c" : "10350",
             "the office us" : "10358",
             "the protector" : "15267",
             "The River" : "15203",
             "thundercats 2011" : "15521",
-            "Touch": "15761",
+            "Touch" : "15761",
             "unforgettable" : "15245",
             "untouchables-the venture bros" : "10891",
+            "Up All Night 2011" : "15261",
             "white collar" : "13484",
-            "Up All Night 2011": "15261"
+            "xiii the series 2011" : "14884"
     }
     autosub.NAMEMAPPINGUPPER = {}
     for x in autosub.NAMEMAPPING.keys():
@@ -604,9 +664,9 @@ def saveConfigSection():
 
     if not cfg.has_section(section):
         cfg.add_section(section)
-
+    
     cfg.set(section, "path", autosub.PATH)
-    cfg.set(section, "downloadeng", autosub.DOWNLOADENG)
+    cfg.set(section, "downloadeng", str(autosub.DOWNLOADENG))
     cfg.set(section, "minmatchscore", str(autosub.MINMATCHSCORE))
     cfg.set(section, "minmatchscorerss", str(autosub.MINMATCHSCORERSS))
     cfg.set(section, "scandisk", str(autosub.SCHEDULERSCANDISK))
@@ -614,14 +674,15 @@ def saveConfigSection():
     cfg.set(section, "checkrss", str(autosub.SCHEDULERCHECKRSS))
     cfg.set(section, "downloadsubs", str(autosub.SCHEDULERDOWNLOADSUBS))
     cfg.set(section, "rootpath", autosub.ROOTPATH)
-    cfg.set(section, "fallbacktoeng", autosub.FALLBACKTOENG)
+    cfg.set(section, "fallbacktoeng", str(autosub.FALLBACKTOENG))
     cfg.set(section, "subeng", autosub.SUBENG)
     cfg.set(section, "subnl", autosub.SUBNL)
-    cfg.set(section, "notifyen", autosub.NOTIFYEN)
-    cfg.set(section, "notifynl", autosub.NOTIFYNL)
+    cfg.set(section, "notifyen", str(autosub.NOTIFYEN))
+    cfg.set(section, "notifynl", str(autosub.NOTIFYNL))
     cfg.set(section, "logfile", autosub.LOGFILE)
     cfg.set(section, "postprocesscmd", autosub.POSTPROCESSCMD)
-
+    cfg.set(section, "configversion", str(autosub.CONFIGVERSION))
+    
     with codecs.open(autosub.CONFIGFILE, 'wb', encoding=autosub.SYSENCODING) as file:
         cfg.write(file)
 
@@ -675,6 +736,7 @@ def saveWebserverSection():
     cfg.set(section, 'webserverport', str(autosub.WEBSERVERPORT))
     cfg.set(section, "username", autosub.USERNAME)
     cfg.set(section, "password", autosub.PASSWORD)
+    cfg.set(section, "webroot", autosub.WEBROOT)
 
     with open(autosub.CONFIGFILE, 'wb') as file:
         cfg.write(file)
@@ -752,7 +814,7 @@ def saveNotifySection():
     if not cfg.has_section(section):
         cfg.add_section(section)
 
-    cfg.set(section, "notifymail", autosub.NOTIFYMAIL)
+    cfg.set(section, "notifymail", str(autosub.NOTIFYMAIL))
     cfg.set(section, "mailsrv", autosub.MAILSRV)
     cfg.set(section, 'mailfromaddr', autosub.MAILFROMADDR)
     cfg.set(section, "mailtoaddr", autosub.MAILTOADDR)
@@ -760,16 +822,20 @@ def saveNotifySection():
     cfg.set(section, "mailpassword", autosub.MAILPASSWORD)
     cfg.set(section, "mailsubject", autosub.MAILSUBJECT)
     cfg.set(section, "mailencryption", autosub.MAILENCRYPTION)
-    cfg.set(section, "notifygrowl", autosub.NOTIFYGROWL)
+    cfg.set(section, "mailauth", autosub.MAILAUTH)
+    cfg.set(section, "notifygrowl", str(autosub.NOTIFYGROWL))
     cfg.set(section, "growlhost", autosub.GROWLHOST)
     cfg.set(section, "growlport", autosub.GROWLPORT)
     cfg.set(section, "growlpass", autosub.GROWLPASS)
-    cfg.set(section, "notifynma", autosub.NOTIFYNMA)
+    cfg.set(section, "notifynma", str(autosub.NOTIFYNMA))
     cfg.set(section, "nmaapi", autosub.NMAAPI)
-    cfg.set(section, "notifytwitter", autosub.NOTIFYTWITTER)
+    cfg.set(section, "notifytwitter", str(autosub.NOTIFYTWITTER))
     cfg.set(section, "twitterkey", autosub.TWITTERKEY)
     cfg.set(section, "twittersecret", autosub.TWITTERSECRET)
-
+    cfg.set(section, "notifyprowl", str(autosub.NOTIFYPROWL))
+    cfg.set(section, "prowlapi", autosub.PROWLAPI)
+    cfg.set(section, "prowlpriority", str(autosub.PROWLPRIORITY))
+    
     with open(autosub.CONFIGFILE, 'wb') as file:
         cfg.write(file)
 
@@ -799,6 +865,7 @@ def checkForRestart():
     lognum = 1
     webserverip = u'0.0.0.0'
     webserverport = 8083
+    webroot = u''
     username = u''
     password = u''
 
@@ -856,12 +923,14 @@ def checkForRestart():
         if cfg.has_option('webserver', 'webserverip') and cfg.has_option('webserver', 'webserverport'):
             webserverip = cfg.get('webserver', 'webserverip')
             webserverport = int(cfg.get('webserver', 'webserverport'))
+        if cfg.has_option('webserver', 'webroot'):
+            webroot = cfg.get('webserver', 'webroot')
         if cfg.has_option('webserver', 'username') and cfg.has_option('webserver', 'password'):
             username = cfg.get('webserver', 'username')
             password = cfg.get('webserver', 'password')
 
     # Now compare the values, if one differs a restart is required.
-    if schedulerscandisk != autosub.SCHEDULERSCANDISK or schedulerchecksub != autosub.SCHEDULERCHECKSUB or schedulercheckrss != autosub.SCHEDULERCHECKRSS or schedulerdownloadsubs != autosub.SCHEDULERDOWNLOADSUBS or loglevel != autosub.LOGLEVEL or loglevelconsole != autosub.LOGLEVELCONSOLE or logsize != autosub.LOGSIZE or lognum != autosub.LOGNUM or webserverip != autosub.WEBSERVERIP or webserverport != autosub.WEBSERVERPORT or username != autosub.USERNAME or password != autosub.PASSWORD:
+    if schedulerscandisk != autosub.SCHEDULERSCANDISK or schedulerchecksub != autosub.SCHEDULERCHECKSUB or schedulercheckrss != autosub.SCHEDULERCHECKRSS or schedulerdownloadsubs != autosub.SCHEDULERDOWNLOADSUBS or loglevel != autosub.LOGLEVEL or loglevelconsole != autosub.LOGLEVELCONSOLE or logsize != autosub.LOGSIZE or lognum != autosub.LOGNUM or webserverip != autosub.WEBSERVERIP or webserverport != autosub.WEBSERVERPORT or username != autosub.USERNAME or password != autosub.PASSWORD or webroot != autosub.WEBROOT:
         return True
     else:
         return False
@@ -902,8 +971,35 @@ def WriteConfig():
     if restart:
         # This needs to be replaced by a restart thingy, until then, just re-read the config and tell the users to do a manual restart
         ReadConfig(autosub.CONFIGFILE)
-        return "Config saved. A manual restart is needed for all changes to take effect. Auto restart will be implemented soon!<br><a href='/config'>Return</a>"
+        return "Config saved. A manual restart is needed for all changes to take effect. Auto restart will be implemented soon!<br><a href='" + autosub.WEBROOT + "/config'>Return</a>"
     else:
         # For some reason the needs to be read again, otherwise all pages get an error
         ReadConfig(autosub.CONFIGFILE)
-        return "Config saved.<br><a href='/config'>Return</a>"
+        return "Config saved.<br><a href='" + autosub.WEBROOT + "/config'>Return</a>"
+
+def upgradeConfig(from_version, to_version):
+    print "Config: Upgrading config version from %d to %d" %(from_version, to_version)
+    upgrades = to_version - from_version
+    if upgrades != 1:
+        print "Config: More than 1 upgrade required. Starting subupgrades"
+        for x in range (from_version, upgrades + 1):
+            upgradeConfig((from_version - 1) + x, x + 1)
+    else:
+        if from_version == 1 and to_version == 2:
+            print "Config: Upgrading minmatchscores"
+            print "Config: Old value's Minmatchscore: %d & MinmatchscoreRSS: %d" %(autosub.MINMATCHSCORE, autosub.MINMATCHSCORERSS)
+            
+            if (autosub.MINMATCHSCORE % 2) == 0:
+                autosub.MINMATCHSCORE = (autosub.MINMATCHSCORE * 2) + 2
+            else:
+                autosub.MINMATCHSCORE = (autosub.MINMATCHSCORE * 2) + 1
+            
+            if (autosub.MINMATCHSCORERSS % 2) == 0:
+                autosub.MINMATCHSCORERSS = (autosub.MINMATCHSCORERSS * 2) + 2
+            else:
+                autosub.MINMATCHSCORERSS = (autosub.MINMATCHSCORERSS * 2) + 1
+            
+            print "Config: New value's Minmatchscore: %d & MinmatchscoreRSS: %d" %(autosub.MINMATCHSCORE, autosub.MINMATCHSCORERSS)
+            print "Config: Config upgraded to version 2"
+            autosub.CONFIGVERSION = 2
+            autosub.CONFIGUPGRADED = True

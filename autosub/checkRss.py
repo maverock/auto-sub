@@ -4,7 +4,6 @@
 #
 
 import logging
-import urllib2
 import os
 
 from library.beautifulsoup import BeautifulStoneSoup
@@ -109,6 +108,7 @@ class checkRss():
                 wantedItemquality = None
                 wantedItemreleasegrp = None
                 wantedItemsource = None
+                wantedItemcodec = None
                 wantedItemtitle = wantedItem['title']
                 wantedItemseason = wantedItem['season']
                 wantedItemepisode = wantedItem['episode']
@@ -120,6 +120,7 @@ class checkRss():
                 if 'quality' in wantedItem.keys(): wantedItemquality = wantedItem['quality']
                 if 'releasegrp' in wantedItem.keys(): wantedItemreleasegrp = wantedItem['releasegrp']
                 if 'source' in wantedItem.keys(): wantedItemsource = wantedItem['source']
+                if 'codec' in wantedItem.keys(): wantedItemcodec = wantedItem['codec']
                 
                 #lets try to find a showid
                 showid = autosub.Helpers.getShowid(wantedItemtitle)
@@ -129,26 +130,18 @@ class checkRss():
                     continue
                 
                 for normalizedRssTitle in normalizedRssTitleList:
-                    toDownloadItem = None
                     downloadLink = None
-                    normalizedRssTitlequality = None
-                    normalizedRssTitlereleasegrp = None
-                    normalizedRssTitlesource = None
-                    normalizedRssTitletitle = normalizedRssTitle['title']
                     normalizedRssTitleseason = normalizedRssTitle['season']
                     normalizedRssTitleepisode = normalizedRssTitle['episode']
                     normalizedRssTitlerssfile = normalizedRssTitle['rssfile']
                     normalizedRssTitleshowid = int(normalizedRssTitle['show_id'])
                     normalizedRssTitlelink = normalizedRssTitle['link']
                     
-                    if 'quality' in normalizedRssTitle.keys(): normalizedRssTitlequality = normalizedRssTitle['quality']
-                    if 'releasegrp' in normalizedRssTitle.keys(): normalizedRssTitlereleasegrp = normalizedRssTitle['releasegrp']
-                    if 'source' in normalizedRssTitle.keys(): normalizedRssTitlesource = normalizedRssTitle['source']
                     log.debug("checkRSS: Trying to match ID:%r S:%r E:%r (wantedlist) with ID:%r S:%r E:%r (rss)" %(showid, wantedItemseason, wantedItemepisode, normalizedRssTitleshowid, normalizedRssTitleseason, normalizedRssTitleepisode))
                     if showid == normalizedRssTitleshowid and wantedItemseason == normalizedRssTitleseason and wantedItemepisode == normalizedRssTitleepisode:
                         log.debug("checkRSS:  The episode %s - Season %s Episode %s was found in the RSS list, attempting to match a proper match" % (wantedItemtitle, wantedItemseason, wantedItemepisode))
 
-                        score = autosub.Helpers.scoreMatch(normalizedRssTitle, normalizedRssTitlerssfile, wantedItemquality, wantedItemreleasegrp, wantedItemsource)
+                        score = autosub.Helpers.scoreMatch(normalizedRssTitle, normalizedRssTitlerssfile, wantedItemquality, wantedItemreleasegrp, wantedItemsource, wantedItemcodec)
                         if score >= autosub.MINMATCHSCORERSS:
                             log.debug ("checkRss: A match got a high enough score. MinMatchscore is %s " % autosub.MINMATCHSCORERSS)
                             downloadLink = normalizedRssTitlelink + autosub.APIRSS
@@ -172,6 +165,7 @@ class checkRss():
                             
                             downloadItem = wantedItem.copy()
                             downloadItem['downlang'] = lang
+                            downloadItem['subtitle'] = normalizedRssTitlerssfile
                             autosub.TODOWNLOADQUEUE.append(downloadItem)
                             
                             if lang == 'nl' and (autosub.FALLBACKTOENG and not autosub.DOWNLOADENG) and 'en' in wantedItem['lang']:

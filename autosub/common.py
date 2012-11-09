@@ -20,12 +20,13 @@ episode_regex = [re.compile("(s\d+[x. _-]*e\d+|\d+x\d+)", re.IGNORECASE)]
 #The second (and following) regex contains nonstandard naming (either typo's or other renaming tools (like sickbeard)) 
 #Nonstandard naming should be renamed using the syn dictionary. 
 
-source = [re.compile("(hdtv|web[. _-]*dl|bluray|dvdrip)", re.IGNORECASE),
+source = [re.compile("(ahdtv|hdtv|web[. _-]*dl|bluray|dvdrip)", re.IGNORECASE),
           re.compile("(tv|dvd|bdrip|web)", re.IGNORECASE)]
 
 #A dictionary containing as keys, the nonstandard naming. Followed by there standard naming.
 #Very important!!! Should be unicode and all LOWERCASE!!!
 source_syn = {u'tv' : u'hdtv',
+              u'ahdtv' : u'hdtv',
               u'dvd' : u'dvdrip',
               u'bdrip': u'bluray',
               u'webdl' : u'web-dl',
@@ -92,13 +93,14 @@ _releasegrps = ['0TV',
                'sundox',
                'T00NG0D',
                'TLA',
-               'VASKITTU']
+               'VASKITTU',
+               'MOMENTUM']
 _releasegrp_pre = '(' + '|'.join(_releasegrps) + ')$'
 
 releasegrp = [re.compile(_releasegrp_pre, re.IGNORECASE)]
 
 #If the releasegrp is not in the list (_releasegrps), try our old regex.
-releasegrp_fallback = [re.compile("(-(?P<releasegrp>[^-]+))?$", re.IGNORECASE)]
+releasegrp_fallback = [re.compile("(-(?P<releasegrp>[^- \.]+))?$", re.IGNORECASE)]
 
 #If you know a result is invalid you can use the syn dict to renaming it to a None type.
 releasegrp_syn = {u'dl': None}

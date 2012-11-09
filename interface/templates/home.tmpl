@@ -3,8 +3,9 @@
 #import cgi
 #import urllib
 #import re
-
+#from types import *
 #from autosub.Db import lastDown
+#from autosub.Helpers import ConvertTimestamp
 
 #include $os.path.join($autosub.PATH.encode(), "interface/templates/header.tmpl")
 
@@ -22,9 +23,12 @@
 			<th>Show name</th>
 			<th>Season</th>
 			<th>Episode</th>
-			<th>Quality</th>
 			<th>Source</th>
+			<th>Quality</th>
+			<th>Codec</th>
+			<th>Group</th>
 			<th>Language</th>
+			<th>Time</th>
 		</tr>
 	</thead>
 <tbody>
@@ -39,33 +43,52 @@
 #set $title_escaped = $cgi.escape($var['title'], True)
 
 <tr>
-	<td width="500px"><b><a href='#' data-dropdown="#dropdown-$counter">$var['title']</a></b></td>
-	<td width="100px" align="center">$var['season']</td>
-	<td width="100px" align="center">$var['episode']</td>
+	<td><b><a href='#' data-dropdown="#dropdown-$counter">$var['title']</a></b></td>
+	<td width="75px" align="center">$var['season']</td>
+	<td width="75px" align="center">$var['episode']</td>
 
-#if $var['quality']:
-	<td width="100px" align="center">$var['quality'].upper()</td>
+#if $type($var['source']) == UnicodeType:
+	<td width="75px" align="center">$var['source'].upper()</td>
 #else
-	<td width="100px" align="center">Unknown</td>
+	<td width="75px" align="center">Unknown</td>
 #end if
 
-#if $var['source']:
-	<td width="100px" align="center">$var['source'].upper()</td>
+
+#if $type($var['quality']) == UnicodeType:
+	<td width="75px" align="center">$var['quality'].upper()</td>
 #else
-	<td width="100px" align="center">Unknown</td>
+	<td width="75px" align="center">Unknown</td>
 #end if
 
-	<td width="50px" align="center">
+#if $type($var['codec']) == UnicodeType:
+	<td width="75px" align="center">$var['codec'].upper()</td>
+#else
+	<td width="75px" align="center">Unknown</td>
+#end if
+
+#if $type($var['releasegrp']) == UnicodeType:
+	<td width="75px" align="center">$var['releasegrp'].upper()</td>
+#else
+	<td width="75px" align="center">Unknown</td>
+#end if
+
+	<td width="75px" align="center">
 #for lang in $var['lang']
 #if lang == "nl"
-	<img src="/media/images/nl.png" alt="nl">
+	<img src="$autosub.WEBROOT/images/nl.png" alt="nl">
 #end if
 #if lang == "en"
-	<img src="/media/images/en.png" alt="en">
+	<img src="$autosub.WEBROOT/images/en.png" alt="en">
 #end if
 #end for
 	</td>
 
+#if $type($var['timestamp']) == UnicodeType:
+	<td width="150px" align="center">$ConvertTimestamp($var['timestamp'])</td>
+#else
+	<td width="150px" align="center">Unknown</td>
+#end if
+	
 </tr>
 
 #end for
@@ -75,8 +98,8 @@
 #set $counter = $counter + 1
 <div id="dropdown-$counter" class="dropdown-menu has-tip">
     <ul>
-        <li><a href="/config/skipShow/$var['title']/$var['season']">Skip season $var['season']</a></li>
-        <li><a href="/config/skipShow/$var['title']/0">Skip show</a></li>
+        <li><a href="$autosub.WEBROOT/config/skipShow/$var['title']/$var['season']">Skip season $var['season']</a></li>
+        <li><a href="$autosub.WEBROOT/config/skipShow/$var['title']/0">Skip show</a></li>
     </ul>
 </div>
 #end for
@@ -103,37 +126,72 @@
 	<th>Show name</th>
 	<th>Season</th>
 	<th>Episode</th>
-	<th>Quality</th>
 	<th>Source</th>
+	<th>Quality</th>
+	<th>Codec</th>
+	<th>Group</th>
 	<th>Language</th>
+	<th>Time</th>
 </tr>
 </thead>
 
 #for $var in $lastdownload
 <tr>
-	<td width="500px"><b>$var['show_name']</b></td>
-	<td width="100px" align="center">$var['season']</td>
-	<td width="100px" align="center">$var['episode']</td>
-	
-#if 'quality' in $var.keys()
-	<td width="100px" align="center">$var['quality'].upper()</td>
+	<td><b><a href='#' data-dropdown="#dropdown-lastDown-$var['id']">$var['show_name']</a></b></td>
+	<td width="75px" align="center">$var['season']</td>
+	<td width="75px" align="center">$var['episode']</td>
+
+#if $type($var['source']) == UnicodeType:
+	<td width="75px" align="center">$var['source'].upper()</td>
 #else
-	<td width="100px" align="center">Unknown</td>
+	<td width="75px" align="center">Unknown</td>
 #end if
 
-#if $var['source']
-	<td width="100px" align="center">$var['source'].upper()</td>
+#if $type($var['quality']) == UnicodeType:
+	<td width="75px" align="center">$var['quality'].upper()</td>
 #else
-	<td width="100px" align="center">Unknown</td>
+	<td width="75px" align="center">Unknown</td>
 #end if
 
-<td width="50px" align="center">
-	#set $imageurl = "/media/images/" + $var['language'] + ".png"
+#if $type($var['codec']) == UnicodeType:
+	<td width="75px" align="center">$var['codec'].upper()</td>
+#else
+	<td width="75px" align="center">Unknown</td>
+#end if
+
+#if $type($var['releasegrp']) == UnicodeType:
+	<td width="75px" align="center">$var['releasegrp'].upper()</td>
+#else
+	<td width="75px" align="center">Unknown</td>
+#end if
+
+<td width="75px" align="center">
+	#set $imageurl = $autosub.WEBROOT + "/images/" + $var['language'] + ".png"
 	<img src="$imageurl" alt="$var['language']" />
 </td>
+
+#if $type($var['timestamp']) == UnicodeType:
+	<td width="150px" align="center">$ConvertTimestamp($var['timestamp'])</td>
+#else
+	<td width="150px" align="center">Unknown</td>
+#end if
+
 </tr>
 
+<div id="dropdown-lastDown-$var['id']" class="dropdown-menu has-tip">
+    <ul>
+        <li>
+        #if $var['subtitle'] == None
+        	N/A
+        #else
+        	$var['subtitle']
+        #end if
+        </li>
+    </ul>
+</div>
+
 #end for
+
 </table>
 </div>
 </div>
