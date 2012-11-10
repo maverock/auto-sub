@@ -46,11 +46,11 @@ class checkSub():
                 break
             
             if autosub.SUBNL != "":
-                srtfile = os.path.join(originalfile[:-4] + "." + autosub.SUBNL + ".srt")
+                srtfile = os.path.splitext(originalfile)[0] + u".srt"
             else:
-                srtfile = os.path.join(originalfile[:-4] + ".srt")
+                srtfile = os.path.splitext(originalfile)[0] + u".srt"
 
-            engsrtfile = os.path.join(originalfile[:-4] + "." + autosub.SUBENG + ".srt")
+            engsrtfile = os.path.splitext(originalfile)[0] + u".srt"
             
             #lets try to find a showid
             showid = Helpers.getShowid(title)
