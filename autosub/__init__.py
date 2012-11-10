@@ -149,7 +149,7 @@ def Initialize():
     
     APICALLSLASTRESET = time.time()
     APICALLSRESETINT = 86400
-    APICALLSMAX = 3
+    APICALLSMAX = 300
     APICALLS = APICALLSMAX
     
 def initLogging(logfile):
