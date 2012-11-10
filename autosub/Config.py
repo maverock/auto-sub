@@ -93,11 +93,6 @@ def ReadConfig(configfile):
         else:
             autosub.SCHEDULERCHECKRSS = 900  # Run every 15 minutes
 
-        if cfg.has_option('config', 'downloadsubs'):
-            autosub.SCHEDULERDOWNLOADSUBS = int(cfg.get('config', 'downloadsubs'))
-        else:
-            autosub.SCHEDULERDOWNLOADSUBS = 1  # Run every second
-
         if cfg.has_option("config", "rootpath"):
             autosub.ROOTPATH = cfg.get("config", "rootpath")
         else:
@@ -161,7 +156,6 @@ def ReadConfig(configfile):
         autosub.SCHEDULERSCANDISK = 3600
         autosub.SCHEDULERCHECKSUB = 28800
         autosub.SCHEDULERCHECKRSS = 900
-        autosub.SCHEDULERDOWNLOADSUBS = 1
         print "Config ERROR: Variable ROOTPATH is missing. This is required! Using current working directory instead."
         autosub.ROOTPATH = unicode(os.getcwd(), autosub.SYSENCODING)
         autosub.FALLBACKTOENG = True
@@ -676,7 +670,6 @@ def saveConfigSection():
     cfg.set(section, "scandisk", str(autosub.SCHEDULERSCANDISK))
     cfg.set(section, "checksub", str(autosub.SCHEDULERCHECKSUB))
     cfg.set(section, "checkrss", str(autosub.SCHEDULERCHECKRSS))
-    cfg.set(section, "downloadsubs", str(autosub.SCHEDULERDOWNLOADSUBS))
     cfg.set(section, "rootpath", autosub.ROOTPATH)
     cfg.set(section, "fallbacktoeng", str(autosub.FALLBACKTOENG))
     cfg.set(section, "subeng", autosub.SUBENG)
@@ -863,7 +856,6 @@ def checkForRestart():
     schedulerscandisk = 3600
     schedulerchecksub = 86400
     schedulercheckrss = 900
-    schedulerdownloadsubs = 1
     loglevel = logging.INFO
     loglevelconsole = logging.ERROR
     logsize = 1000000
@@ -884,9 +876,6 @@ def checkForRestart():
 
         if cfg.has_option('config', 'checkrss'):
             schedulercheckrss = int(cfg.get('config', 'checkrss'))
-
-        if cfg.has_option('config', 'downloadsubs'):
-            schedulerdownloadsubs = int(cfg.get('config', 'downloadsubs'))
 
     if cfg.has_option("config", "logfile"):
         logfile = cfg.get("config", "logfile")
@@ -935,7 +924,7 @@ def checkForRestart():
             password = cfg.get('webserver', 'password')
 
     # Now compare the values, if one differs a restart is required.
-    if schedulerscandisk != autosub.SCHEDULERSCANDISK or schedulerchecksub != autosub.SCHEDULERCHECKSUB or schedulercheckrss != autosub.SCHEDULERCHECKRSS or schedulerdownloadsubs != autosub.SCHEDULERDOWNLOADSUBS or loglevel != autosub.LOGLEVEL or loglevelconsole != autosub.LOGLEVELCONSOLE or logsize != autosub.LOGSIZE or lognum != autosub.LOGNUM or webserverip != autosub.WEBSERVERIP or webserverport != autosub.WEBSERVERPORT or username != autosub.USERNAME or password != autosub.PASSWORD or webroot != autosub.WEBROOT:
+    if schedulerscandisk != autosub.SCHEDULERSCANDISK or schedulerchecksub != autosub.SCHEDULERCHECKSUB or schedulercheckrss != autosub.SCHEDULERCHECKRSS or loglevel != autosub.LOGLEVEL or loglevelconsole != autosub.LOGLEVELCONSOLE or logsize != autosub.LOGSIZE or lognum != autosub.LOGNUM or webserverip != autosub.WEBSERVERIP or webserverport != autosub.WEBSERVERPORT or username != autosub.USERNAME or password != autosub.PASSWORD or webroot != autosub.WEBROOT:
         return True
     else:
         return False
