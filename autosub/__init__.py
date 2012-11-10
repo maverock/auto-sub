@@ -125,7 +125,7 @@ def Initialize():
     NLRSSURL = "http://feeds.bierdopje.com/bierdopje/subs/dutch"
     ENRSSURL = "http://feeds.bierdopje.com/bierdopje/subs/english"
     APIKEY = "BB442E7744E9B541"
-    TIMEOUT = 30
+    TIMEOUT = 300 #default http timeout
     
     if CONFIGFILE==None:
         CONFIGFILE = "config.properties"
@@ -149,7 +149,7 @@ def Initialize():
     
     APICALLSLASTRESET = time.time()
     APICALLSRESETINT = 86400
-    APICALLSMAX = 300
+    APICALLSMAX = 3
     APICALLS = APICALLSMAX
     
 def initLogging(logfile):

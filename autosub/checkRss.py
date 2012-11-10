@@ -164,7 +164,9 @@ class checkRss():
                             downloadItem = wantedItem.copy()
                             downloadItem['downlang'] = lang
                             downloadItem['subtitle'] = normalizedRssTitlerssfile
-                            DownloadSub(downloadItem)
+                            
+                            if not DownloadSub(downloadItem):
+                                break
                             
                             if lang == 'nl' and (autosub.FALLBACKTOENG and not autosub.DOWNLOADENG) and 'en' in wantedItem['lang']:
                                 log.debug('checkRss: We found a dutch subtitle and fallback is true. Removing the english subtitle from the wantedlist.')

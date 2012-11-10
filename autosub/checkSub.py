@@ -39,7 +39,12 @@ class checkSub():
             episode = wantedItem['episode']
             originalfile = wantedItem['originalFileLocationOnDisk']
             languages = wantedItem['lang']
-
+            
+            if not autosub.Helpers.checkAPICalls():
+                #Make sure that we are allow to connect to bierdopje
+                log.warning("checkSub: out of api calls")
+                break
+            
             if autosub.SUBNL != "":
                 srtfile = os.path.join(originalfile[:-4] + "." + autosub.SUBNL + ".srt")
             else:
@@ -74,7 +79,8 @@ class checkSub():
                     downloadItem['downlang'] = lang
                     downloadItem['subtitle'] = release
                     
-                    DownloadSub(downloadItem)
+                    if not DownloadSub(downloadItem):
+                        break
                     
                     if lang == 'nl' and (autosub.FALLBACKTOENG and not autosub.DOWNLOADENG) and 'en' in languages:
                         log.debug('checkSub: We found a dutch subtitle and fallback is true. Removing the english subtitle from the wantedlist.')
