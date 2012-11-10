@@ -318,7 +318,7 @@ class Mobile:
     def index(self):
         tmpl = PageTemplate(file="interface/templates/mobile/home.tmpl")
         return str(tmpl)
-		
+
 class WebServerInit():
     @cherrypy.expose
     def index(self):
