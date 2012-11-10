@@ -681,7 +681,7 @@ cursor:default}
 .ui-icon,.ui-icon-searchfield:after{
 background:#ffffff;
 background:rgba(255,255,255,.4);
-background-image:url(/media/mobile/images/icons.png);
+background-image:url(../images/icons.png);
 background-repeat:no-repeat;
 -moz-border-radius:9px;
 -webkit-border-radius:9px;
@@ -690,12 +690,12 @@ border-radius:9px}
 .ui-icon-alt{
 background:#ffffff;
 background:rgba(0,0,0,.3);
-background-image:url(/media/mobile/images/icons.png);
+background-image:url(../images/icons.png);
 background-repeat:no-repeat}
 
 @media only screen and ( -webkit-min-device-pixel-ratio:1.5),only screen and (min--moz-device-pixel-ratio:1.5),only screen and (min-resolution:240dpi){
 .ui-icon-plus,.ui-icon-minus,.ui-icon-delete,.ui-icon-arrow-r,.ui-icon-arrow-l,.ui-icon-arrow-u,.ui-icon-arrow-d,.ui-icon-check,.ui-icon-gear,.ui-icon-refresh,.ui-icon-forward,.ui-icon-back,.ui-icon-grid,.ui-icon-star,.ui-icon-alert,.ui-icon-info,.ui-icon-home,.ui-icon-search,.ui-icon-searchfield:after,.ui-icon-checkbox-off,.ui-icon-checkbox-on,.ui-icon-radio-off,.ui-icon-radio-on{
-background-image:url(/media/mobile/images/icons.png);
+background-image:url(../images/icons.png);
 -moz-background-size:776px 18px;
 -o-background-size:776px 18px;
 -webkit-background-size:776px 18px;
@@ -703,7 +703,7 @@ background-size:776px 18px}
 }
 
 .ui-icon-alt{
-background-image:url(/media/mobile/images/icons.png)}
+background-image:url(../images/icons.png)}
 
 .ui-icon-plus{
 background-position:-0 50%}
@@ -783,7 +783,7 @@ background-color:transparent}
 background-color:#4596ce}
 
 .ui-icon-loading{
-background-image:url(/media/mobile/images/loader.gif);
+background-image:url(../images/loader.gif);
 width:40px;height:40px;
 -moz-border-radius:20px;
 -webkit-border-radius:20px;
@@ -1044,7 +1044,7 @@ margin:.6em 25px .8em}
 border-width:0;
 overflow:visible;
 overflow-x:hidden;
-background:  url(/media/images/bg.gif);
+background:  url(../images/bg.gif);
 padding:15px}
 
 .ui-page-fullscreen .ui-content{
