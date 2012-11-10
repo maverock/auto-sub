@@ -302,7 +302,12 @@ def DisplayLogFile(loglevel):
 def ConvertTimestamp(datestring):
     date_object = time.strptime(datestring, "%Y-%m-%d %H:%M:%S")
     return "%02i-%02i-%i %02i:%02i:%02i " %(date_object[2], date_object[1], date_object[0], date_object[3], date_object[4], date_object[5],)
-    
+
+def ConvertTimestampTable(datestring):
+    #used for the sorted table
+    date_object = time.strptime(datestring, "%Y-%m-%d %H:%M:%S")
+    return "%04i%02i%02i%02i%02i%02i" %(date_object[0], date_object[1], date_object[2], date_object[3], date_object[4], date_object[5])
+
 def CheckMobileDevice(req_useragent):
     for MUA in autosub.MOBILEUSERAGENTS:
         if MUA.lower() in req_useragent.lower():
