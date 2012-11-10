@@ -308,3 +308,13 @@ def CheckMobileDevice(req_useragent):
         if MUA.lower() in req_useragent.lower():
             return True
     return False
+
+# Thanks to: http://stackoverflow.com/questions/1088392/sorting-a-python-list-by-key-while-checking-for-string-or-float
+def getAttr(name):
+    def inner_func(o):
+        try:
+            rv = float(o[name])
+        except ValueError:
+            rv = o[name]
+        return rv
+    return inner_func

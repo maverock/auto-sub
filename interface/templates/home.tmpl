@@ -6,10 +6,12 @@
 #from types import *
 #from autosub.Db import lastDown
 #from autosub.Helpers import ConvertTimestamp
-
+#from autosub.Helpers import getAttr
 #include $os.path.join($autosub.PATH.encode(), "interface/templates/header.tmpl")
 
 #include $os.path.join($autosub.PATH.encode(), "interface/templates/menu.tmpl")
+
+$autosub.WANTEDQUEUE.sort(key=$getAttr('title'))
 
 #if $len($autosub.WANTEDQUEUE) >= 1
 <div class="box">
@@ -17,6 +19,7 @@
 	<h1>Wanted</h1><span></span>
 </div>
 <div class="content no-padding">
+
 <table class="table sortable">
 	<thead>
 		<tr>
@@ -232,5 +235,4 @@
 		</td>
 	</tr>
 </table>
-
 #include $os.path.join($autosub.PATH.encode(), "interface/templates/footer.tmpl")
