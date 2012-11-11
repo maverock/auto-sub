@@ -50,7 +50,7 @@ class checkSub():
             else:
                 srtfile = os.path.splitext(originalfile)[0] + u".srt"
 
-            engsrtfile = os.path.splitext(originalfile)[0] + u"." + autosub.SUBNL + u".srt"
+            engsrtfile = os.path.splitext(originalfile)[0] + u"." + autosub.SUBENG + u".srt"
             
             #lets try to find a showid
             showid = Helpers.getShowid(title)

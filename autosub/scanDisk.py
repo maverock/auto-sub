@@ -39,7 +39,7 @@ def walkDir(path):
                     else:
                         srtfile = os.path.splitext(filename)[0] + u".srt"
         
-                    srtfileeng = os.path.splitext(filename)[0] + u"." + autosub.SUBNL + u".srt"
+                    srtfileeng = os.path.splitext(filename)[0] + u"." + autosub.SUBENG + u".srt"
 
                     if not os.path.exists(os.path.join(dirname, srtfile)) or (not os.path.exists(os.path.join(dirname, srtfileeng)) and autosub.DOWNLOADENG):
                         log.debug("scanDir: File %s is missing a subtitle" % filename)
