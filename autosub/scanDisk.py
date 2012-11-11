@@ -33,12 +33,13 @@ def walkDir(path):
                     if re.search('sample', filename): continue
 
                     # What subtitle files should we expect?
-                    if (autosub.SUBNL != ""):
-                        srtfile = os.path.join(filename[:-4] + "." + autosub.SUBNL + ".srt")
+            
+                    if autosub.SUBNL != "":
+                        srtfile = os.path.splitext(filename)[0] + u"." + autosub.SUBNL + u".srt"
                     else:
-                        srtfile = os.path.join(filename[:-4] + ".srt")
-
-                    srtfileeng = os.path.join(filename[:-4] + "." + autosub.SUBENG + ".srt")
+                        srtfile = os.path.splitext(filename)[0] + u".srt"
+        
+                    srtfileeng = os.path.splitext(filename)[0] + u"." + autosub.SUBNL + u".srt"
 
                     if not os.path.exists(os.path.join(dirname, srtfile)) or (not os.path.exists(os.path.join(dirname, srtfileeng)) and autosub.DOWNLOADENG):
                         log.debug("scanDir: File %s is missing a subtitle" % filename)

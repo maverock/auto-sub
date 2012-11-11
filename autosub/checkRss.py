@@ -149,14 +149,14 @@ class checkRss():
                             originalfile = wantedItem['originalFileLocationOnDisk']
                             # Dutch subs
                             if autosub.SUBNL != "" and lang == "nl":
-                                srtfile = os.path.join(originalfile[:-4] + "." + autosub.SUBNL + ".srt")
+                                srtfile = os.path.splitext(originalfile)[0] + u"." + autosub.SUBNL + u".srt"
                             elif lang == "nl":
-                                srtfile = os.path.join(originalfile[:-4] + ".srt")
+                                srtfile = os.path.splitext(originalfile)[0] + u".srt"
                             # English subs
                             if autosub.SUBENG != "" and lang == "en":
-                                srtfile = os.path.join(originalfile[:-4] + "." + autosub.SUBENG + ".srt")
+                                srtfile = os.path.splitext(originalfile)[0] + u"." + autosub.SUBENG + u".srt"
                             elif lang == "en":
-                                srtfile = os.path.join(originalfile[:-4] + ".srt")
+                                srtfile = os.path.splitext(originalfile)[0] + u".srt"
                             wantedItem['downloadLink'] = downloadLink
                             wantedItem['destinationFileLocationOnDisk'] = srtfile
                             log.info("checkRSS: The episode %s - Season %s Episode %s has a matching subtitle on the RSSFeed, downloading it!" % (wantedItemtitle, wantedItemseason, wantedItemepisode))
