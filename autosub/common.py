@@ -94,7 +94,8 @@ _releasegrps = ['0TV',
                'T00NG0D',
                'TLA',
                'VASKITTU',
-               'MOMENTUM']
+               'MOMENTUM',
+               'POD']
 _releasegrp_pre = '(' + '|'.join(_releasegrps) + ')$'
 
 releasegrp = [re.compile(_releasegrp_pre, re.IGNORECASE)]
