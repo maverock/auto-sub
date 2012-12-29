@@ -1,7 +1,5 @@
 import logging
-
 import library.pynma as pynma
-
 import autosub
 
 log = logging.getLogger('thelogger')
@@ -21,7 +19,7 @@ def _send_notify(message):
 
 def test_notify():
     log.debug("NMA: Trying to send a notification")
-    message = "Auto-Sub sucessfully sent a test message"
+    message = "Auto-Sub successfully sent a test message"
     return _send_notify(message)
         
 def send_notify(lang, subtitlefile, videofile):

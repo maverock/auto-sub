@@ -269,6 +269,7 @@ def ReadConfig(configfile):
         autosub.USERNAMEMAPPINGUPPER = {}
 
     if cfg.has_section('notify'):
+			#Mail
             if cfg.has_option('notify', 'notifymail'):
                 autosub.NOTIFYMAIL = cfg.getboolean('notify', 'notifymail')
             else:
@@ -313,7 +314,8 @@ def ReadConfig(configfile):
                 autosub.MAILAUTH = cfg.get('notify', 'mailauth')
             else:
                 autosub.MAILAUTH = u""
-            
+       
+			#Growl
             if cfg.has_option('notify', 'notifygrowl'):
                 autosub.NOTIFYGROWL = cfg.getboolean('notify', 'notifygrowl')
             else:
@@ -334,6 +336,7 @@ def ReadConfig(configfile):
             else:
                 autosub.GROWLPASS = u"mysecretpassword"
 
+			#Twitter
             if cfg.has_option('notify', 'notifytwitter'):
                 autosub.NOTIFYTWITTER = cfg.getboolean('notify', 'notifytwitter')
             else:
@@ -349,6 +352,7 @@ def ReadConfig(configfile):
             else:
                 autosub.TWITTERSECRET = u"token secret"
 
+			#Notify My Android
             if cfg.has_option('notify', 'notifynma'):
                 autosub.NOTIFYNMA = cfg.getboolean('notify', 'notifynma')
             else:
@@ -374,6 +378,17 @@ def ReadConfig(configfile):
                 autosub.PROWLPRIORITY = int(cfg.get('notify', 'prowlpriority'))
             else:
                 autosub.PROWLPRIORITY = 0
+			
+            #Notify My Windows Phone
+            if cfg.has_option('notify', 'notifynmwp'):
+                autosub.NOTIFYNMWP = cfg.getboolean('notify', 'notifynmwp')
+            else:
+                autosub.NOTIFYNMWP = False
+
+            if cfg.has_option('notify', 'nmwpapi'):
+                autosub.NMWPAPI = cfg.get('notify', 'nmwpapi')
+            else:
+                autosub.NMWPAPI = u"API key"
             
     else:
         # notify section is missing
@@ -394,6 +409,8 @@ def ReadConfig(configfile):
         autosub.TWITTERSECRET = u"token secret"
         autosub.NOTIFYNMA = False
         autosub.NMAAPI = u"API key"
+        autosub.NMWPAPI = u"API key"
+        autosub.PROWLAPI = u"API key"
 
     if cfg.has_section('dev'):
         if cfg.has_option('dev', 'apikey'):
@@ -846,6 +863,8 @@ def saveNotifySection():
     cfg.set(section, "notifyprowl", str(autosub.NOTIFYPROWL))
     cfg.set(section, "prowlapi", autosub.PROWLAPI)
     cfg.set(section, "prowlpriority", str(autosub.PROWLPRIORITY))
+    cfg.set(section, "notifynmwp", str(autosub.NOTIFYNMWP))
+    cfg.set(section, "nmwpapi", autosub.NMWPAPI)
     
     with open(autosub.CONFIGFILE, 'wb') as file:
         cfg.write(file)
