@@ -17,8 +17,12 @@ log = logging.getLogger('thelogger')
 
 def walkDir(path):
     for dirname, dirnames, filenames in os.walk(os.path.join(path)):
+            log.debug("scanDisk: directory name: %s" %dirname)
             if re.search('_unpack_', dirname, re.IGNORECASE): 
                 log.debug("scanDisk: found a unpack directory, skipping")
+                continue
+            
+            if autosub.SKIPHIDDENDIRS and os.path.split(dirname)[1].startswith(u'.'):
                 continue
             
             if re.search('_failed_', dirname, re.IGNORECASE): 

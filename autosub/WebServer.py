@@ -70,7 +70,7 @@ class Config:
         return str(tmpl)
 
     @cherrypy.expose
-    def saveConfig(self, subeng, checksub, scandisk, checkrss, subnl, postprocesscmd, path, logfile, rootpath, launchbrowser, fallbacktoeng, downloadeng, username, password, webroot, skipshow, lognum, loglevelconsole, logsize, loglevel, webserverip, webserverport, usernamemapping, notifymail, notifygrowl, notifynma, notifytwitter, mailsrv, mailfromaddr, mailtoaddr, mailusername, mailpassword, mailsubject, mailencryption, mailauth, growlhost, growlport, growlpass, nmaapi, twitterkey, twittersecret, notifyen, notifynl, 
+    def saveConfig(self, subeng, checksub, scandisk, checkrss, skiphiddendirs, subnl, postprocesscmd, path, logfile, rootpath, launchbrowser, fallbacktoeng, downloadeng, username, password, webroot, skipshow, lognum, loglevelconsole, logsize, loglevel, webserverip, webserverport, usernamemapping, notifymail, notifygrowl, notifynma, notifytwitter, mailsrv, mailfromaddr, mailtoaddr, mailusername, mailpassword, mailsubject, mailencryption, mailauth, growlhost, growlport, growlpass, nmaapi, twitterkey, twittersecret, notifyen, notifynl, 
                    notifyprowl, prowlapi, prowlpriority, notifynmwp, nmwpapi, 
                    mmssource = None, mmsquality = None, mmscodec = None, mmsrelease = None,
                    mmsrsource = None, mmsrquality = None, mmsrcodec = None, mmsrrelease = None):
@@ -86,6 +86,7 @@ class Config:
         autosub.NOTIFYNL = notifynl
         autosub.POSTPROCESSCMD = postprocesscmd
         autosub.LAUNCHBROWSER = launchbrowser
+        autosub.SKIPHIDDENDIRS = skiphiddendirs
         
         autosub.MINMATCHSCORE = 0
         if mmssource:

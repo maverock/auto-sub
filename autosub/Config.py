@@ -145,6 +145,11 @@ def ReadConfig(configfile):
         if cfg.has_option("config", "launchbrowser"):
             autosub.LAUNCHBROWSER = cfg.getboolean("config", "launchbrowser")
         
+        if cfg.has_option("config", "skiphiddendirs"):
+            autosub.SKIPHIDDENDIRS = cfg.getboolean("config", "skiphiddendirs")
+        else:
+            autosub.SKIPHIDDENDIRS = False
+        
     else:
         # config section is missing
         print "Config ERROR: Config section is missing. This is required, it contains vital options! Using default values instead!"
@@ -163,6 +168,7 @@ def ReadConfig(configfile):
         autosub.SUBNL = u""
         autosub.NOTIFYEN = True
         autosub.NOTIFYNL = True
+        autosub.SKIPHIDDENDIRS = False
         print "Config ERROR: Variable LOGFILE is missing. This is required! Using 'AutoSubService.log' instead."
         autosub.LOGFILE = u"AutoSubService.log"
         autosub.CONFIGVERSION = version.configversion
@@ -712,6 +718,7 @@ def saveConfigSection():
     cfg.set(section, "postprocesscmd", autosub.POSTPROCESSCMD)
     cfg.set(section, "configversion", str(autosub.CONFIGVERSION))
     cfg.set(section, "launchbrowser", str(autosub.LAUNCHBROWSER))
+    cfg.set(section, "skiphiddendirs", str(autosub.SKIPHIDDENDIRS))
     
     with codecs.open(autosub.CONFIGFILE, 'wb', encoding=autosub.SYSENCODING) as file:
         cfg.write(file)

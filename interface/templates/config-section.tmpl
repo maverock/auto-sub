@@ -198,6 +198,20 @@
 	</tr>
 
 	<tr>
+		<td width="140px">Skip hidden directories</td>
+		<td><select name="skiphiddendirs">
+		#if $autosub.SKIPHIDDENDIRS
+			<option value="True" selected="selected">Enabled</option>
+			<option value="False">Disabled</option>
+		#else
+			<option value="True">Enabled</option>
+			<option value="False" selected="selected">Disabled</option>
+		#end if
+		</select></td>
+		<td width="25px" align="right"><a href='#' data-dropdown="#informationSkiphiddendirs"><img src="$autosub.WEBROOT/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationSkiphiddendirs" class="dropdown-menu has-tip" align="left"><ul><li>Should we scan hidden directories (directories that start with a dot, for example .AppleDouble)? Doesn't work for Windows style hidden directories.</li></ul></div></td>
+	</tr>
+	
+	<tr>
 		<td width="140px">ScanDisk</td>
 		<td><input type="text" size="50" name="scandisk" value="$autosub.SCHEDULERSCANDISK" /></td>
 		<td width="25px" align="right"><a href='#' data-dropdown="#informationScandisk"><img src="$autosub.WEBROOT/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationScandisk" class="dropdown-menu has-tip" align="left"><ul><li>Change the interval of the ScanDisk thread, it scans the disk for missing subtitle files.<br />Time is in seconds, default is 3600 seconds.</li></ul></div></td>
