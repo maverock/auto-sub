@@ -276,14 +276,6 @@ class Home:
         return str(tmpl)
     
     @cherrypy.expose
-    def resetAPICalls(self):
-        autosub.APICALLS = autosub.APICALLSMAX
-        autosub.APICALLSLASTRESET = time.time()
-        
-        tmpl = PageTemplate(file="interface/templates/message.tmpl")
-        tmpl.message = "API Calls reseted"
-        return str(tmpl)
-    @cherrypy.expose
     def exitMini(self):
         if autosub.MOBILEAUTOSUB:
             autosub.MOBILEAUTOSUB = False

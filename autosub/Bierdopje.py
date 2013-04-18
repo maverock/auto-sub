@@ -25,6 +25,7 @@ class API:
     
     """
     def __init__(self,url,RSS=False):
+        self.errorcode = None
         if RSS:
             self.req = None
             self.req = urllib2.Request(url)
@@ -41,8 +42,22 @@ class API:
     def connect(self):
         import socket
         socket.setdefaulttimeout(autosub.TIMEOUT)
-        self.resp = urllib2.urlopen(self.req)
-        time.sleep(0.5) #Max 2 connections each second
+        
+        try:
+            self.resp = urllib2.urlopen(self.req)
+            self.errorcode = self.resp.getcode()
+        except urllib2.HTTPError, e:
+            self.errorcode = e.getcode()
+        
+        if self.errorcode == 200:
+            log.debug("API: HTTP Code: 200: OK!")
+        elif self.errorcode == 429:
+            log.debug("API: HTTP Code: 429 You have exceeded your number of allowed requests for this period.")
+            log.error("API: You have exceeded your number of allowed requests for this period. (either 1 con/s or 300 con/day))")
+            log.warning("API: Forcing a 1 minute rest to relieve bierdopje.com. If you see this info more then once. Cleanup your wanted list!")
+            time.sleep(59)
+        
+        time.sleep(2) #Max 0.5 connections each second
         
     def close(self):
         self.resp.close()
