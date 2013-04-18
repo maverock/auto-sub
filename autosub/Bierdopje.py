@@ -57,7 +57,7 @@ class API:
             log.warning("API: Forcing a 1 minute rest to relieve bierdopje.com. If you see this info more then once. Cleanup your wanted list!")
             time.sleep(59)
         
-        time.sleep(1) #Max 1 connections each second
+        time.sleep(2) #Max 0.5 connections each second
         
     def close(self):
         self.resp.close()
