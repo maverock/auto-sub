@@ -95,7 +95,25 @@ _releasegrps = ['0TV',
                'TLA',
                'VASKITTU',
                'MOMENTUM',
-               'POD']
+               'POD',
+               'TjHD',
+               'LP',
+               'DNR',
+               'RANDi',
+               'NIN',
+               'MMI',
+               'DNR',
+               'ORPHEUS',
+               'NBS',
+               'SkyM',
+               'CLUE',
+               'EVOLVE',
+               'TOKUS',
+               'hV',
+               'GreenBlade',
+               'BiA',
+               'RRH']
+
 _releasegrp_pre = '(' + '|'.join(_releasegrps) + ')$'
 
 releasegrp = [re.compile(_releasegrp_pre, re.IGNORECASE)]
