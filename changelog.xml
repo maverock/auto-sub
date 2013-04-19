@@ -1,6 +1,21 @@
 <?xml version="1.0"?>
 <autosub>
 	<release>
+		<version>Alpha 0.5.7</version>
+		<releasedate>19-04-2013</releasedate>
+		<changelog>Bug fixes&lt;br&gt;
+ - Codec matching now supported&lt;br&gt;
+ - Added Notify My Windows Phone&lt;br&gt;
+ - Added API Limited (429 errors)&lt;br&gt;
+ - Removed Reset API button&lt;br&gt;
+ - Reduced API connections to 10 per 60 seconds&lt;br&gt;
+ - Added new releasegroups&lt;br&gt;
+ - Added support for webrip&lt;br&gt;
+ - Added option to skip hidden directories&lt;br&gt;
+ - Fixed issue 178 (test-buttons did not work with webroot set)
+ 		</changelog>
+	</release>
+	<release>
 		<version>Beta 0.5.6</version>
 		<releasedate>16-11-2012</releasedate>
 		<changelog>Bug fixes, lot of enhancements&lt;br&gt;
