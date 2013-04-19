@@ -55,9 +55,10 @@ class API:
             log.debug("API: HTTP Code: 429 You have exceeded your number of allowed requests for this period.")
             log.error("API: You have exceeded your number of allowed requests for this period. (either 1 con/s or 300 con/day))")
             log.warning("API: Forcing a 1 minute rest to relieve bierdopje.com. If you see this info more then once. Cleanup your wanted list!")
-            time.sleep(59)
+            time.sleep(54)
         
-        time.sleep(2) #Max 0.5 connections each second
+        log.debug("API: Resting for 6 seconds to prevent 429 errors")
+        time.sleep(6) #Max 0.5 connections each second
         
     def close(self):
         self.resp.close()
