@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <autosub>
 	<release>
-		<version>Alpha 0.5.7</version>
-		<releasedate>19-04-2013</releasedate>
+		<version>Beta 0.5.7</version>
+		<releasedate>09-05-2013</releasedate>
 		<changelog>Bug fixes&lt;br&gt;
  - Codec matching now supported&lt;br&gt;
  - Added Notify My Windows Phone&lt;br&gt;
