@@ -71,7 +71,7 @@ class Config:
 
     @cherrypy.expose
     def saveConfig(self, subeng, checksub, scandisk, checkrss, skiphiddendirs, subnl, postprocesscmd, path, logfile, rootpath, launchbrowser, fallbacktoeng, downloadeng, username, password, webroot, skipshow, lognum, loglevelconsole, logsize, loglevel, webserverip, webserverport, usernamemapping, notifymail, notifygrowl, notifynma, notifytwitter, mailsrv, mailfromaddr, mailtoaddr, mailusername, mailpassword, mailsubject, mailencryption, mailauth, growlhost, growlport, growlpass, nmaapi, twitterkey, twittersecret, notifyen, notifynl, 
-                   notifyprowl, prowlapi, prowlpriority, notifynmwp, nmwpapi, 
+                   notifyprowl, prowlapi, prowlpriority, notifypushalot, pushalotapi, 
                    mmssource = None, mmsquality = None, mmscodec = None, mmsrelease = None,
                    mmsrsource = None, mmsrquality = None, mmsrcodec = None, mmsrrelease = None):
         # Set all internal variables
@@ -145,8 +145,8 @@ class Config:
         autosub.NOTIFYPROWL = notifyprowl
         autosub.PROWLAPI = prowlapi
         autosub.PROWLPRIORITY = int(prowlpriority)
-        autosub.NOTIFYNMWP = notifynmwp
-        autosub.NMWPAPI = nmwpapi
+	autosub.NOTIFYPUSHALOT = notifypushalot
+	autosub.PUSHALOTAPI = pushalotapi
 
         # Now save to the configfile
         message = autosub.Config.WriteConfig()
