@@ -1,6 +1,5 @@
 import logging
 import autosub
-from xml.dom.minidom import parseString
 from httplib import HTTPSConnection
 from urllib import urlencode
 
@@ -16,24 +15,21 @@ def send_notify(lang, subtitlefile, videofile):
     return _send_notify(message)
 
 def _send_notify(message):
-
-    if not autosub.NOTIFYPUSHALOT == True and not force:
-            return False
-
     http_handler = HTTPSConnection("pushalot.com")
 
     data = {'AuthorizationToken': autosub.PUSHALOTAPI,
             'Title': "Auto-Sub",
             'Body': message.encode('utf-8') }
-
+    
     try:
         http_handler.request("POST",
                                 "/api/sendmessage",
                                 headers = {'Content-type': "application/x-www-form-urlencoded"},
                                 body = urlencode(data))
-    except (SSLError, HTTPException):
-        log.info("Pushalot notification failed.", log.error)
+    except:
+        log.error("Pushalot notification failed.")
         return False
+    
     response = http_handler.getresponse()
     request_status = response.status
 
