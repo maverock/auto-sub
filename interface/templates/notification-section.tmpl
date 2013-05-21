@@ -9,6 +9,7 @@
 		</tr>
 	
 		<tr>
+			<td width=50px" rowspan="10"><img src="$autosub.WEBROOT/images/notifiers/email.png" width="25px" height="24px" alt="" /></td>
 			<td width="190px"><b>Mail</b></td>
 			<td><select name="notifymail">
 				#if $autosub.NOTIFYMAIL
@@ -71,15 +72,109 @@
 		</tr>
 		
 		<tr>
-			<td colspan="3" align="left"><input type="button" value="Test Mail" onClick="parent.location='$autosub.WEBROOT/config/testNotify/mail'" /></td>
+			<td colspan="4" align="left"><input type="button" value="Test" onClick="parent.location='$autosub.WEBROOT/config/testNotify/mail'" /></td>
 		</tr>
 
 		<tr>
-			<td colspan="3"><hr></td>
+			<td colspan="4"><hr></td>
 		</tr>
 		
 		<tr>
-			<td width="190px"><b>Growl</b></td>
+			<td width=50px" rowspan="4"><img src="$autosub.WEBROOT/images/notifiers/twitter.png" width="25px" height="24px" alt="" /></td>
+			<td width="190px"><b><a href="https://twitter.com/" target="_blank">Twitter</a></b></td>
+			<td><select name="notifytwitter">
+				#if $autosub.NOTIFYTWITTER
+				  <option value="True" selected="selected">Enabled</option>
+				  <option value="False">Disabled</option>
+				#else
+				  <option value="True">Enabled</option>
+				  <option value="False" selected="selected">Disabled</option>
+				#end if
+			</select></td>
+			<td width="25px" align="right"><a href='#' data-dropdown="#informationNotifyTwitter"><img src="$autosub.WEBROOT/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationNotifyTwitter" class="dropdown-menu has-tip" align="left"><ul><li>When enabled Autosub will send a Twitter notification. Default is Disabled.</li></ul></div></td>
+		</tr>
+		
+		<tr>
+			<td width="190px">Key</td>
+			<td><input type="text" size="60" name="twitterkey" value="$autosub.TWITTERKEY" /></td>
+			<td width="25px" align="right"><a href='#' data-dropdown="#informationTwitterKey"><img src="$autosub.WEBROOT/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationTwitterKey" class="dropdown-menu has-tip" align="left"><ul><li>What is the key for twitter?</li></ul></div></td>
+		</tr>
+		
+		<tr>
+			<td width="190px">Secret</td>
+			<td><input type="text" size="60" name="twittersecret" value="$autosub.TWITTERSECRET" /></td>
+			<td width="25px" align="right"><a href='#' data-dropdown="#informationTwitterSecret"><img src="$autosub.WEBROOT/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationTwitterSecret" class="dropdown-menu has-tip" align="left"><ul><li>What is the secret code for twitter?</li></ul></div></td>
+		</tr>
+
+		<tr>
+			<td colspan="4" align="left"><input type="button" value="Test" onClick="parent.location='$autosub.WEBROOT/config/testNotify/twitter'" /> <input type="button" value="Register" onClick="parent.location='/config/regTwitter'" /></td>
+		</tr>
+		
+		<tr>
+			<td colspan="4"><hr></td>
+		</tr>		
+		
+		<tr>
+			<td width=50px" rowspan="3"><img src="$autosub.WEBROOT/images/notifiers/pushalot.png" width="25px" height="24px" alt="" /></td>
+			<td width="190px"><b><a href="https://pushalot.com/" target="_blank">Pushalot</a></b></td>
+			<td><select name="notifypushalot">
+				#if $autosub.NOTIFYPUSHALOT
+				  <option value="True" selected="selected">Enabled</option>
+				  <option value="False">Disabled</option>
+				#else
+				  <option value="True">Enabled</option>
+				  <option value="False" selected="selected">Disabled</option>
+				#end if
+			</select></td>
+			<td width="25px" align="right"><a href='#' data-dropdown="#informationNotifyPushalot"><img src="$autosub.WEBROOT/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationNotifyPushalot" class="dropdown-menu has-tip" align="left"><ul><li>When enabled Autosub will send a Pushalot notification. Default is Disabled.</li></ul></div></td>
+		</tr>
+		
+		<tr>
+			<td width="190px">API</td>
+			<td><input type="input" size="60" name="pushalotapi" value="$autosub.PUSHALOTAPI" /></td>
+			<td width="25px" align="right"><a href='#' data-dropdown="#informationPushalotAPI"><img src="$autosub.WEBROOT/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationPushalotAPI" class="dropdown-menu has-tip" align="left"><ul><li>What is the API key for Pushalot?</li></ul></div></td>
+		</tr>
+
+		<tr>
+			<td colspan="4" align="left"><input type="button" value="Test" onClick="parent.location='$autosub.WEBROOT/config/testNotify/pushalot'" /></td>
+		</tr>
+		
+		<tr>
+			<td colspan="4"><hr></td>
+		</tr>		
+		
+		<tr>
+			<td width=50px" rowspan="3"><img src="$autosub.WEBROOT/images/notifiers/nma.png" width="25px" height="24px" alt="" /></td>
+			<td width="190px"><b><a href="https://www.notifymyandroid.com/" target="_blank">Notify My Android</a></b></td>
+			<td><select name="notifynma">
+				#if $autosub.NOTIFYNMA
+				  <option value="True" selected="selected">Enabled</option>
+				  <option value="False">Disabled</option>
+				#else
+				  <option value="True">Enabled</option>
+				  <option value="False" selected="selected">Disabled</option>
+				#end if
+			</select></td>
+			<td width="25px" align="right"><a href='#' data-dropdown="#informationNotifyNMA"><img src="$autosub.WEBROOT/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationNotifyNMA" class="dropdown-menu has-tip" align="left"><ul><li>When enabled Autosub will send a Notify My Android notification. Default is Disabled.</li></ul></div></td>
+		</tr>
+		
+		<tr>
+			<td width="190px">API</td>
+			<td><input type="input" size="60" name="nmaapi" value="$autosub.NMAAPI" /></td>
+			<td width="25px" align="right"><a href='#' data-dropdown="#informationNMAApi"><img src="$autosub.WEBROOT/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationNMAApi" class="dropdown-menu has-tip" align="left"><ul><li>What is the API key for NMA?</li></ul></div></td>
+		</tr>
+
+		<tr>
+			<td colspan="4" align="left"><input type="button" value="Test" onClick="parent.location='$autosub.WEBROOT/config/testNotify/nma'" /></td>
+		</tr>
+		
+		<tr>
+			<td colspan="4"><hr></td>
+		</tr>
+		
+		<tr>
+			<td width=50px" rowspan="5"><img src="$autosub.WEBROOT/images/notifiers/growl.png" width="25px" height="24px" alt="" /></td>
+			<td width="190px"><b><a href="http://www.growl.info" target="_blank">Growl</a></b></td>
 			<td><select name="notifygrowl">
 				#if $autosub.NOTIFYGROWL
 				  <option value="True" selected="selected">Enabled</option>
@@ -111,105 +206,16 @@
 		</tr>
 		
 		<tr>
-			<td colspan="3" align="left"><input type="button" value="Register and Test Growl" onClick="parent.location='$autosub.WEBROOT/config/testNotify/growl'" /></td>
-		</tr>
-
-		<tr>
-			<td colspan="3"><hr></td>
-		</tr>		
-		
-		<tr>
-			<td width="190px"><b>Notify My Android</b></td>
-			<td><select name="notifynma">
-				#if $autosub.NOTIFYNMA
-				  <option value="True" selected="selected">Enabled</option>
-				  <option value="False">Disabled</option>
-				#else
-				  <option value="True">Enabled</option>
-				  <option value="False" selected="selected">Disabled</option>
-				#end if
-			</select></td>
-			<td width="25px" align="right"><a href='#' data-dropdown="#informationNotifyNMA"><img src="$autosub.WEBROOT/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationNotifyNMA" class="dropdown-menu has-tip" align="left"><ul><li>When enabled Autosub will send a Notify My Android notification. Default is Disabled.</li></ul></div></td>
+			<td colspan="4" align="left"><input type="button" value="Test" onClick="parent.location='$autosub.WEBROOT/config/testNotify/growl'" /></td>
 		</tr>
 		
 		<tr>
-			<td width="190px">API</td>
-			<td><input type="input" size="60" name="nmaapi" value="$autosub.NMAAPI" /></td>
-			<td width="25px" align="right"><a href='#' data-dropdown="#informationNMAApi"><img src="$autosub.WEBROOT/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationNMAApi" class="dropdown-menu has-tip" align="left"><ul><li>What is the API key for NMA?</li></ul></div></td>
-		</tr>
-
-		<tr>
-			<td colspan="3" align="left"><input type="button" value="Test Nofify My Android" onClick="parent.location='$autosub.WEBROOT/config/testNotify/nma'" /></td>
+			<td colspan="4"><hr></td>
 		</tr>
 		
 		<tr>
-			<td colspan="3"><hr></td>
-		</tr>		
-		
-				<tr>
-			<td width="190px"><b>Notify My Windows Phone</b></td>
-			<td><select name="notifynmwp">
-				#if $autosub.NOTIFYNMWP
-				  <option value="True" selected="selected">Enabled</option>
-				  <option value="False">Disabled</option>
-				#else
-				  <option value="True">Enabled</option>
-				  <option value="False" selected="selected">Disabled</option>
-				#end if
-			</select></td>
-			<td width="25px" align="right"><a href='#' data-dropdown="#informationNotifyNMWP"><img src="$autosub.WEBROOT/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationNotifyNMWP" class="dropdown-menu has-tip" align="left"><ul><li>When enabled Autosub will send a Notify My Windows Phone notification. Default is Disabled.</li></ul></div></td>
-		</tr>
-		
-		<tr>
-			<td width="190px">API</td>
-			<td><input type="input" size="60" name="nmwpapi" value="$autosub.NMWPAPI" /></td>
-			<td width="25px" align="right"><a href='#' data-dropdown="#informationNMWPAPI"><img src="$autosub.WEBROOT/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationNMWPAPI" class="dropdown-menu has-tip" align="left"><ul><li>What is the API key for NMWP?</li></ul></div></td>
-		</tr>
-
-		<tr>
-			<td colspan="3" align="left"><input type="button" value="Test Notify My Windows Phone" onClick="parent.location='$autosub.WEBROOT/config/testNotify/nmwp'" /></td>
-		</tr>
-		
-		<tr>
-			<td colspan="3"><hr></td>
-		</tr>
-		
-		<tr>
-			<td width="190px"><b>Twitter</b></td>
-			<td><select name="notifytwitter">
-				#if $autosub.NOTIFYTWITTER
-				  <option value="True" selected="selected">Enabled</option>
-				  <option value="False">Disabled</option>
-				#else
-				  <option value="True">Enabled</option>
-				  <option value="False" selected="selected">Disabled</option>
-				#end if
-			</select></td>
-			<td width="25px" align="right"><a href='#' data-dropdown="#informationNotifyTwitter"><img src="$autosub.WEBROOT/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationNotifyTwitter" class="dropdown-menu has-tip" align="left"><ul><li>When enabled Autosub will send a Twitter notification. Default is Disabled.</li></ul></div></td>
-		</tr>
-		
-		<tr>
-			<td width="190px">Key</td>
-			<td><input type="text" size="60" name="twitterkey" value="$autosub.TWITTERKEY" /></td>
-			<td width="25px" align="right"><a href='#' data-dropdown="#informationTwitterKey"><img src="$autosub.WEBROOT/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationTwitterKey" class="dropdown-menu has-tip" align="left"><ul><li>What is the key for twitter?</li></ul></div></td>
-		</tr>
-		
-		<tr>
-			<td width="190px">Secret</td>
-			<td><input type="text" size="60" name="twittersecret" value="$autosub.TWITTERSECRET" /></td>
-			<td width="25px" align="right"><a href='#' data-dropdown="#informationTwitterSecret"><img src="$autosub.WEBROOT/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationTwitterSecret" class="dropdown-menu has-tip" align="left"><ul><li>What is the secret code for twitter?</li></ul></div></td>
-		</tr>
-
-		<tr>
-			<td colspan="3" align="left"><input type="button" value="Test Twitter" onClick="parent.location='$autosub.WEBROOT/config/testNotify/twitter'" /> <input type="button" value="Register Twitter" onClick="parent.location='/config/regTwitter'" /></td>
-		</tr>
-				
-		<tr>
-			<td colspan="3"><hr></td>
-		</tr>
-		
-		<tr>
-			<td width="190px"><b>Prowl</b></td>
+			<td width=50px" rowspan="4"><img src="$autosub.WEBROOT/images/notifiers/prowl.png" width="25px" height="24px" alt="" /></td>
+			<td width="190px"><b><a href="http://www.prowlapp.com/" target="_blank">Prowl</a></b></td>
 			<td><select name="notifyprowl">
 				#if $autosub.NOTIFYPROWL
 				  <option value="True" selected="selected">Enabled</option>
@@ -223,7 +229,7 @@
 		</tr>
 		
 		<tr>
-			<td width="190px">ApiKey</td>
+			<td width="190px">API</td>
 			<td><input type="text" size="60" name="prowlapi" value="$autosub.PROWLAPI" /></td>
 			<td width="25px" align="right"><a href='#' data-dropdown="#informationProwlApi"><img src="$autosub.WEBROOT/images/info.gif" width="20px" height="20px" alt="" /></a><div id="informationProwlApi" class="dropdown-menu has-tip" align="left"><ul><li>What API should I use? Your api key can be find by visiting: https://prowlapp.com/api_settings.php</li></ul></div></td>
 		</tr>
@@ -249,11 +255,11 @@
 		</tr>
 
 		<tr>
-			<td colspan="3" align="left"><input type="button" value="Test Prowl" onClick="parent.location='$autosub.WEBROOT/config/testNotify/prowl'" /></td>
+			<td colspan="4" align="left"><input type="button" value="Test" onClick="parent.location='$autosub.WEBROOT/config/testNotify/prowl'" /></td>
 		</tr>
 		
 		<tr>
-			<td colspan="3"><hr></td>
+			<td colspan="4"><hr></td>
 		</tr>
 		
 	</table>

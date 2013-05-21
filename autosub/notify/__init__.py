@@ -42,7 +42,7 @@ def notifyTest(notifylib):
     if notifylib == 'prowl':
         log.info("Notify: Sending test notification to prowl")
         return prowl.test_notify()
-	
+    
     if notifylib == 'pushalot':
         log.info("Notify: Sending test notification to your Windows (Phone) device via Pushalot")
         return pushalot.test_notify()
