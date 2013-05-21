@@ -385,16 +385,16 @@ def ReadConfig(configfile):
             else:
                 autosub.PROWLPRIORITY = 0
 			
-            #Notify My Windows Phone
-            if cfg.has_option('notify', 'notifynmwp'):
-                autosub.NOTIFYNMWP = cfg.getboolean('notify', 'notifynmwp')
+            #Pushalot - Windows Phone and Windows 8 notifier.
+            if cfg.has_option('notify', 'notifypushalot'):
+                autosub.NOTIFYPUSHALOT = cfg.getboolean('notify', 'notifypushalot')
             else:
-                autosub.NOTIFYNMWP = False
+                autosub.NOTIFYPUSHALOT = False
 
-            if cfg.has_option('notify', 'nmwpapi'):
-                autosub.NMWPAPI = cfg.get('notify', 'nmwpapi')
+            if cfg.has_option('notify', 'pushalotapi'):
+                autosub.PUSHALOTAPI = cfg.get('notify', 'pushalotapi')
             else:
-                autosub.NMWPAPI = u"API key"
+                autosub.PUSHALOTAPI = u"API key"
             
     else:
         # notify section is missing
@@ -413,12 +413,12 @@ def ReadConfig(configfile):
         autosub.NOTIFYTWITTER = False
         autosub.TWITTERKEY = u"token key"
         autosub.TWITTERSECRET = u"token secret"
-        autosub.NOTIFYNMWP = False
         autosub.NOTIFYNMA = False
         autosub.NMAAPI = u"API key"
-        autosub.NMWPAPI = u"API key"
         autosub.PROWLAPI = u"API key"
         autosub.NOTIFYPROWL = False
+	autosub.NOTIFYPUSHALOT = False
+	autosub.PUSHALOTAPI = u"API key"
 
     if cfg.has_section('dev'):
         if cfg.has_option('dev', 'apikey'):
@@ -879,8 +879,8 @@ def saveNotifySection():
     cfg.set(section, "notifyprowl", str(autosub.NOTIFYPROWL))
     cfg.set(section, "prowlapi", autosub.PROWLAPI)
     cfg.set(section, "prowlpriority", str(autosub.PROWLPRIORITY))
-    cfg.set(section, "notifynmwp", str(autosub.NOTIFYNMWP))
-    cfg.set(section, "nmwpapi", autosub.NMWPAPI)
+    cfg.set(section, "notifypushalot", str(autosub.NOTIFYPUSHALOT))
+    cfg.set(section, "pushalotapi", autosub.PUSHALOTAPI)
     
     with open(autosub.CONFIGFILE, 'wb') as file:
         cfg.write(file)
