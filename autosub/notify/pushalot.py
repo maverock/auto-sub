@@ -37,8 +37,8 @@ def _send_notify(message):
             log.info("Pushalot: notification sent.")
             return True
     elif request_status == 410: 
-            log.info("Pushalot auth failed: %s" % response.reason, log.error)
+            log.error("Pushalot auth failed: %s" % response.reason)
             return False
     else:
-            log.info("Pushalot notification failed.", log.error)
+            log.error("Pushalot notification failed.")
             return False
