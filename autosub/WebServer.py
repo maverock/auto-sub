@@ -145,8 +145,8 @@ class Config:
         autosub.NOTIFYPROWL = notifyprowl
         autosub.PROWLAPI = prowlapi
         autosub.PROWLPRIORITY = int(prowlpriority)
-	autosub.NOTIFYPUSHALOT = notifypushalot
-	autosub.PUSHALOTAPI = pushalotapi
+        autosub.NOTIFYPUSHALOT = notifypushalot
+        autosub.PUSHALOTAPI = pushalotapi
 
         # Now save to the configfile
         message = autosub.Config.WriteConfig()

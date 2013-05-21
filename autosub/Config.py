@@ -384,7 +384,7 @@ def ReadConfig(configfile):
                 autosub.PROWLPRIORITY = int(cfg.get('notify', 'prowlpriority'))
             else:
                 autosub.PROWLPRIORITY = 0
-			
+            
             #Pushalot - Windows Phone and Windows 8 notifier.
             if cfg.has_option('notify', 'notifypushalot'):
                 autosub.NOTIFYPUSHALOT = cfg.getboolean('notify', 'notifypushalot')
@@ -417,8 +417,8 @@ def ReadConfig(configfile):
         autosub.NMAAPI = u"API key"
         autosub.PROWLAPI = u"API key"
         autosub.NOTIFYPROWL = False
-	autosub.NOTIFYPUSHALOT = False
-	autosub.PUSHALOTAPI = u"API key"
+        autosub.NOTIFYPUSHALOT = False
+        autosub.PUSHALOTAPI = u"API key"
 
     if cfg.has_section('dev'):
         if cfg.has_option('dev', 'apikey'):

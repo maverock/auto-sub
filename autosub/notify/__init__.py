@@ -79,7 +79,7 @@ def notifySend(lang, subtitlefile, videofile):
     if autosub.NOTIFYPROWL:
         log.debug("Notify: Prowl is enabled")
         prowl.send_notify(lang, subtitlefile, videofile)
-		
+    
     if autosub.NOTIFYPUSHALOT:
         log.debug("Notify: Pushalot is enabled")
         pushalot.send_notify(lang, subtitlefile, videofile)
