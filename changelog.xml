@@ -1,6 +1,16 @@
 <?xml version="1.0"?>
 <autosub>
 	<release>
+		<version>Alpha 0.5.8</version>
+		<releasedate>20-06-2013</releasedate>
+		<changelog>Lib updates and bug fixes&lt;br&gt;
+ - Added notify pushalotd&lt;br&gt;
+ - Removed notify my windows phone&lt;br&gt;
+ - Update twitter library to a new version&lt;br&gt;
+ - Removed Reset API button&lt;br&gt;
+ 		</changelog>
+	</release>
+	<release>
 		<version>Beta 0.5.7</version>
 		<releasedate>09-05-2013</releasedate>
 		<changelog>Bug fixes&lt;br&gt;

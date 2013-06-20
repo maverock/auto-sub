@@ -1,3 +1,3 @@
-autosubversion='Beta 0.5.7'
+autosubversion='Alpha 0.5.8'
 configversion=2
 dbversion=3
